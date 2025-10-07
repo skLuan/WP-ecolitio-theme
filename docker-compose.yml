@@ -1,6 +1,6 @@
 services:
   db:
-    image: mysql:8.0
+    image: mariadb:11.8.3
     container_name: ecolitio_db
     restart: unless-stopped
     environment:
@@ -14,7 +14,7 @@ services:
       - ecolitio_network
 
   wordpress:
-    image: wordpress:6.4-php8.2-apache
+    image: wordpress:6.8.3
     container_name: ecolitio_wp
     restart: unless-stopped
     ports:
@@ -29,22 +29,24 @@ services:
       # Configuración de desarrollo
       WORDPRESS_DEBUG: 1
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_DEBUG', true);
         define('WP_DEBUG_LOG', true);
         define('WP_DEBUG_DISPLAY', true);
         define('SCRIPT_DEBUG', true);
         define('WP_ENVIRONMENT_TYPE', 'development');
         define('FS_METHOD', 'direct');
+        define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
     volumes:
       - wp_data:/var/www/html
       # Mapeo del tema en desarrollo
       - ./themes/ecolitio-theme:/var/www/html/wp-content/themes/ecolitio-theme
+      - ./themes/storefront:/var/www/html/wp-content/themes/storefront
       # Mapeo de plugins personalizados
       - ./plugins:/var/www/html/wp-content/plugins
       # Mapeo de uploads (opcional, para archivos locales)
       - ./uploads:/var/www/html/wp-content/uploads
       # Log files
       - ./logs/wordpress.log:/var/log/wordpress.log
+      - ./logs/debug.log:/var/www/html/wp-content/debug.log
     networks:
       - ecolitio_network
 
