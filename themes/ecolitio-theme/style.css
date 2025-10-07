@@ -1,0 +1,16 @@
+/*!
+Theme Name: Ecolitio-theme
+Theme URI: https://tudominio.com/ecolitio-theme/
+Description: Tema hijo de Storefront para personalizaciones ecológicas.
+Author: skLuan
+Author URI: https://luane.online/portfolio
+Template: storefront
+Version: 1.0
+!*/
+
+
+.col-full {
+    max-width: unset;
+    margin: 0;
+    padding: 0;
+}
