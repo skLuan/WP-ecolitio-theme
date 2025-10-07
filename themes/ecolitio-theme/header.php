@@ -1,67 +1,114 @@
 <?php
 /**
- * The header for our theme.
+ * The header for Ecolitio-theme
  *
- * Displays all of the <head> section and everything up till <div id="content">
+ * This template overrides Storefront’s header.php, but calls all parent hooks
+ * to preserve markup, then injects the footer image into the header.
  *
- * @package storefront
+ * @package Ecolitio-theme
  */
 
-?><!doctype html>
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
-<meta charset="<?php bloginfo( 'charset' ); ?>">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="profile" href="http://gmpg.org/xfn/11">
-<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
 
-<?php wp_head(); ?>
+	<?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
-
 <?php wp_body_open(); ?>
 
-<?php do_action( 'storefront_before_site' ); ?>
+<?php
+/**
+ * Fires immediately after the opening <body> tag.
+ *
+ * @hooked storefront_skip_links – 0
+ */
+do_action( 'storefront_before_site' );
+?>
 
 <div id="page" class="hfeed site">
-	<?php do_action( 'storefront_before_header' ); ?>
-
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
+		<?php do_action( 'storefront_skip_links' ); ?>
 
-		<?php
-		/**
-		 * Functions hooked into storefront_header action
-		 *
-		 * @hooked storefront_header_container                 - 0
-		 * @hooked storefront_skip_links                       - 5
-		 * @hooked storefront_social_icons                     - 10
-		 * @hooked storefront_site_branding                    - 20
-		 * @hooked storefront_secondary_navigation             - 30
-		 * @hooked storefront_product_search                   - 40
-		 * @hooked storefront_header_container_close           - 41
-		 * @hooked storefront_primary_navigation_wrapper       - 42
-		 * @hooked storefront_primary_navigation               - 50
-		 * @hooked storefront_header_cart                      - 60
-		 * @hooked storefront_primary_navigation_wrapper_close - 68
-		 */
-		do_action( 'storefront_header' );
-		?>
+		<div class="header-top">
+			<div class="col-full">
+				<div class="header-top-right">
+					<!-- Language selector -->
+					<?php if ( function_exists( 'pll_the_languages' ) ) { pll_the_languages( array( 'show_flags' => 1, 'show_names' => 0 ) ); } else { ?>
+						<a href="#" class="language-selector"><?php esc_html_e( 'EN', 'ecolitio-theme' ); ?></a>
+					<?php } ?>
 
-	</header><!-- #masthead -->
+					<!-- Shopping cart -->
+					<?php storefront_header_cart(); ?>
+
+					<!-- User account -->
+					<?php if ( is_user_logged_in() ) { ?>
+						<a href="<?php echo esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ); ?>" class="account-link"><?php esc_html_e( 'My Account', 'ecolitio-theme' ); ?></a>
+					<?php } else { ?>
+						<a href="<?php echo esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ); ?>" class="account-link"><?php esc_html_e( 'Login', 'ecolitio-theme' ); ?></a>
+					<?php } ?>
+
+					<!-- Zona Sabway -->
+					<a href="#" class="zona-sabway"><?php esc_html_e( 'Zona Sabway', 'ecolitio-theme' ); ?></a>
+				</div>
+			</div>
+		</div>
+
+		<div class="header-bottom">
+			<div class="col-full">
+				<div class="header-layout">
+					<div class="site-branding">
+						<?php storefront_site_branding(); ?>
+					</div>
+					<div class="site-navigation">
+						<?php storefront_primary_navigation_wrapper(); ?>
+						<?php storefront_primary_navigation(); ?>
+						<?php storefront_primary_navigation_wrapper_close(); ?>
+					</div>
+					<div class="site-search">
+						<?php storefront_product_search(); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<?php storefront_secondary_navigation(); ?>
+	</header>
+
+	<?php
+	/*
+	 * Inject Ecolitio footer image into header.
+	 * Priority: use child theme option first, then fall back to parent’s footer logo.
+	 */
+	$ecolitio_footer_image = get_theme_mod( 'ecolitio_footer_image' );
+	if ( ! $ecolitio_footer_image ) {
+		$ecolitio_footer_image = get_theme_mod( 'storefront_footer_logo' );
+	}
+
+	if ( $ecolitio_footer_image ) : ?>
+		<div class="ecolitio-header-footer-image">
+			<img src="<?php echo esc_url( $ecolitio_footer_image ); ?>"
+			     alt="<?php esc_attr_e( 'Footer Logo', 'ecolitio-theme' ); ?>">
+		</div>
+	<?php endif; ?>
 
 	<?php
 	/**
-	 * Functions hooked in to storefront_before_content
+	 * Fires after the header but before the main content.
 	 *
-	 * @hooked storefront_header_widget_region - 10
-	 * @hooked woocommerce_breadcrumb - 10
+	 * @hooked storefront_content_top – 10
 	 */
-	do_action( 'storefront_before_content' );
+	do_action( 'storefront_after_header' );
 	?>
 
 	<div id="content" class="site-content" tabindex="-1">
 		<div class="col-full">
-
-		<?php
-		do_action( 'storefront_content_top' );
