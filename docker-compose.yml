@@ -1,10 +1,24 @@
-version: '3.8'
-
 services:
+  db:
+    image: mysql:8.0
+    container_name: ecolitio_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecolitio_db
+      MYSQL_USER: ecolitio_user
+      MYSQL_PASSWORD: ecolitio_pass
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - ecolitio_network
+
   wordpress:
-    image: wordpress:6.4-php8.2-fpm
+    image: wordpress:6.4-php8.2-apache
     container_name: ecolitio_wp
     restart: unless-stopped
+    ports:
+      - "8080:80"
     environment:
       # Conexión a staging database
       WORDPRESS_DB_HOST: ${STAGING_DB_HOST}
@@ -22,6 +36,7 @@ services:
         define('WP_ENVIRONMENT_TYPE', 'development');
         define('FS_METHOD', 'direct');
     volumes:
+      - wp_data:/var/www/html
       # Mapeo del tema en desarrollo
       - ./themes/ecolitio-theme:/var/www/html/wp-content/themes/ecolitio-theme
       # Mapeo de plugins personalizados
@@ -30,25 +45,6 @@ services:
       - ./uploads:/var/www/html/wp-content/uploads
       # Log files
       - ./logs/wordpress.log:/var/log/wordpress.log
-    depends_on:
-      - nginx
-    networks:
-      - ecolitio_network
-
-  nginx:
-    image: nginx:alpine
-    container_name: ecolitio_nginx
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    volumes:
-      - ./nginx/wordpress.conf:/etc/nginx/conf.d/default.conf
-      # Mapeo para servir archivos estáticos
-      - ./themes/ecolitio-theme:/var/www/html/wp-content/themes/ecolitio-theme
-      - ./plugins:/var/www/html/wp-content/plugins
-      - ./uploads:/var/www/html/wp-content/uploads
-    depends_on:
-      - wordpress
     networks:
       - ecolitio_network
 
@@ -62,6 +58,7 @@ services:
       WORDPRESS_DB_USER: ${STAGING_DB_USER}
       WORDPRESS_DB_PASSWORD: ${STAGING_DB_PASSWORD}
     volumes:
+      - wp_data:/var/www/html
       - ./themes/ecolitio-theme:/var/www/html/wp-content/themes/ecolitio-theme
       - ./plugins:/var/www/html/wp-content/plugins
     networks:
@@ -69,26 +66,10 @@ services:
     profiles:
       - cli
 
-  # phpMyAdmin para gestionar la DB (opcional)
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: ecolitio_pma
-    restart: unless-stopped
-    ports:
-      - "8081:80"
-    environment:
-      PMA_HOST: ${STAGING_DB_HOST}
-      PMA_PORT: 3306
-      PMA_USER: ${STAGING_DB_USER}
-      PMA_PASSWORD: ${STAGING_DB_PASSWORD}
-    profiles:
-      - tools
-    networks:
-      - ecolitio_network
-
 networks:
   ecolitio_network:
     driver: bridge
 
 volumes:
   wp_data:
+  db_data:

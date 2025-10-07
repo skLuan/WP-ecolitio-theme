@@ -7,7 +7,6 @@
     "logs": "docker-compose logs -f",
     "wp": "docker-compose run --rm wp-cli wp",
     "shell": "docker-compose exec wordpress bash",
-    "db": "docker-compose --profile tools up -d phpmyadmin",
     "build": "docker-compose up -d --build",
     "clean": "docker-compose down -v && docker system prune -f"
   }
