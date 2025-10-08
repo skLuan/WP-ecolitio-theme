@@ -12,6 +12,15 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - ecolitio_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    command: --innodb-buffer-pool-size=256M --innodb-log-file-size=64M --max-connections=100
 
   wordpress:
     image: wordpress:6.8.3
@@ -25,7 +34,7 @@ services:
       WORDPRESS_DB_NAME: ${STAGING_DB_NAME}
       WORDPRESS_DB_USER: ${STAGING_DB_USER}
       WORDPRESS_DB_PASSWORD: ${STAGING_DB_PASSWORD}
-      
+
       # Configuración de desarrollo
       WORDPRESS_DEBUG: 1
       WORDPRESS_CONFIG_EXTRA: |
@@ -49,6 +58,14 @@ services:
       - ./logs/debug.log:/var/www/html/wp-content/debug.log
     networks:
       - ecolitio_network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
 
   # WP-CLI para comandos de WordPress
   wp-cli:

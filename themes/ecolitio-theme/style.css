@@ -1,10 +1,9 @@
 /*!
 Theme Name: Ecolitio-theme
 Theme URI: https://tudominio.com/ecolitio-theme/
-Description: Tema hijo de Storefront para personalizaciones ecológicas.
+Description: Tema personalizado con Elementor para personalizaciones ecológicas.
 Author: skLuan
 Author URI: https://luane.online/portfolio
-Template: storefront
 Version: 1.0
 !*/
 
@@ -14,16 +13,20 @@ Version: 1.0
     margin: 0;
     padding: 0;
 }
-
 /* Header Layout */
 .site-header {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    padding-top: 0;
 }
 
 .header-top {
-    background-color: var(--storefront-header-background-color, #2c2d33);
-    color: var(--storefront-header-text-color, #9aa0a7);
-    padding: 10px 0;
+    background-color: var(--e-global-color-secondary, #2c2d33);
+    color: var(--e-global-color-text, #F7F8F7);
+    padding: 8px;
 }
 
 .header-top .col-full {
@@ -35,12 +38,23 @@ Version: 1.0
     display: flex;
     align-items: center;
     gap: 15px;
+    height: 40px;
+}
+
+.header-top-right > * {
+    width: fit-content !important;
+}
+
+.storefront-primary-navigation .col-full {
+    display: flex;
+    justify-content: end;
+    gap: 16px;
 }
 
 .language-selector,
 .account-link,
 .zona-sabway {
-    color: var(--storefront-header-link-color, #d5d9db);
+    color: var(--e-global-color-accent, #d5d9db);
     text-decoration: none;
     padding: 5px 10px;
     border-radius: 4px;
@@ -50,13 +64,18 @@ Version: 1.0
 .language-selector:hover,
 .account-link:hover,
 .zona-sabway:hover {
-    color: var(--storefront-accent-color, #7f54b3);
+    color: var(--e-global-color-primary, #7f54b3);
 }
 
 .header-bottom {
-    background-color: var(--storefront-background-color, #ffffff);
-    color: var(--storefront-text-color, #43454b);
-    padding: 20px 0;
+    background-color: var(--e-global-color-74e2763, #ffffff);
+    color: var(--e-global-color-text, #43454b);
+    padding: 16px 0;
+
+}
+.header-top, .header-bottom {
+    padding-left:24px;
+    padding-right:24px;
 }
 
 .header-layout {
@@ -68,6 +87,7 @@ Version: 1.0
 
 .site-branding {
     flex-shrink: 0;
+    margin-bottom: 0;
 }
 
 .site-search {
@@ -78,7 +98,15 @@ Version: 1.0
 
 .site-navigation {
     flex-shrink: 0;
+    padding: 0;
 }
+#woocommerce-product-search-field-0 {
+    border: 1px solid var(--e-global-color-a98d613, #82AF04);
+    border-radius: 1000px;
+    background: var(--e-global-color-text);
+    color: var(--e-global-color-secondary);
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

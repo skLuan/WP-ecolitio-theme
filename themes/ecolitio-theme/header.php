@@ -66,24 +66,15 @@ do_action( 'storefront_before_site' );
 		<div class="header-bottom">
 			<div class="col-full">
 				<div class="header-layout">
-					<div class="site-branding">
-						<?php storefront_site_branding(); ?>
-					</div>
-					<div class="site-navigation">
+					<?php storefront_site_branding(); ?>
 						<?php storefront_primary_navigation_wrapper(); ?>
 						<?php storefront_primary_navigation(); ?>
 						<?php storefront_primary_navigation_wrapper_close(); ?>
-					</div>
-					<div class="site-search">
 						<?php storefront_product_search(); ?>
-					</div>
 				</div>
 			</div>
 		</div>
-
-		<?php storefront_secondary_navigation(); ?>
 	</header>
-
 	<?php
 	/*
 	 * Inject Ecolitio footer image into header.
