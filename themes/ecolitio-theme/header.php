@@ -37,7 +37,7 @@ do_action( 'storefront_before_site' );
 
 <div id="page" class="hfeed site">
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
-		<?php do_action( 'storefront_skip_links' ); ?>
+		<?php storefront_skip_links(); ?>
 
 		<div class="header-top">
 			<div class="col-full">

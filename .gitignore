@@ -7,3 +7,14 @@ node_modules/
 *.zip
 .DS_Store
 *.sql
+
+languages/
+litespeed/
+mu-plugins/
+upgrade/
+upgrade-temp-backup/
+object-cache.php
+*.dat
+themes/twenty*/
+themes/astra/
+themes/ecolitio-theme.*
