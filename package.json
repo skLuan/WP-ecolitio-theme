@@ -8,6 +8,7 @@
     "wp": "docker-compose run --rm wp-cli wp",
     "shell": "docker-compose exec wordpress bash",
     "build": "docker-compose up -d --build",
-    "clean": "docker-compose down -v && docker system prune -f"
+    "clean": "docker-compose down -v && docker system prune -f",
+    "dev": "cd themes/ecolitio-theme && npm run dev"
   }
 }

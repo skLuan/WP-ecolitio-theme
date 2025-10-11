@@ -33,7 +33,7 @@
 	<?php do_action( 'storefront_after_footer' ); ?>
 
 </div><!-- #page -->
-
+<h2 class="test">AAAAH</h2>
 <?php wp_footer(); ?>
 
 </body>
