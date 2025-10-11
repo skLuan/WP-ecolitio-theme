@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
+/* @theme {
 
-@components {
+} */
+
+@layer components {
     .test {
         @apply text-red-500;
     }

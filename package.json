@@ -2,6 +2,7 @@
   "name": "ecolitio-wp-docker",
   "scripts": {
     "start": "docker-compose up -d",
+    "wp-start": " cd themes/ecolitio-theme && npm run start",
     "stop": "docker-compose down",
     "restart": "docker-compose restart",
     "logs": "docker-compose logs -f",
