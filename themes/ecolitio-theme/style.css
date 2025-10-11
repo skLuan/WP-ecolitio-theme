@@ -135,4 +135,121 @@ Template: storefront
     .header-layout {
         text-align: center;
     }
+/* Products Grid Animations */
+#products-grid {
+    transition: transform 0.3s ease-out;
+}
+
+#products-grid.sliding-out {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+#products-grid.sliding-in {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+#products-grid.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+#products-grid.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+#products-grid.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 11;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Pagination Styles */
+#products-pagination.loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.pagination-link {
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.pagination-link:hover {
+    transform: scale(1.05);
+}
+
+.pagination-link:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.notification.success {
+    background: #10b981;
+}
+
+.notification.error {
+    background: #ef4444;
+}
+
+/* Add to Cart Button Loading State */
+.add_to_cart_button.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.add_to_cart_button.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
 }
