@@ -34,44 +34,117 @@ get_header(); ?>
 				<div class="container mx-auto px-4 py-8">
 					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Nuestros Productos', 'ecolitio-theme'); ?></h2>
 
-					<div id="products-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-						<?php
-						// Check if WooCommerce is active
-						if (!class_exists('WooCommerce')) {
-							echo '<div class="col-span-full text-center py-8"><p class="text-gray-500">WooCommerce no está activado.</p></div>';
-						} else {
-							// Initial load of first 9 products
-							$args = array(
-								'post_type' => 'product',
-								'posts_per_page' => 9,
-								'post_status' => 'publish',
-								'offset' => 0
-							);
+					<?php
+					// Render products grid with pagination using modular templates
+					ecolitio_render_products_grid(array(
+						'posts_per_page' => 9,
+						'current_page'   => 1,
+						'show_pagination' => true,
+					));
+					?>
+				</div>
+			</section>
 
-							$products_query = new WP_Query($args);
+			<section id="kits">
+				<div class="container mx-auto px-4 py-8">
+					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Kits', 'ecolitio-theme'); ?></h2>
 
-							if ($products_query->have_posts()) {
-								while ($products_query->have_posts()) {
-									$products_query->the_post();
-									echo ecolitio_generate_product_card_html();
-								}
-							} else {
-								echo '<div class="col-span-full text-center py-8"><p class="text-gray-500">No hay productos disponibles en este momento.</p></div>';
-							}
+					<?php
+					// Query for grouped products
+					$grouped_products_args = array(
+						'post_type'      => 'product',
+						'posts_per_page' => 3,
+						'post_status'    => 'publish',
+						'tax_query'      => array(
+							array(
+								'taxonomy' => 'product_type',
+								'field'    => 'slug',
+								'terms'    => 'grouped',
+							),
+						),
+					);
+
+					$grouped_products_query = new WP_Query($grouped_products_args);
+
+					if ($grouped_products_query->have_posts()) :
+						?>
+						<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+							<?php
+							while ($grouped_products_query->have_posts()) :
+								$grouped_products_query->the_post();
+								echo ecolitio_generate_product_card_html();
+							endwhile;
 							wp_reset_postdata();
-						}
-						?>
-					</div>
-
-					<div id="products-pagination" class="mt-8">
+							?>
+						</div>
 						<?php
-						if (class_exists('WooCommerce')) {
-							$total_products = wp_count_posts('product')->publish;
-							$total_pages = ceil($total_products / 9);
-							echo ecolitio_generate_pagination_html(1, $total_pages);
-						}
+					else :
+						// No grouped products found - show "Próximamente"
 						?>
-					</div>
+						<div class="text-center py-12">
+							<h3 class="text-xl font-semibold text-gray-600 mb-4"><?php _e('Próximamente', 'ecolitio-theme'); ?></h3>
+							<p class="text-gray-500"><?php _e('Kits de productos próximamente disponibles.', 'ecolitio-theme'); ?></p>
+						</div>
+						<?php
+					endif;
+					?>
+				</div>
+			</section>
+			<section id="categorias">
+				<div class="container mx-auto px-4 py-8">
+					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Categorías', 'ecolitio-theme'); ?></h2>
+
+					<?php
+					// Query WooCommerce product categories
+					$product_categories = get_terms(array(
+						'taxonomy'   => 'product_cat',
+						'hide_empty' => true,
+						'number'     => 6, // Limit to 6 categories
+						'orderby'    => 'count',
+						'order'      => 'DESC',
+					));
+
+					if (!empty($product_categories) && !is_wp_error($product_categories)) :
+						?>
+						<div class="flex flex-wrap justify-center gap-6">
+							<?php
+							foreach ($product_categories as $category) :
+								$category_link = get_term_link($category, 'product_cat');
+								$thumbnail_id = get_term_meta($category->term_id, 'thumbnail_id', true);
+								$category_image = wp_get_attachment_image_src($thumbnail_id, 'medium');
+
+								if (!$category_image) {
+									// Fallback to placeholder if no category image
+									$category_image = array(wc_placeholder_img_src(), 300, 300);
+								}
+								?>
+								<div class="flex flex-col items-center group cursor-pointer">
+									<a href="<?php echo esc_url($category_link); ?>" class="block">
+										<div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-gray-200 group-hover:border-blue-500 transition-colors duration-300 mb-3">
+											<img src="<?php echo esc_url($category_image[0]); ?>"
+											     alt="<?php echo esc_attr($category->name); ?>"
+											     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+										</div>
+										<h3 class="text-center font-medium text-gray-800 group-hover:text-blue-600 transition-colors duration-300">
+											<?php echo esc_html($category->name); ?>
+										</h3>
+									</a>
+								</div>
+								<?php
+							endforeach;
+							?>
+						</div>
+						<?php
+					else :
+						// No categories found
+						?>
+						<div class="text-center py-12">
+							<h3 class="text-xl font-semibold text-gray-600 mb-4"><?php _e('Categorías Próximamente', 'ecolitio-theme'); ?></h3>
+							<p class="text-gray-500"><?php _e('Las categorías de productos estarán disponibles pronto.', 'ecolitio-theme'); ?></p>
+						</div>
+						<?php
+					endif;
+					?>
 				</div>
 			</section>
 		</main><!-- #main -->

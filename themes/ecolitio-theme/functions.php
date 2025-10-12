@@ -1,216 +1,332 @@
 <?php
+/**
+ * Ecolitio Theme Functions
+ *
+ * Modular WordPress theme with WooCommerce integration
+ *
+ * @package Ecolitio
+ * @version 1.0.0
+ */
 
-$autoload_path = get_stylesheet_directory() . '/vendor/autoload.php';
-if (!file_exists($autoload_path)) {
-    error_log('Autoload file not found at ' . $autoload_path);
-} else {
-    require_once $autoload_path;
+// Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit;
 }
+
+// =============================================================================
+// DEPENDENCIES & AUTOLOADING
+// =============================================================================
+
+/**
+ * Load Composer autoloader for third-party dependencies
+ */
+$autoload_path = get_stylesheet_directory() . '/vendor/autoload.php';
+if (!file_exists($autoload_path)):
+    error_log('Autoload file not found at ' . $autoload_path);
+else:
+    require_once $autoload_path;
+endif;
 
 use Idleberg\WordPress\ViteAssets\Assets;
 
+// =============================================================================
+// THEME SETUP & CONFIGURATION
+// =============================================================================
 
-// Encolar estilos del tema
-add_action('wp_enqueue_scripts', 'ecolitio_enqueue_styles');
+/**
+ * Theme setup and configuration
+ */
+add_action('after_setup_theme', 'ecolitio_theme_setup');
+function ecolitio_theme_setup() {
+    // Add theme support for various features
+    add_theme_support('post-thumbnails');
+    add_theme_support('title-tag');
+    add_theme_support('html5', array('search-form', 'comment-form', 'comment-list'));
+    add_theme_support('woocommerce');
 
-function ecolitio_enqueue_styles()
-{
-    // Enqueue child theme style.css
-    wp_enqueue_style('ecolitio-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
+    // Set content width
+    if (!isset($content_width)) {
+        $content_width = 1200;
+    }
 }
 
-// 1.1. Vite hot reloading for development and production build enqueue
-function enqueue_vite_scripts() {
-    $manifestPath = get_stylesheet_directory() . '/dist.vite/manifest.json';
+// =============================================================================
+// ASSET MANAGEMENT
+// =============================================================================
 
-    // Check if the manifest file exists and is readable before using it
-    if (file_exists($manifestPath)) {
-        $manifest = json_decode(file_get_contents($manifestPath), true);
-        
-        // Check if the file is in the manifest before enqueuing
+/**
+ * Enqueue theme stylesheets
+ * Ensures proper loading order: parent first, then child
+ */
+add_action('wp_enqueue_scripts', 'ecolitio_enqueue_styles', 10);
+function ecolitio_enqueue_styles() {
+    // Enqueue parent theme stylesheet first
+    wp_enqueue_style(
+        'parent-style',
+        get_template_directory_uri() . '/style.css',
+        array(),
+        wp_get_theme(get_template())->get('Version')
+    );
+
+    // Enqueue child theme stylesheet with parent as dependency
+    wp_enqueue_style(
+        'ecolitio-style',
+        get_stylesheet_uri(),
+        array('parent-style'),
+        wp_get_theme()->get('Version')
+    );
+}
+
+/**
+ * Enqueue JavaScript assets with Vite integration
+ * Handles both development (HMR) and production builds
+ */
+add_action('wp_enqueue_scripts', 'ecolitio_enqueue_scripts', 10);
+function ecolitio_enqueue_scripts() {
+    // Vite integration for development and production
+    ecolitio_enqueue_vite_assets();
+
+    // Products AJAX functionality
+    ecolitio_enqueue_products_scripts();
+}
+
+/**
+ * Handle Vite asset enqueuing for development and production
+ */
+function ecolitio_enqueue_vite_assets() {
+    $manifest_path = get_stylesheet_directory() . '/dist/.vite/manifest.json';
+
+    // Check if manifest exists (production build)
+    if (file_exists($manifest_path) && is_readable($manifest_path)) {
+        $manifest = json_decode(file_get_contents($manifest_path), true);
+
         if (isset($manifest['src/main.js'])) {
-            wp_enqueue_script('ecolitio-js', get_stylesheet_directory_uri() . '/dist/' . $manifest['src/main.js']['file'], array(), null, true);
-            // Enqueue the CSS files (handle multiple)
+            // Enqueue main JavaScript file
+            wp_enqueue_script(
+                'ecolitio-main-js',
+                get_stylesheet_directory_uri() . '/dist/' . $manifest['src/main.js']['file'],
+                array(),
+                null,
+                true
+            );
+
+            // Enqueue associated CSS files
             if (isset($manifest['src/main.js']['css']) && is_array($manifest['src/main.js']['css'])) {
                 foreach ($manifest['src/main.js']['css'] as $index => $css_file) {
-                    wp_enqueue_style('ecolitio-css-' . $index, get_stylesheet_directory_uri() . '/dist/' . $css_file);
+                    wp_enqueue_style(
+                        'ecolitio-main-css-' . $index,
+                        get_stylesheet_directory_uri() . '/dist/' . $css_file,
+                        array(),
+                        null
+                    );
                 }
             }
         }
+    } else {
+        // Fallback for development or when manifest doesn't exist
+        // This could be enhanced to check for dev server availability
+        wp_enqueue_script(
+            'ecolitio-main-js-fallback',
+            get_stylesheet_directory_uri() . '/src/main.js',
+            array('jquery'),
+            '1.0.0',
+            true
+        );
     }
 }
-add_action('wp_enqueue_scripts', 'enqueue_vite_scripts');
-// -- Todo, implement later
-// $entryPoint = "src/main.js";
-// $viteAssets = new Assets($manifest, $baseUrl);
-// $viteAssets->inject($entryPoint);
 
-// Enqueue products AJAX script
-add_action('wp_enqueue_scripts', 'ecolitio_enqueue_products_scripts');
+/**
+ * Enqueue products-specific AJAX scripts
+ */
 function ecolitio_enqueue_products_scripts() {
-    wp_enqueue_script('ecolitio-products-ajax', get_stylesheet_directory_uri() . '/src/products-ajax.js', array('jquery'), '1.0.0', true);
+    wp_enqueue_script(
+        'ecolitio-products-ajax',
+        get_stylesheet_directory_uri() . '/src/products-ajax.js',
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+
+    // Localize script with AJAX data
     wp_localize_script('ecolitio-products-ajax', 'ecolitio_ajax', array(
         'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('ecolitio_products_nonce')
+        'nonce'    => wp_create_nonce('ecolitio_products_nonce'),
+        'strings'  => array(
+            'loading' => __('Cargando...', 'ecolitio-theme'),
+            'error'   => __('Error al cargar productos', 'ecolitio-theme'),
+        ),
     ));
 }
 
-// AJAX handler for loading products page
+// =============================================================================
+// WOOCOMMERCE INTEGRATION
+// =============================================================================
+
+/**
+ * Check if WooCommerce is active and properly configured
+ */
+function ecolitio_is_woocommerce_active() {
+    return class_exists('WooCommerce');
+}
+
+/**
+ * AJAX handler for loading products pages
+ * Handles pagination requests with security validation
+ */
 add_action('wp_ajax_load_products_page', 'ecolitio_load_products_page');
 add_action('wp_ajax_nopriv_load_products_page', 'ecolitio_load_products_page');
 function ecolitio_load_products_page() {
-    // Verify nonce
-    if (!wp_verify_nonce($_POST['nonce'], 'ecolitio_products_nonce')) {
-        wp_send_json_error('Security check failed');
+    // Security: Verify nonce
+    if (!wp_verify_nonce($_POST['nonce'] ?? '', 'ecolitio_products_nonce')) {
+        wp_send_json_error(__('Verificación de seguridad fallida', 'ecolitio-theme'));
         return;
     }
 
-    // Check if WooCommerce is active
-    if (!class_exists('WooCommerce')) {
-        wp_send_json_error('WooCommerce is not active');
+    // Check WooCommerce availability
+    if (!ecolitio_is_woocommerce_active()) {
+        wp_send_json_error(__('WooCommerce no está activo', 'ecolitio-theme'));
         return;
     }
 
-    $page = intval($_POST['page']);
-    $per_page = 9;
+    // Sanitize and validate input
+    $page = intval($_POST['page'] ?? 1);
+    $per_page = apply_filters('ecolitio_products_per_page', 9);
+
+    if ($page < 1) {
+        $page = 1;
+    }
+
     $offset = ($page - 1) * $per_page;
 
-    // Query products
+    // Build query arguments
     $args = array(
-        'post_type' => 'product',
+        'post_type'      => 'product',
         'posts_per_page' => $per_page,
-        'offset' => $offset,
-        'post_status' => 'publish'
+        'offset'         => $offset,
+        'post_status'    => 'publish',
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
     );
+
+    // Allow filtering of product query
+    $args = apply_filters('ecolitio_products_query_args', $args, $page);
 
     $products_query = new WP_Query($args);
     $total_products = wp_count_posts('product')->publish;
     $total_pages = ceil($total_products / $per_page);
 
-    // Generate product HTML
-    $html = '';
-    if ($products_query->have_posts()) {
-        while ($products_query->have_posts()) {
-            $products_query->the_post();
-            $html .= ecolitio_generate_product_card_html();
-        }
-    } else {
-        $html = '<div class="col-span-full text-center py-8"><p class="text-gray-500">No hay más productos disponibles.</p></div>';
-    }
+    // Generate HTML content using templates
+    ob_start();
+    set_query_var('products_query', $products_query);
+    set_query_var('current_page', $page);
+    set_query_var('total_pages', $total_pages);
+    set_query_var('show_pagination', false); // Don't show pagination in AJAX response
+    get_template_part('templates/products-grid');
+    $html = ob_get_clean();
     wp_reset_postdata();
 
     // Generate pagination HTML
-    $pagination_html = ecolitio_generate_pagination_html($page, $total_pages);
+    ob_start();
+    set_query_var('current_page', $page);
+    set_query_var('total_pages', $total_pages);
+    get_template_part('templates/pagination');
+    $pagination_html = ob_get_clean();
 
     wp_send_json_success(array(
-        'html' => $html,
-        'pagination' => $pagination_html,
-        'total_pages' => $total_pages
+        'html'        => $html,
+        'pagination'  => $pagination_html,
+        'total_pages' => $total_pages,
+        'current_page' => $page,
     ));
 }
 
-// Generate product card HTML
-function ecolitio_generate_product_card_html() {
-    global $product;
-    $product = wc_get_product(get_the_ID());
+// =============================================================================
+// TEMPLATE FUNCTIONS
+// =============================================================================
 
-    if (!$product) return '';
+/**
+ * Render products grid with pagination
+ * Uses modular templates for clean separation of concerns
+ */
+function ecolitio_render_products_grid($args = array()): void
+{
+    $defaults = array(
+        'posts_per_page' => 9,
+        'current_page'   => 1,
+        'show_pagination' => true,
+    );
 
-    $product_id = $product->get_id();
-    $product_title = $product->get_name();
-    $product_link = get_permalink($product_id);
-    $product_image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'medium');
-    $product_image_url = $product_image ? $product_image[0] : wc_placeholder_img_src();
-    $product_price = $product->get_price_html();
-    $is_on_sale = $product->is_on_sale();
+    $args = wp_parse_args($args, $defaults);
 
-    ob_start();
-    ?>
-    <article class="group relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-w-sm mx-auto"
-             itemscope
-             itemtype="https://schema.org/Product"
-             role="article"
-             aria-labelledby="product-title-<?php echo $product_id; ?>"
-             tabindex="0">
+    // Check WooCommerce availability
+    if (!ecolitio_is_woocommerce_active()):
+        echo '<div class="text-center py-8"><p class="text-gray-500">' . esc_html__('WooCommerce no está activo.', 'ecolitio-theme') . '</p></div>';
+        return;
+    endif;
 
-      <!-- Product Image Container -->
-      <div class="relative aspect-square bg-gray-50 overflow-hidden">
-        <a href="<?php echo esc_url($product_link); ?>" class="block">
-            <img src="<?php echo esc_url($product_image_url); ?>"
-                 alt="<?php echo esc_attr($product_title); ?>"
-                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                 itemprop="image"
-                 loading="lazy"
-                 width="300"
-                 height="300">
-        </a>
+    // Build query
+    $query_args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => $args['posts_per_page'],
+        'post_status'    => 'publish',
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
+    );
 
-        <!-- Sale Badge (if applicable) -->
-        <?php if ($is_on_sale) : ?>
-        <div class="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-xs font-medium"
-             aria-label="Producto en oferta">
-          Oferta
-        </div>
-        <?php endif; ?>
+    if ($args['current_page'] > 1):
+        $query_args['offset'] = ($args['current_page'] - 1) * $args['posts_per_page'];
+    endif;
 
-        <!-- Add to Cart Button -->
-        <div class="absolute top-3 right-3">
-            <?php
-            if ($product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock()) {
-                woocommerce_template_loop_add_to_cart(array('class' => 'absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'));
-            }
-            ?>
-        </div>
-      </div>
+    $products_query = new WP_Query($query_args);
+    $total_products = wp_count_posts('product')->publish;
+    $total_pages = ceil($total_products / $args['posts_per_page']);
 
-      <!-- Product Info -->
-      <div class="p-4">
-        <h3 id="product-title-<?php echo $product_id; ?>" class="font-semibold text-lg mb-2" itemprop="name">
-            <a href="<?php echo esc_url($product_link); ?>" class="hover:text-blue-600 transition-colors">
-                <?php echo esc_html($product_title); ?>
-            </a>
-        </h3>
+    // Set template variables
+    set_query_var('products_query', $products_query);
+    set_query_var('current_page', $args['current_page']);
+    set_query_var('total_pages', $total_pages);
+    set_query_var('show_pagination', $args['show_pagination']);
 
-        <div class="flex items-center justify-between">
-            <div class="text-xl font-bold text-gray-900" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                <span itemprop="price" content="<?php echo esc_attr($product->get_price()); ?>">
-                    <?php echo $product_price; ?>
-                </span>
-                <meta itemprop="priceCurrency" content="<?php echo esc_attr(get_woocommerce_currency()); ?>" />
-            </div>
-        </div>
-      </div>
-    </article>
-    <?php
-    return ob_get_clean();
+    // Render template
+    get_template_part('templates/products-grid');
+
+    wp_reset_postdata();
 }
 
-// Generate pagination HTML
-function ecolitio_generate_pagination_html($current_page, $total_pages) {
-    if ($total_pages <= 1) return '';
+// =============================================================================
+// HOOKS & FILTERS
+// =============================================================================
 
-    $html = '<nav class="flex justify-center mt-8" aria-label="Paginación de productos" role="navigation">';
-    $html .= '<ul class="flex space-x-2">';
+/**
+ * Add custom body classes for theme-specific styling
+ */
+add_filter('body_class', 'ecolitio_body_classes');
+function ecolitio_body_classes($classes) {
+    $classes[] = 'ecolitio-theme';
+    return $classes;
+}
 
-    // Previous button
-    if ($current_page > 1) {
-        $html .= '<li><a href="#" data-page="' . ($current_page - 1) . '" class="pagination-link px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors" aria-label="Página anterior">« Anterior</a></li>';
+/**
+ * Filter to modify products per page
+ */
+add_filter('ecolitio_products_per_page', 'ecolitio_modify_products_per_page');
+function ecolitio_modify_products_per_page($per_page) {
+    // Allow child themes or plugins to modify this value
+    return apply_filters('ecolitio_products_per_page_override', $per_page);
+}
+
+// =============================================================================
+// DEVELOPMENT HELPERS (Remove in production)
+// =============================================================================
+
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    /**
+     * Add development helper functions
+     */
+    add_action('wp_footer', 'ecolitio_development_info');
+    function ecolitio_development_info() {
+        if (current_user_can('administrator')) {
+            echo '<!-- Ecolitio Theme Development Mode Active -->';
+        }
     }
-
-    // Page numbers
-    $start_page = max(1, $current_page - 2);
-    $end_page = min($total_pages, $current_page + 2);
-
-    for ($i = $start_page; $i <= $end_page; $i++) {
-        $active_class = ($i == $current_page) ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300';
-        $html .= '<li><a href="#" data-page="' . $i . '" class="pagination-link px-3 py-2 ' . $active_class . ' rounded transition-colors" aria-label="Ir a la página ' . $i . '">' . $i . '</a></li>';
-    }
-
-    // Next button
-    if ($current_page < $total_pages) {
-        $html .= '<li><a href="#" data-page="' . ($current_page + 1) . '" class="pagination-link px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded transition-colors" aria-label="Página siguiente">Siguiente »</a></li>';
-    }
-
-    $html .= '</ul></nav>';
-    return $html;
 }
