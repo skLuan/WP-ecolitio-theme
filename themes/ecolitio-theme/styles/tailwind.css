@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
-/* @theme {
+@theme {
+    --color-white-eco: var(--e-global-color-text, #F7F8F7);
+}
 
-} */
-
+@layer base{
+    h2 {
+        @apply text-white-eco;
+    }
+}
 @layer components {
     .test {
         @apply text-red-500;

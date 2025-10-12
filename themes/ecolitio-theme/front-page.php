@@ -9,8 +9,8 @@
 
 get_header(); ?>
 
-	<div id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
+	<div id="primary" class=" mb-0">
+		<main id="main" class="site-main mb-0" role="main">
 
 			<?php
 			while ( have_posts() ) :
@@ -32,7 +32,7 @@ get_header(); ?>
 
 			<section id="nuestros-productos">
 				<div class="container mx-auto px-4 py-8">
-					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Nuestros Productos', 'ecolitio-theme'); ?></h2>
+					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Nuestros Productos', 'ecolitio-theme'); ?></h2>
 
 					<?php
 					// Render products grid with pagination using modular templates
@@ -47,7 +47,7 @@ get_header(); ?>
 
 			<section id="kits">
 				<div class="container mx-auto px-4 py-8">
-					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Kits', 'ecolitio-theme'); ?></h2>
+					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Kits', 'ecolitio-theme'); ?></h2>
 
 					<?php
 					// Query for grouped products
@@ -92,7 +92,7 @@ get_header(); ?>
 			</section>
 			<section id="categorias">
 				<div class="container mx-auto px-4 py-8">
-					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Categorías', 'ecolitio-theme'); ?></h2>
+					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Categorías', 'ecolitio-theme'); ?></h2>
 
 					<?php
 					// Query WooCommerce product categories
@@ -141,6 +141,96 @@ get_header(); ?>
 						<div class="text-center py-12">
 							<h3 class="text-xl font-semibold text-gray-600 mb-4"><?php _e('Categorías Próximamente', 'ecolitio-theme'); ?></h3>
 							<p class="text-gray-500"><?php _e('Las categorías de productos estarán disponibles pronto.', 'ecolitio-theme'); ?></p>
+						</div>
+						<?php
+					endif;
+					?>
+				</div>
+			</section>
+			<section id="powerCycle">
+					<h2 class="text-2xl  font-bold mb-6 text-center"><?php _e('Power cycle
+					', 'ecolitio-theme'); ?></h2>
+
+			</section>
+			<section id="productos_destacados">
+				<div class="container mx-auto px-4 py-8">
+					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Productos Destacados', 'ecolitio-theme'); ?></h2>
+
+					<?php
+					// Query for featured products
+					$featured_products_args = array(
+						'post_type'      => 'product',
+						'posts_per_page' => 9,
+						'post_status'    => 'publish',
+						'meta_query'     => array(
+							array(
+								'key'   => '_featured',
+								'value' => 'yes',
+							),
+						),
+					);
+
+					$featured_products_query = new WP_Query($featured_products_args);
+
+					if ($featured_products_query->have_posts()) :
+						?>
+						<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+							<?php
+							while ($featured_products_query->have_posts()) :
+								$featured_products_query->the_post();
+								get_template_part('templates/product-card');
+							endwhile;
+							wp_reset_postdata();
+							?>
+						</div>
+						<?php
+					else :
+						// No featured products found
+						?>
+						<div class="text-center py-12">
+							<h3 class="text-xl font-semibold text-gray-600 mb-4"><?php _e('Próximamente', 'ecolitio-theme'); ?></h3>
+							<p class="text-gray-500"><?php _e('Productos destacados estarán disponibles pronto.', 'ecolitio-theme'); ?></p>
+						</div>
+						<?php
+					endif;
+					?>
+				</div>
+			</section>
+
+			<section id="preguntas-frecuentes" class="bg-white-eco py-12">
+				<div class="container mx-auto px-4 py-8">
+					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Preguntas Frecuentes', 'ecolitio-theme'); ?></h2>
+
+					<?php
+					// Query for FAQs
+					$faqs_args = array(
+						'post_type'      => 'faq',
+						'posts_per_page' => -1, // Show all FAQs
+						'post_status'    => 'publish',
+						'orderby'        => 'menu_order',
+						'order'          => 'ASC',
+					);
+
+					$faqs_query = new WP_Query($faqs_args);
+
+					if ($faqs_query->have_posts()) :
+						?>
+						<div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+							<?php
+							while ($faqs_query->have_posts()) :
+								$faqs_query->the_post();
+								get_template_part('templates/acordeon');
+							endwhile;
+							wp_reset_postdata();
+							?>
+						</div>
+						<?php
+					else :
+						// No FAQs found
+						?>
+						<div class="text-center py-12">
+							<h3 class="text-xl font-semibold text-gray-600 mb-4"><?php _e('Preguntas Frecuentes Próximamente', 'ecolitio-theme'); ?></h3>
+							<p class="text-gray-500"><?php _e('Las preguntas frecuentes estarán disponibles pronto.', 'ecolitio-theme'); ?></p>
 						</div>
 						<?php
 					endif;
