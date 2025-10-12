@@ -91,7 +91,7 @@ get_header(); ?>
 				</div>
 			</section>
 			<section id="categorias">
-				<div class="container mx-auto px-4 py-8">
+				<div class="container mx-auto py-8 !max-w-full">
 					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Categorías', 'ecolitio-theme'); ?></h2>
 
 					<?php
@@ -106,7 +106,7 @@ get_header(); ?>
 
 					if (!empty($product_categories) && !is_wp_error($product_categories)) :
 						?>
-						<div class="flex flex-wrap justify-center gap-6">
+						<div class="flex max-w-full overflow-x-scroll gap-6 px-4">
 							<?php
 							foreach ($product_categories as $category) :
 								$category_link = get_term_link($category, 'product_cat');
@@ -120,12 +120,12 @@ get_header(); ?>
 								?>
 								<div class="flex flex-col items-center group cursor-pointer">
 									<a href="<?php echo esc_url($category_link); ?>" class="block">
-										<div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-gray-200 group-hover:border-blue-500 transition-colors duration-300 mb-3">
+										<div class="w-32 h-32 md:w-40 md:h-40 rounded-lg overflow-hidden border-4 border-gray-200 group-hover:border-blue-500 transition-colors duration-300 mb-3">
 											<img src="<?php echo esc_url($category_image[0]); ?>"
 											     alt="<?php echo esc_attr($category->name); ?>"
 											     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
 										</div>
-										<h3 class="text-center font-medium text-gray-800 group-hover:text-blue-600 transition-colors duration-300">
+										<h3 class="!text-center !text-xl !text-white-eco !font-medium group-hover:text-blue-600 transition-colors duration-300">
 											<?php echo esc_html($category->name); ?>
 										</h3>
 									</a>
@@ -147,7 +147,7 @@ get_header(); ?>
 					?>
 				</div>
 			</section>
-			<section id="powerCycle">
+			<section id="powerCycle" class="bg-white-eco py-8">
 					<h2 class="text-2xl  font-bold mb-6 text-center"><?php _e('Power cycle
 					', 'ecolitio-theme'); ?></h2>
 
@@ -197,7 +197,7 @@ get_header(); ?>
 				</div>
 			</section>
 
-			<section id="preguntas-frecuentes" class="bg-white-eco py-12">
+			<section id="preguntas-frecuentes" class="bg-white-eco py-8">
 				<div class="container mx-auto px-4 py-8">
 					<h2 class="text-2xl font-bold mb-6 text-center"><?php _e('Preguntas Frecuentes', 'ecolitio-theme'); ?></h2>
 

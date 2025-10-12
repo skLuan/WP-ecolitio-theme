@@ -6,7 +6,13 @@
 
 @layer base{
     h2 {
-        @apply text-white-eco;
+        @apply text-white-eco !leading-normal;
+    }
+    h3 {
+        @apply !leading-none;
+    }
+    section {
+        @apply min-h-56;
     }
 }
 @layer components {
