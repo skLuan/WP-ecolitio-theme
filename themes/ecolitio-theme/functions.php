@@ -56,44 +56,50 @@ function ecolitio_theme_setup() {
 
 /**
  * Enqueue theme stylesheets
- * Ensures proper loading order: parent first, then child
+ * Ensures proper loading order and prevents duplication
  */
-add_action('wp_enqueue_scripts', 'ecolitio_enqueue_styles', 10);
+add_action('wp_enqueue_scripts', 'ecolitio_enqueue_styles', 5); // Load earlier to prevent conflicts
 function ecolitio_enqueue_styles() {
-    // Enqueue parent theme stylesheet first
-    wp_enqueue_style(
-        'parent-style',
-        get_template_directory_uri() . '/style.css',
-        array(),
-        wp_get_theme(get_template())->get('Version')
-    );
+    // Check if parent style is already enqueued to prevent duplication
+    if (!wp_style_is('storefront-style', 'enqueued') && !wp_style_is('parent-style', 'enqueued')) {
+        // Enqueue parent theme stylesheet first
+        wp_enqueue_style(
+            'parent-style',
+            get_template_directory_uri() . '/style.css',
+            array(),
+            wp_get_theme(get_template())->get('Version')
+        );
+    }
 
-    // Enqueue child theme stylesheet with parent as dependency
-    wp_enqueue_style(
-        'ecolitio-style',
-        get_stylesheet_uri(),
-        array('parent-style'),
-        wp_get_theme()->get('Version')
-    );
+    // Only enqueue child theme stylesheet if not already enqueued
+    if (!wp_style_is('ecolitio-style', 'enqueued')) {
+        wp_enqueue_style(
+            'ecolitio-style',
+            get_stylesheet_uri(),
+            array('parent-style'), // Ensure it loads after parent
+            wp_get_theme()->get('Version')
+        );
+    }
 }
 
 /**
  * Enqueue JavaScript assets with Vite integration
  * Handles both development (HMR) and production builds
  */
-add_action('wp_enqueue_scripts', 'ecolitio_enqueue_scripts', 10);
+add_action('wp_enqueue_scripts', 'ecolitio_enqueue_scripts', 15); // Load after styles to ensure proper dependency order
 function ecolitio_enqueue_scripts() {
-    // Vite integration for development and production
-    ecolitio_enqueue_vite_assets();
+    // Separate Vite JS and CSS enqueuing for better control
+    ecolitio_enqueue_vite_js();
+    ecolitio_enqueue_vite_css();
 
     // Products AJAX functionality
     ecolitio_enqueue_products_scripts();
 }
 
 /**
- * Handle Vite asset enqueuing for development and production
+ * Enqueue Vite JavaScript assets for development and production
  */
-function ecolitio_enqueue_vite_assets() {
+function ecolitio_enqueue_vite_js() {
     $manifest_path = get_stylesheet_directory() . '/dist/.vite/manifest.json';
 
     // Check if manifest exists (production build)
@@ -109,22 +115,9 @@ function ecolitio_enqueue_vite_assets() {
                 null,
                 true
             );
-
-            // Enqueue associated CSS files
-            if (isset($manifest['src/main.js']['css']) && is_array($manifest['src/main.js']['css'])) {
-                foreach ($manifest['src/main.js']['css'] as $index => $css_file) {
-                    wp_enqueue_style(
-                        'ecolitio-main-css-' . $index,
-                        get_stylesheet_directory_uri() . '/dist/' . $css_file,
-                        array('parent-style', 'ecolitio-style'),
-                        null
-                    );
-                }
-            }
         }
     } else {
         // Fallback for development or when manifest doesn't exist
-        // This could be enhanced to check for dev server availability
         wp_enqueue_script(
             'ecolitio-main-js-fallback',
             get_stylesheet_directory_uri() . '/src/main.js',
@@ -132,6 +125,83 @@ function ecolitio_enqueue_vite_assets() {
             '1.0.0',
             true
         );
+    }
+}
+
+/**
+ * Enqueue Vite CSS assets for development and production
+ * Ensures CSS loads after Elementor styles
+ */
+function ecolitio_enqueue_vite_css() {
+    $manifest_path = get_stylesheet_directory() . '/dist/.vite/manifest.json';
+
+    // Build dependency array - include Elementor if active
+    $css_dependencies = array('parent-style', 'ecolitio-style');
+    if (defined('ELEMENTOR_VERSION')) {
+        $css_dependencies[] = 'elementor-frontend';
+    }
+
+    // Check if manifest exists (production build)
+    if (file_exists($manifest_path) && is_readable($manifest_path)) {
+        $manifest = json_decode(file_get_contents($manifest_path), true);
+
+        if (isset($manifest['src/main.js']['css']) && is_array($manifest['src/main.js']['css'])) {
+            foreach ($manifest['src/main.js']['css'] as $index => $css_file) {
+                $handle = 'ecolitio-main-css-' . $index;
+
+                // Avoid duplicate enqueuing
+                if (!wp_style_is($handle, 'enqueued')) {
+                    wp_enqueue_style(
+                        $handle,
+                        get_stylesheet_directory_uri() . '/dist/' . $css_file,
+                        $css_dependencies,
+                        null
+                    );
+                }
+            }
+        }
+    }
+    // Note: No CSS fallback needed for development as Vite handles HMR
+}
+
+/**
+ * Ensure CSS loading priority and prevent duplication
+ * This runs at a high priority to override any conflicting enqueues
+ */
+add_action('wp_enqueue_scripts', 'ecolitio_ensure_css_priority', 1000);
+function ecolitio_ensure_css_priority() {
+    // Prevent duplicate Storefront styles
+    if (wp_style_is('storefront-style', 'enqueued')) {
+        wp_dequeue_style('storefront-style');
+    }
+
+    // Ensure our Vite CSS loads after everything else
+    $manifest_path = get_stylesheet_directory() . '/dist/.vite/manifest.json';
+
+    if (file_exists($manifest_path) && is_readable($manifest_path)) {
+        $manifest = json_decode(file_get_contents($manifest_path), true);
+
+        if (isset($manifest['src/main.js']['css']) && is_array($manifest['src/main.js']['css'])) {
+            // Get all registered styles to build comprehensive dependencies
+            $all_deps = array_keys(wp_styles()->registered);
+
+            foreach ($manifest['src/main.js']['css'] as $index => $css_file) {
+                $handle = 'ecolitio-main-css-' . $index;
+
+                // Dequeue if already enqueued to re-enqueue with proper dependencies
+                if (wp_style_is($handle, 'enqueued')) {
+                    wp_dequeue_style($handle);
+                }
+
+                // Enqueue with all current styles as dependencies to ensure it loads last
+                wp_enqueue_style(
+                    $handle,
+                    get_stylesheet_directory_uri() . '/dist/' . $css_file,
+                    $all_deps, // Load after ALL currently registered styles
+                    null
+                );
+            }
+        }
     }
 }
 

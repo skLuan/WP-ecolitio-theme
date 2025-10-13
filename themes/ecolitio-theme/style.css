@@ -225,14 +225,6 @@ Template: storefront
     word-wrap: break-word;
 }
 
-.notification.success {
-    background: #10b981;
-}
-
-.notification.error {
-    background: #ef4444;
-}
-
 /* Add to Cart Button Loading State */
 .add_to_cart_button.loading {
     position: relative;

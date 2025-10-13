@@ -1,7 +1,9 @@
-const postcssNesting = require('postcss-nesting');
-
-module.exports = {
-	plugins: [
-		postcssNesting(/* pluginOptions */)
-	]
+import postcssNesting from 'postcss-nesting'
+/** @type {import('postcss-load-config').Config} */
+const config = {
+  plugins: [
+    postcssNesting()
+  ]
 }
+
+export default config
