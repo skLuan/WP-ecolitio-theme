@@ -27,7 +27,7 @@ switch ( $template ) {
 		break;
 	case 'twentyeleven':
 		echo '</div>';
-		get_sidebar( 'shop' );
+		// Removed get_sidebar( 'shop' );
 		echo '</div>';
 		break;
 	case 'twentytwelve':
@@ -38,7 +38,7 @@ switch ( $template ) {
 		break;
 	case 'twentyfourteen':
 		echo '</div></div></div>';
-		get_sidebar( 'content' );
+		// Removed get_sidebar( 'content' );
 		break;
 	case 'twentyfifteen':
 		echo '</div></div>';

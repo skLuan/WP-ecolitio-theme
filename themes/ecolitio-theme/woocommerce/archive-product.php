@@ -87,11 +87,6 @@ if ( woocommerce_product_loop() ) {
  */
 do_action( 'woocommerce_after_main_content' );
 
-/**
- * Hook: woocommerce_sidebar.
- *
- * @hooked woocommerce_get_sidebar - 10
- */
-do_action( 'woocommerce_sidebar' );
+// Removed woocommerce_sidebar action
 
 get_footer( 'shop' );

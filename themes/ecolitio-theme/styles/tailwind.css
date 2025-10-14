@@ -7,10 +7,13 @@
 @theme {
     /* Custom Color Variables - Mapped from Elementor globals */
     --color-white-eco: var(--e-global-color-text, #F7F8F7);
-    --color-black-eco: var(--e-global-color-secondary, #40598B);
-    --color-blue-eco: var(--e-global-color-primary, #7f54b3);
+    --color-black-eco: var(--e-global-color-secondary, #0D0E12);
+    --color-blue-eco: var(--e-global-color-primary, #40598B);
+    --color-blue-eco-dark: #40598B;
+    --color-blue-eco-clarisimo: #94B8FF;
     --color-green-eco: var(--e-global-color-accent, #B6E925);
     --color-green-eco-dark: var(--e-global-color-a98d613, #82AF04);
+    --color-red-sabway: #D02024;
 }
 
 /* ==========================================================================
@@ -18,6 +21,9 @@
    ========================================================================== */
 
 @layer base {
+    body {
+        @apply !bg-black-eco !text-white-eco;
+    }
     /* Typography */
     h2 {
         @apply text-white-eco !leading-normal;
@@ -42,11 +48,15 @@
    ========================================================================== */
 
 @layer components {
+
+    #content {
+        @apply mt-36;
+    }
     /* ======================================================================
        Header Styles
        ====================================================================== */
     .site-header {
-        @apply fixed top-0 left-0 right-0 z-20;
+        @apply !fixed !top-0 !left-0 !right-0 !z-20 !pt-0;
     }
 
     .header-top {
@@ -58,7 +68,7 @@
     }
 
     .header-top-right {
-        @apply flex items-center gap-4 h-10;
+        @apply flex items-center gap-[15px] h-10;
     }
 
     .header-top-right > * {
@@ -72,7 +82,7 @@
     .language-selector,
     .account-link,
     .zona-sabway {
-        @apply text-green-eco no-underline px-3 py-1 rounded transition-colors duration-300;
+        @apply text-green-eco no-underline px-[10px] py-[5px] rounded transition-colors duration-300;
     }
 
     .language-selector:hover,
@@ -95,11 +105,11 @@
     }
 
     .site-branding {
-        @apply flex-shrink-0 mb-0;
+        @apply !flex-shrink-0 !mb-0;
     }
 
     .site-search {
-        @apply flex max-w-sm mx-auto;
+        @apply flex max-w-[400px] mx-auto !mb-0;
     }
 
     .site-navigation {
@@ -115,7 +125,7 @@
        ====================================================================== */
     @media (max-width: 768px) {
         .header-layout {
-            @apply flex-col gap-3;
+            @apply flex-col gap-[10px];
         }
 
         .site-search {
@@ -123,7 +133,7 @@
         }
 
         .header-top-right {
-            @apply flex-wrap gap-3;
+            @apply flex-wrap gap-[10px];
         }
     }
 
