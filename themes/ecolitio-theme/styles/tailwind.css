@@ -242,7 +242,6 @@
   #products-grid {
     @apply transition-transform duration-300 ease-out;
   }
-
   #products-grid.sliding-out {
     @apply -translate-x-full opacity-0;
   }
@@ -317,5 +316,9 @@
     li a {
       @apply !font-semibold !text-lg !text-black-eco;
     }
+  }
+
+  .card-product-title, .card-product-title a {
+    @apply !font-semibold !text-lg !mb-2 !text-white underline;
   }
 }
