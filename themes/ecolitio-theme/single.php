@@ -9,7 +9,7 @@ get_header();
 remove_action( 'storefront_sidebar' );
 ?>
 
-	<div id="primary" class="content-area">
+	<div id="primary" class="content-area !w-full">
 		<main id="main" class="site-main site-ecolitio" role="main">
 		<?php
 		while ( have_posts() ) :

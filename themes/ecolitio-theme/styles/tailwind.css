@@ -5,15 +5,15 @@
    ========================================================================== */
 
 @theme {
-    /* Custom Color Variables - Mapped from Elementor globals */
-    --color-white-eco: var(--e-global-color-text, #F7F8F7);
-    --color-black-eco: var(--e-global-color-secondary, #0D0E12);
-    --color-blue-eco: var(--e-global-color-primary, #40598B);
-    --color-blue-eco-dark: #40598B;
-    --color-blue-eco-clarisimo: #94B8FF;
-    --color-green-eco: var(--e-global-color-accent, #B6E925);
-    --color-green-eco-dark: var(--e-global-color-a98d613, #82AF04);
-    --color-red-sabway: #D02024;
+  /* Custom Color Variables - Mapped from Elementor globals */
+  --color-white-eco: var(--e-global-color-text, #f7f8f7);
+  --color-black-eco: var(--e-global-color-secondary, #0d0e12);
+  --color-blue-eco: var(--e-global-color-primary, #40598b);
+  --color-blue-eco-dark: #40598b;
+  --color-blue-eco-clarisimo: #94b8ff;
+  --color-green-eco: var(--e-global-color-accent, #b6e925);
+  --color-green-eco-dark: var(--e-global-color-a98d613, #82af04);
+  --color-red-sabway: #d02024;
 }
 
 /* ==========================================================================
@@ -21,26 +21,26 @@
    ========================================================================== */
 
 @layer base {
-    body {
-        @apply !bg-black-eco !text-white-eco;
-    }
-    /* Typography */
-    h2 {
-        @apply text-white-eco !leading-normal;
-    }
+  body {
+    @apply !bg-black-eco !text-white-eco;
+  }
+  /* Typography */
+  h2 {
+    @apply text-white-eco !leading-normal;
+  }
 
-    h3 {
-        @apply !leading-none;
-    }
+  h3 {
+    @apply !leading-none;
+  }
 
-    section {
-        @apply min-h-56;
-    }
+  section {
+    @apply min-h-56;
+  }
 
-    /* Layout */
-    .col-full {
-        @apply max-w-none m-0 p-0;
-    }
+  /* Layout */
+  .col-full {
+    @apply max-w-none m-0 p-0;
+  }
 }
 
 /* ==========================================================================
@@ -48,249 +48,274 @@
    ========================================================================== */
 
 @layer components {
-
-    #content {
-        @apply mt-36;
+    .site {
+        @apply !overflow-visible;
     }
-    /* ======================================================================
+  .content-area {
+    @apply !w-full !mr-0 !float-none;
+  }
+  .product {
+    @apply flex flex-wrap !overflow-visible; 
+
+    .ecolitio-item, .woocommerce-product-gallery {
+      @apply !float-none;
+    }
+    .ecolitio-item{
+        @apply md:!w-7/12 !relative;
+    }
+    .woocommerce-product-gallery {
+        @apply !mr-0 md:!w-5/12;
+
+    }
+
+    table td {
+        @apply !bg-black-eco;
+
+
+    }
+  }
+  #content {
+    @apply mt-36;
+  }
+  /* ======================================================================
        Header Styles
        ====================================================================== */
-    .site-header {
-        @apply !fixed !top-0 !left-0 !right-0 !z-20 !pt-0;
-    }
+  .site-header {
+    @apply !fixed !top-0 !left-0 !right-0 !z-20 !pt-0;
+  }
 
-    .header-top {
-        @apply bg-black-eco text-white-eco px-6 py-2;
-    }
+  .header-top {
+    @apply bg-black-eco text-white-eco px-6 py-2;
+  }
 
-    .header-top .col-full {
-        @apply flex justify-end;
-    }
+  .header-top .col-full {
+    @apply flex justify-end;
+  }
 
-    .header-top-right {
-        @apply flex items-center gap-[15px] h-10;
-    }
+  .header-top-right {
+    @apply flex items-center gap-[15px] h-10;
+  }
 
-    .header-top-right > * {
-        @apply w-fit;
-    }
+  .header-top-right > * {
+    @apply w-fit;
+  }
 
-    .storefront-primary-navigation .col-full {
-        @apply flex justify-end gap-4;
-    }
+  .storefront-primary-navigation .col-full {
+    @apply flex justify-end gap-4;
+  }
 
-    .language-selector,
-    .account-link,
-    .zona-sabway {
-        @apply text-green-eco no-underline px-[10px] py-[5px] rounded transition-colors duration-300;
-    }
+  .language-selector,
+  .account-link,
+  .zona-sabway {
+    @apply text-green-eco no-underline px-[10px] py-[5px] rounded transition-colors duration-300;
+  }
 
-    .language-selector:hover,
-    .account-link:hover,
-    .zona-sabway:hover {
-        @apply text-blue-eco;
-    }
+  .language-selector:hover,
+  .account-link:hover,
+  .zona-sabway:hover {
+    @apply text-blue-eco;
+  }
 
-    .header-bottom {
-        @apply bg-white-eco text-black-eco py-4;
-    }
+  .header-bottom {
+    @apply bg-white-eco text-black-eco py-4;
+  }
 
-    .header-top,
-    .header-bottom {
-        @apply px-6;
-    }
+  .header-top,
+  .header-bottom {
+    @apply px-6;
+  }
 
+  .header-layout {
+    @apply flex items-center justify-between gap-5;
+  }
+
+  .site-branding {
+    @apply !flex-shrink-0 !mb-0;
+  }
+
+  .site-search {
+    @apply flex max-w-[400px] mx-auto !mb-0;
+  }
+
+  .site-navigation {
+    @apply flex-shrink-0 p-0;
+  }
+
+  #woocommerce-product-search-field-0 {
+    @apply border border-green-eco-dark rounded-full bg-white-eco text-black-eco;
+  }
+
+  /* ======================================================================
+       Responsive Design
+       ====================================================================== */
+  @media (max-width: 768px) {
     .header-layout {
-        @apply flex items-center justify-between gap-5;
-    }
-
-    .site-branding {
-        @apply !flex-shrink-0 !mb-0;
+      @apply flex-col gap-[10px];
     }
 
     .site-search {
-        @apply flex max-w-[400px] mx-auto !mb-0;
+      @apply order-[-1] max-w-full;
     }
 
-    .site-navigation {
-        @apply flex-shrink-0 p-0;
+    .header-top-right {
+      @apply flex-wrap gap-[10px];
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header-top-right {
+      @apply justify-center;
     }
 
-    #woocommerce-product-search-field-0 {
-        @apply border border-green-eco-dark rounded-full bg-white-eco text-black-eco;
+    .header-layout {
+      @apply text-center;
     }
+  }
 
-    /* ======================================================================
-       Responsive Design
-       ====================================================================== */
-    @media (max-width: 768px) {
-        .header-layout {
-            @apply flex-col gap-[10px];
-        }
-
-        .site-search {
-            @apply order-[-1] max-w-full;
-        }
-
-        .header-top-right {
-            @apply flex-wrap gap-[10px];
-        }
-    }
-
-    @media (max-width: 480px) {
-        .header-top-right {
-            @apply justify-center;
-        }
-
-        .header-layout {
-            @apply text-center;
-        }
-    }
-
-    /* ======================================================================
+  /* ======================================================================
        Mobile Navigation Styles
        ====================================================================== */
-    .hamburger-button {
-        @apply flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-none cursor-pointer p-0;
-    }
+  .hamburger-button {
+    @apply flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-none cursor-pointer p-0;
+  }
 
-    .hamburger-line {
-        @apply w-full h-[3px] bg-gray-800 rounded-[2px] transition-all duration-300 ease-in origin-center;
-    }
+  .hamburger-line {
+    @apply w-full h-[3px] bg-gray-800 rounded-[2px] transition-all duration-300 ease-in origin-center;
+  }
 
-    .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(1) {
-        @apply rotate-[45deg] translate-x-[5px] translate-y-[5px];
-    }
+  .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(1) {
+    @apply rotate-[45deg] translate-x-[5px] translate-y-[5px];
+  }
 
-    .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(2) {
-        @apply opacity-0;
-    }
+  .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(2) {
+    @apply opacity-0;
+  }
 
-    .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(3) {
-        @apply -rotate-[45deg] translate-x-[7px] -translate-y-[6px];
-    }
+  .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(3) {
+    @apply -rotate-[45deg] translate-x-[7px] -translate-y-[6px];
+  }
 
-    .mobile-submenu {
-        @apply fixed top-0 left-0 w-[280px] h-screen bg-white shadow-lg translate-x-full transition-transform duration-300 ease-in;
-    }
+  .mobile-submenu {
+    @apply fixed top-0 left-0 w-[280px] h-screen bg-white shadow-lg translate-x-full transition-transform duration-300 ease-in;
+  }
 
-    .mobile-submenu[aria-hidden="false"] {
-        @apply !translate-x-0;
-    }
+  .mobile-submenu[aria-hidden="false"] {
+    @apply !translate-x-0;
+  }
 
-    .mobile-submenu .submenu-content {
-        @apply p-6 h-full overflow-y-auto;
-    }
+  .mobile-submenu .submenu-content {
+    @apply p-6 h-full overflow-y-auto;
+  }
 
-    .mobile-submenu .mobile-navigation ul {
-        @apply list-none p-0 m-0;
-    }
+  .mobile-submenu .mobile-navigation ul {
+    @apply list-none p-0 m-0;
+  }
 
-    .mobile-submenu .mobile-navigation li {
-        @apply mb-6 pb-4 border-b border-gray-200;
-    }
+  .mobile-submenu .mobile-navigation li {
+    @apply mb-6 pb-4 border-b border-gray-200;
+  }
 
-    .mobile-submenu .mobile-navigation li:last-child {
-        @apply border-b-0 mb-0;
-    }
+  .mobile-submenu .mobile-navigation li:last-child {
+    @apply border-b-0 mb-0;
+  }
 
-    .mobile-submenu .mobile-navigation a {
-        @apply text-gray-800 no-underline font-medium block py-3 transition-colors duration-300 text-lg;
-    }
+  .mobile-submenu .mobile-navigation a {
+    @apply text-gray-800 no-underline font-medium block py-3 transition-colors duration-300 text-lg;
+  }
 
-    .mobile-submenu .mobile-navigation a:hover {
-        @apply text-blue-600;
-    }
+  .mobile-submenu .mobile-navigation a:hover {
+    @apply text-blue-600;
+  }
 
-    /* Overlay for mobile menu */
-    .mobile-menu-overlay {
-        @apply fixed top-0 left-0 w-full h-full bg-black opacity-0 z-20 invisible transition-all duration-300 ease-in;
-    }
+  /* Overlay for mobile menu */
+  .mobile-menu-overlay {
+    @apply fixed top-0 left-0 w-full h-full bg-black opacity-0 z-20 invisible transition-all duration-300 ease-in;
+  }
 
-    .mobile-menu-overlay.active {
-        @apply opacity-50 visible;
-    }
+  .mobile-menu-overlay.active {
+    @apply opacity-50 visible;
+  }
 
-    /* ======================================================================
+  /* ======================================================================
        Products Grid Animations
        ====================================================================== */
-    #products-grid {
-        @apply transition-transform duration-300 ease-out;
-    }
+  #products-grid {
+    @apply transition-transform duration-300 ease-out;
+  }
 
-    #products-grid.sliding-out {
-        @apply -translate-x-full opacity-0;
-    }
+  #products-grid.sliding-out {
+    @apply -translate-x-full opacity-0;
+  }
 
-    #products-grid.sliding-in {
-        @apply translate-x-0 opacity-100;
-    }
+  #products-grid.sliding-in {
+    @apply translate-x-0 opacity-100;
+  }
 
-    #products-grid.loading {
-        @apply relative pointer-events-none;
-    }
+  #products-grid.loading {
+    @apply relative pointer-events-none;
+  }
 
-    #products-grid.loading::after {
-        @apply content-[''] absolute top-0 left-0 right-0 bottom-0 bg-white/80 flex items-center justify-center z-10;
-    }
+  #products-grid.loading::after {
+    @apply content-[''] absolute top-0 left-0 right-0 bottom-0 bg-white/80 flex items-center justify-center z-10;
+  }
 
-    #products-grid.loading::before {
-        @apply content-[''] absolute top-1/2 left-1/2 w-10 h-10 -mt-5 -ml-5 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin z-11;
-    }
+  #products-grid.loading::before {
+    @apply content-[''] absolute top-1/2 left-1/2 w-10 h-10 -mt-5 -ml-5 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin z-11;
+  }
 
-    /* ======================================================================
+  /* ======================================================================
        Pagination Styles
        ====================================================================== */
-    #products-pagination.loading {
-        @apply opacity-50 pointer-events-none;
-    }
+  #products-pagination.loading {
+    @apply opacity-50 pointer-events-none;
+  }
 
-    .pagination-link {
-        @apply transition-all duration-200 select-none;
-    }
+  .pagination-link {
+    @apply transition-all duration-200 select-none;
+  }
 
-    .pagination-link:hover {
-        @apply scale-105;
-    }
+  .pagination-link:hover {
+    @apply scale-105;
+  }
 
-    .pagination-link:disabled {
-        @apply opacity-50 cursor-not-allowed scale-100;
-    }
+  .pagination-link:disabled {
+    @apply opacity-50 cursor-not-allowed scale-100;
+  }
 
-    /* ======================================================================
+  /* ======================================================================
        Notification Styles
        ====================================================================== */
-    .notification {
-        @apply fixed top-5 right-5 px-5 py-3 rounded-lg text-white font-medium z-[9999] shadow-lg max-w-xs break-words;
-    }
+  .notification {
+    @apply fixed top-5 right-5 px-5 py-3 rounded-lg text-white font-medium z-[9999] shadow-lg max-w-xs break-words;
+  }
 
-    .notification.success {
-        @apply bg-green-500;
-    }
+  .notification.success {
+    @apply bg-green-500;
+  }
 
-    .notification.error {
-        @apply bg-red-500;
-    }
+  .notification.error {
+    @apply bg-red-500;
+  }
 
-    /* ======================================================================
+  /* ======================================================================
        Add to Cart Button Loading State
        ====================================================================== */
-    .add_to_cart_button.loading {
-        @apply relative text-transparent;
-    }
+  .add_to_cart_button.loading {
+    @apply relative text-transparent;
+  }
 
-    .add_to_cart_button.loading::after {
-        @apply content-[''] absolute top-1/2 left-1/2 w-4 h-4 -mt-2 -ml-2 border-2 border-white border-t-transparent rounded-full animate-spin;
-    }
+  .add_to_cart_button.loading::after {
+    @apply content-[''] absolute top-1/2 left-1/2 w-4 h-4 -mt-2 -ml-2 border-2 border-white border-t-transparent rounded-full animate-spin;
+  }
 
-    /* ======================================================================
+  /* ======================================================================
        Desktop Navigation
        ====================================================================== */
-    .header-bottom .nav-desktop #menu-menu {
-        @apply !m-0;
+  .header-bottom .nav-desktop #menu-menu {
+    @apply !m-0;
 
-        li a {
-            @apply !font-semibold !text-lg !text-black-eco;
-        }
+    li a {
+      @apply !font-semibold !text-lg !text-black-eco;
     }
+  }
 }
