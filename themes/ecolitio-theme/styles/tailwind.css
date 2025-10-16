@@ -30,16 +30,11 @@
   }
 
   h3 {
-    @apply !leading-none;
+    @apply !leading-none !text-white-eco;
   }
 
   section {
     @apply min-h-56;
-  }
-
-  /* Layout */
-  .col-full {
-    @apply max-w-none m-0 p-0;
   }
 }
 
@@ -48,34 +43,78 @@
    ========================================================================== */
 
 @layer components {
-    .site {
-        @apply !overflow-visible;
-    }
+
+ .storefront-breadcrumb {
+  @apply !mb-0 !pt-0 !pb-1;
+  .col-full {
+    @apply !p-0;
+  }
+ }
+  /* Layout */
+  .col-full {
+    @apply max-w-none m-0 p-0;
+  }
+  .site {
+    @apply !overflow-visible;
+  }
   .content-area {
     @apply !w-full !mr-0 !float-none;
   }
   .product {
-    @apply flex flex-wrap !overflow-visible; 
+    @apply flex flex-wrap !overflow-visible;
 
-    .ecolitio-item, .woocommerce-product-gallery {
+    .ecolitio-item,
+    .woocommerce-product-gallery {
       @apply !float-none;
     }
-    .ecolitio-item{
-        @apply md:!w-7/12 !relative;
+    .ecolitio-item {
+      @apply md:!w-7/12 !relative !pb-4 !px-4 !border border-blue-eco-dark !rounded-lg;
+      
+      form.cart {
+        @apply !mb-0 !py-1;
+
+        button {
+          @apply !rounded-full !bg-green-eco !text-black-eco !flex flex-row items-center gap-2 !py-1.5 !px-12;
+        }
+        .quantity input {
+          @apply !bg-black rounded-md !text-white-eco;
+        }
+      }
+
+      .woocommerce-product-details__short-description {
+        @apply !pt-2;
+      }
+
+      .product_meta {
+        @apply !flex flex-row gap-6 !justify-end;
+      }
+
     }
     .woocommerce-product-gallery {
-        @apply !mr-0 md:!w-5/12;
-
+      @apply !mr-0 md:!w-5/12;
     }
 
-    table td {
-        @apply !bg-black-eco;
-
-
-    }
+  }
+  table td {
+    @apply !bg-black-eco;
+  }
+  table th {
+    @apply !bg-[rgba(255,255,255,0.05)];
   }
   #content {
     @apply mt-36;
+  }
+  .woocommerce-product-gallery{
+    @apply !pl-6 !sticky top-36 h-fit;
+
+
+    .woocommerce-product-gallery__image{
+
+      .wp-post-image {
+        @apply !w-full; 
+      }
+    }
+
   }
   /* ======================================================================
        Header Styles
@@ -318,7 +357,8 @@
     }
   }
 
-  .card-product-title, .card-product-title a {
-    @apply !font-semibold !text-lg !mb-2 !text-white underline;
+  .card-product-title,
+  .card-product-title a {
+    @apply !font-semibold !text-lg !mb-1 !text-white underline;
   }
 }

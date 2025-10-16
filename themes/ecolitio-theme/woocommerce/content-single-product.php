@@ -35,18 +35,24 @@ if (post_password_required()) {
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_title', 5);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
-remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 10);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+
 
 add_action('ecolitio_single_product_summary', 'woocommerce_template_single_title', 15);
 add_action('ecolitio_single_product_summary', 'woocommerce_template_single_rating', 20);
-add_action('ecolitio_single_product_summary', 'woocommerce_template_single_price', 20);
-add_action('ecolitio_single_product_summary', 'woocommerce_template_single_add_to_cart', 20);
+add_action('ecolitio_single_product_prices', 'woocommerce_template_single_price', 20);
+add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to_cart', 20);
 ?>
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
-		<div class="eco-main-info-header !sticky !p-4">
+		<div class="eco-main-info-header !sticky !py-4 top-36 !bg-black-eco border-b !border-blue-eco-dark">
+			<?php woocommerce_breadcrumb(); ?>
+
 			<?php do_action('ecolitio_single_product_summary'); ?>
+			<div class="prices-container flex flex-row justify-between h-fit items-center">
+				<?php do_action('ecolitio_single_product_prices'); ?>
+			</div>
 		</div>
 		<?php
 		/**
@@ -71,6 +77,7 @@ add_action('ecolitio_single_product_summary', 'woocommerce_template_single_add_t
 	do_action('woocommerce_before_single_product_summary');
 	?>
 
+</div>
 	<?php
 	/**
 	 * Hook: woocommerce_after_single_product_summary.
@@ -81,6 +88,5 @@ add_action('ecolitio_single_product_summary', 'woocommerce_template_single_add_t
 	 */
 	do_action('woocommerce_after_single_product_summary');
 	?>
-</div>
 
 <?php do_action('woocommerce_after_single_product'); ?>
