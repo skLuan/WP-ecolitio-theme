@@ -72,7 +72,7 @@ get_header(); ?>
 							<?php
 							while ($grouped_products_query->have_posts()) :
 								$grouped_products_query->the_post();
-								echo ecolitio_generate_product_card_html();
+								echo get_template_part('templates/products-grid');;
 							endwhile;
 							wp_reset_postdata();
 							?>
