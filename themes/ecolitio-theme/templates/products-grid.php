@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 global $product;
 
 // Apply filters for customization
-$grid_classes = apply_filters('ecolitio_products_grid_classes', 'grid grid-cols-1 md:grid-cols-3 gap-6');
+$grid_classes = apply_filters('ecolitio_products_grid_classes', 'grid grid-cols-1 md:grid-cols-3 gap-6 md:max-w-11/12 mx-auto');
 $show_pagination = apply_filters('ecolitio_products_grid_show_pagination', $show_pagination ?? true);
 $current_page = apply_filters('ecolitio_products_grid_current_page', $current_page ?? 1);
 $total_pages = apply_filters('ecolitio_products_grid_total_pages', $total_pages ?? 1);

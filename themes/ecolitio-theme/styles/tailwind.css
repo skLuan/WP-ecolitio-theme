@@ -36,6 +36,9 @@
   section {
     @apply min-h-56;
   }
+  #main.site-main {
+    @apply !px-4 md:max-w-10/12 mx-auto;
+  }
 }
 
 /* ==========================================================================
@@ -117,7 +120,7 @@
     }
   }
   #content {
-    @apply mt-36;
+    @apply mt-20 md:mt-[145px];
   }
   .woocommerce-product-gallery {
     @apply !pl-6 !sticky top-36 h-fit;
@@ -132,7 +135,7 @@
        Header Styles
        ====================================================================== */
   .site-header {
-    @apply !fixed !top-0 !left-0 !right-0 !z-20 !pt-0;
+    @apply !fixed !top-0 !left-0 !right-0 !z-20 !py-0 !mb-0;
   }
 
   .header-top {
@@ -153,7 +156,7 @@
 
   .storefront-primary-navigation {
     @apply flex justify-end gap-4;
-    
+
     .primary-navigation {
       @apply !mr-0;
     }
@@ -185,7 +188,7 @@
   }
 
   .site-branding {
-    @apply !flex-shrink-0 !mb-0;
+    @apply !flex-shrink-0 !mb-0 !mr-auto !w-auto;
   }
 
   .site-search {
@@ -231,11 +234,7 @@
        Mobile Navigation Styles
        ====================================================================== */
   .hamburger-button {
-    @apply flex flex-col justify-around w-[30px] h-[30px] bg-transparent border-none cursor-pointer p-0;
-  }
-
-  .hamburger-line {
-    @apply w-full h-[3px] bg-gray-800 rounded-[2px] transition-all duration-300 ease-in origin-center;
+    @apply !flex !bg-transparent border-none cursor-pointer !p-0;
   }
 
   .hamburger-button[aria-expanded="true"] .hamburger-line:nth-child(1) {
@@ -251,19 +250,22 @@
   }
 
   .mobile-submenu {
-    @apply fixed top-0 left-0 w-[280px] h-screen bg-white shadow-lg translate-x-full transition-transform duration-300 ease-in;
+    @apply fixed top-0 flex left-0 w-[280px] h-screen bg-white shadow-lg translate-x-full transition-transform duration-300 ease-in;
+
+    .submenu-content {
+      @apply p-6 h-full overflow-y-auto flex justify-between;
+    }
+
+    .mobile-navigation {
+      @apply my-auto;
+      ul {
+        @apply !list-none !p-0 !m-0;
+      }
+    }
   }
 
   .mobile-submenu[aria-hidden="false"] {
     @apply !translate-x-0;
-  }
-
-  .mobile-submenu .submenu-content {
-    @apply p-6 h-full overflow-y-auto;
-  }
-
-  .mobile-submenu .mobile-navigation ul {
-    @apply list-none p-0 m-0;
   }
 
   .mobile-submenu .mobile-navigation li {
@@ -363,11 +365,11 @@
   }
 
   /* ======================================================================
-       Desktop Navigation
-       ====================================================================== */
-  .header-bottom .nav-desktop{
-    @apply ;
-  }     
+        Desktop Navigation
+        ====================================================================== */
+  .header-bottom .nav-desktop {
+    @apply flex justify-center;
+  }
   .header-bottom .nav-desktop #menu-menu {
     @apply !m-0 !flex gap-6;
     li {

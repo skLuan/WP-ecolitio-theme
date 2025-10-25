@@ -9,6 +9,8 @@
  * @var WC_Product $product Global product object
  */
 
+use function Symfony\Component\VarDumper\Dumper\esc;
+
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
@@ -33,7 +35,7 @@ $is_on_sale = apply_filters('ecolitio_product_card_on_sale', $product->is_on_sal
 // Action before product card
 do_action('ecolitio_before_product_card', $product);
 ?>
-<article class="group relative !bg-black border-blue-eco-dark border rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-w-sm mx-auto"
+<article class="group !h-fit relative !bg-black border-blue-eco-dark border rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-w-sm mx-auto"
     itemscope
     itemtype="https://schema.org/Product"
     role="article"
@@ -79,15 +81,28 @@ do_action('ecolitio_before_product_card', $product);
     // Action after product image
     do_action('ecolitio_after_product_image', $product);
     ?>
+    <?php
+    $button_classes = apply_filters('ecolitio_add_to_cart_button_classes', 'inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed', $product);
 
+    if ($product->is_type('simple')) {
+        $button_classes .= " !bg-green-eco !text-center !justify-end !mt-4";
+        $iconColor = "text-black";
+        $p4 = '';
+    } elseif ($product->is_type('variable')) {
+        $button_classes .= " !w-fit !py-1 !px-4 !bg-transparent";
+        $iconColor = "text-green-eco";
+        $p4 = 'px-4 pb-4';
+    }
+
+    ?>
     <!-- Product Information -->
-    <div class="p-4">
+    <div class="pt-4 <?= esc_attr($p4); ?>">
         <?php
         // Action before product title
         do_action('ecolitio_before_product_title', $product);
         ?>
 
-        <h3 id="product-title-<?= esc_attr($product_id); ?>" class="card-product-title" itemprop="name">
+        <h3 id="product-title-<?= esc_attr($product_id); ?>" class="card-product-title px-4" itemprop="name">
             <a href="<?= esc_url($product_link); ?>" class="hover:text-blue-600 transition-colors">
                 <?= esc_html($product_title); ?>
             </a>
@@ -106,7 +121,6 @@ do_action('ecolitio_before_product_card', $product);
         if (apply_filters('ecolitio_show_add_to_cart', $product->is_purchasable() && $product->is_in_stock(), $product)) :
             // Get plain text price for button (strip HTML tags)
             $plain_price = wp_strip_all_tags($product_price);
-            $button_classes = apply_filters('ecolitio_add_to_cart_button_classes', 'inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed', $product);
         ?>
             <div class="flex flex-row justify-end items-center mt-auto" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                 <?php if ($product->is_type('variable')) : ?>
@@ -122,40 +136,40 @@ do_action('ecolitio_before_product_card', $product);
                             $attribute_name = $first_attribute->get_name();
                             $attribute_label = wc_attribute_label($attribute_name);
                     ?>
-                        <div class="attribute-container flex flex-row flex-wrap gap-2">
-                            <?php
-                            $is_first = true;
-                            foreach ($attribute_options as $option) :
-                                $term = get_term($option);
-                                $option_name = $term ? $term->name : $option;
-                                $selected_class = $is_first ? ' selected' : '';
-                            ?>
-                                <div class="pill<?= esc_attr($selected_class); ?>" data-attribute="<?= esc_attr($attribute_name); ?>" data-value="<?= esc_attr($option); ?>">
-                                    <?= esc_html($option_name); ?>
-                                </div>
-                            <?php
-                                $is_first = false;
-                            endforeach;
-                            ?>
-                        </div>
+                            <div class="attribute-container flex flex-row flex-wrap gap-2">
+                                <?php
+                                $is_first = true;
+                                foreach ($attribute_options as $option) :
+                                    $term = get_term($option);
+                                    $option_name = $term ? $term->name : $option;
+                                    $selected_class = $is_first ? ' selected' : '';
+                                ?>
+                                    <div class="pill<?= esc_attr($selected_class); ?>" data-attribute="<?= esc_attr($attribute_name); ?>" data-value="<?= esc_attr($option); ?>">
+                                        <?= esc_html($option_name); ?>
+                                    </div>
+                                <?php
+                                    $is_first = false;
+                                endforeach;
+                                ?>
+                            </div>
                         <?php endif; ?>
                     <?php endif; ?>
                 <?php endif; ?>
                 <meta itemprop="price" content="<?= esc_attr($product->get_price()); ?>" />
                 <meta itemprop="priceCurrency" content="<?= esc_attr(get_woocommerce_currency()); ?>" />
                 <button type="button"
-                    class="<?= esc_attr($button_classes); ?> !w-fit !py-1 !px-4 !bg-transparent !flex flex-row"
+                    class="<?= esc_attr($button_classes); ?> !flex flex-row"
                     data-product_id="<?= esc_attr($product_id); ?>"
                     data-product_sku="<?= esc_attr($product->get_sku()); ?>"
                     data-quantity="1"
                     aria-label="<?= esc_attr(sprintf(__('Añadir %s al carrito', 'ecolitio-theme'), $product_title)); ?>">
                     <div class="" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                        <span class="text-green-eco text-xl font-bold" itemprop="price" content="<?= esc_attr($product->get_price()); ?>">
+                        <span class="<?= esc_attr($iconColor); ?> text-xl font-bold" itemprop="price" content="<?= esc_attr($product->get_price()); ?>">
                             <?= $product_price; ?>
                         </span>
                         <meta itemprop="priceCurrency" content="<?= esc_attr(get_woocommerce_currency()); ?>" />
                     </div>
-                    <iconify-icon class="text-green-eco" icon="mynaui:cart-plus-solid" width="32" height="32"></iconify-icon>
+                    <iconify-icon class="<?= esc_attr($iconColor); ?>" icon="mynaui:cart-plus-solid" width="32" height="32"></iconify-icon>
                     <span class="loading-text hidden" aria-hidden="true"><?= esc_html__('Añadiendo...', 'ecolitio-theme'); ?></span>
                 </button>
             </div>

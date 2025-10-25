@@ -10,7 +10,7 @@ remove_action( 'storefront_sidebar' );
 ?>
 
 	<div id="primary" class="content-area !w-full">
-		<main id="main" class="site-main site-ecolitio" role="main">
+		<main id="main" class="site-main site-ecolitio max-w-10/12" role="main">
 		<?php
 		while ( have_posts() ) :
 			the_post();

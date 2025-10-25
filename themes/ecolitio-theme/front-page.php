@@ -31,8 +31,8 @@ get_header(); ?>
 			?>
 
 			<section id="nuestros-productos">
-				<div class="container mx-auto px-4 py-8">
-					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Nuestros Productos', 'ecolitio-theme'); ?></h2>
+				<div class="container mx-auto px-4 py-8 max-w-10/12">
+					<h2 class="text-2xl !text-white-eco font-bold mb-6"><?php _e('Nuestros Productos', 'ecolitio-theme'); ?></h2>
 
 					<?php
 					// Render products grid with pagination using modular templates
@@ -46,8 +46,8 @@ get_header(); ?>
 			</section>
 
 			<section id="kits">
-				<div class="container mx-auto px-4 py-8">
-					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Kits', 'ecolitio-theme'); ?></h2>
+				<div class="container mx-auto px-4 py-8 max-w-10/12">
+					<h2 class="text-2xl !text-white-eco font-bold mb-6"><?php _e('Kits', 'ecolitio-theme'); ?></h2>
 
 					<?php
 					// Query for grouped products
@@ -91,8 +91,8 @@ get_header(); ?>
 				</div>
 			</section>
 			<section id="categorias">
-				<div class="container mx-auto py-8 !max-w-full">
-					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Categorías', 'ecolitio-theme'); ?></h2>
+				<div class="container mx-auto py-8 md:!max-w-10/12">
+					<h2 class="text-2xl !text-white-eco font-bold mb-6 !px-4 md:!px-0 max-w-10/12 !mx-auto md:!mx-0"><?php _e('Categorías', 'ecolitio-theme'); ?></h2>
 
 					<?php
 					// Query WooCommerce product categories
@@ -106,7 +106,7 @@ get_header(); ?>
 
 					if (!empty($product_categories) && !is_wp_error($product_categories)) :
 						?>
-						<div class="flex max-w-full overflow-x-scroll gap-6 px-4">
+						<div class="flex max-w-full overflow-x-scroll gap-6 px-8">
 							<?php
 							foreach ($product_categories as $category) :
 								$category_link = get_term_link($category, 'product_cat');

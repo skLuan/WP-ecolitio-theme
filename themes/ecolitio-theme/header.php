@@ -99,12 +99,11 @@ if (! defined('ABSPATH')) {
 						<!-- Mobile Navigation -->
 						<nav class="nav !flex lg:!hidden items-center" role="navigation" aria-label="Primary Navigation">
 							<button id="mobile-menu-toggle" class="hamburger-button" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle mobile menu">
-								<span class="hamburger-line"></span>
-								<span class="hamburger-line"></span>
-								<span class="hamburger-line"></span>
+								<iconify-icon class="text-green-eco-dark" icon="material-symbols:menu-open-rounded" width="42" height="42"></iconify-icon>
 							</button>
 							<!-- Slide-in Submenu -->
 							<div id="mobile-menu" class="mobile-submenu fixed z-30 inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out" aria-hidden="true">
+
 								<div class="submenu-content p-4">
 									<?php wp_nav_menu(array('theme_location' => 'primary', 'container_class' => 'mobile-navigation', 'menu_class' => 'space-y-4')); ?>
 								</div>
