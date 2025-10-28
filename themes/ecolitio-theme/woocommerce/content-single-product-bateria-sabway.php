@@ -46,14 +46,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
-		<div class="eco-main-info-header !sticky !py-4 top-36 !bg-black-eco border-b !border-blue-eco-dark">
-			<?php woocommerce_breadcrumb(); ?>
-
-			<?php do_action('ecolitio_single_product_summary'); ?>
-			<div class="prices-container flex flex-row justify-between h-fit items-center">
-				<?php do_action('ecolitio_single_product_prices'); ?>
-			</div>
-		</div>
+		<?php get_template_part('templates/info-header'); ?>
 		<div>
 		</div>
 		<?php
@@ -89,19 +82,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 
 		$getAttributes = $product->get_attributes();
 		$values = ['s', 'o', 'w'];
-		$attribute_definitions = [
-			'Voltios' => ['type' => 'radio', 'default_options' => ['s', 'o', 'w']],
-			'Amperios' => ['meta_key' => 'amperios', 'type' => 'radio', 'default_options' => ['s', 'o', 'w']],
-			'Ubicación de Bateria' => ['meta_key' => 'ubicacion_de_bateria', 'type' => 'radio', 'default_options' => ['interno', 'externo']],
-			'Modelo de Patinete Eléctrico' => ['meta_key' => 'modelo_de_patinete_electrico', 'type' => 'text', 'default_options' => ['']],
-			'Tipo de Conector' => ['meta_key' => 'tipo_de_conector', 'type' => 'radio', 'default_options' => ['s', 'o', 'w']],
-			'Ancho(cm)' => ['meta_key' => 'ancho_cm', 'type' => 'number', 'default_options' => ['']],
-			'Alto(cm)' => ['meta_key' => 'alto_cm', 'type' => 'number', 'default_options' => ['']],
-			'Largo(cm)' => ['meta_key' => 'largo_cm', 'type' => 'number', 'default_options' => ['']],
-		];
 
 
-		$distance = get_post_meta(get_the_ID(), 'sabway_default_distance', true) ?: 30;
+		$distance = 30;
 		?>
 
 		<article class="my-6">
@@ -123,8 +106,11 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 					</div>
 					<?php get_template_part('templates/progress-bar'); // -------- Progress bar 
 					?>
-					<div class="!flex !flex-row !justify-end !w-full">
-						<button type="button" id="sab-start-button" class="sab-button-next !w-fit !bg-green-eco !text-black-eco !rounded-full !px-14 !py-3">Crear bateria</button>
+					<div id="sab-form-controls" class="!flex !flex-row !justify-end !w-full">
+						<button type="button" id="sab-back-button" class="sab-button-next !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
+							<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
+							Atrás</button>
+						<button type="button" id="sab-start-button" class="sab-button-next !w-fit !bg-green-eco !border-green-eco !text-black-eco !rounded-full !px-14 !py-3">Crear bateria</button>
 					</div>
 				</div>
 
@@ -138,16 +124,19 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 					<?php get_template_part('templates/progress-bar'); // -------- Progress bar 
 					?>
 					<p>Cuantos kilometros extra quieres recorrer?</p>
-					<div>
-						<p><strong>Autonomia: </strong><span><?= esc_attr($distance) ?></span></p>
+					<div class="flex flex-col">
+						<p><strong>Autonomia: </strong><span><?= esc_attr($distance) ?></span>Km</p>
 						<input type="range" id="sab-distance-range" name="sab-distance-range" min="10" max="100" value="<?= intval($distance) ?>" step="1" class="w-full">
+						<span id="progress-minval" class="">Min value</span>
+						<span id="progress-maxval" class="ml-auto">Max value</span>
 					</div>
 					<div id="sab-form-energy-advanced">
-						<h5>Opciones Avanzadas</h5>
-						<p>Cambiar estas propiedades cambia directamente la Autonomía</p>
-						<p>Aprende a como funciona esta tabla leyendo <a href="#" class="!text-green-eco">nuestra guía</a></p>
-						<div class="voltage">
-							<h4 class="!text-white-eco !font-bold ">Voltaje:</h4>
+						<h4 class="!text-white-eco !font-bold !flex flex-row items-center gap-2 !mb-0">Opciones Avanzadas <iconify-icon icon="material-symbols:arrow-drop-down" class="!text-white-eco !cursor-pointer" width="24" height="24"></iconify-icon></h4>
+						<p>Cambiar estas propiedades cambia directamente la Autonomía <br>
+							Aprende a como funciona esta tabla leyendo <a href="#" class="!text-green-eco">nuestra guía</a>
+						</p>
+						<div class="mb-8 voltage">
+							<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['voltios']['name'], 'text-domain'); ?>:</h5>
 							<div class="label-container flex flex-row gap-4 justify-evenly">
 								<?php
 
@@ -160,8 +149,8 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								<?php endforeach; ?>
 							</div>
 						</div>
-						<div class="amperage">
-							<h4 class="!text-white-eco !font-bold ">Amperaje:</h4>
+						<div class="mb-8 amperage">
+							<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['amperios']['name'], 'text-domain'); ?>:</h5>
 							<div class="label-container flex flex-row gap-4 justify-evenly">
 								<?php
 								// $value = $getAttributes['amperios']['options'];
@@ -178,28 +167,65 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 
 
 
-
-
-
-
 				<div id="sab-step-2" class="step !flex !flex-col !gap-y-10">
 					<?php //----------------------------------------------------- 2. Dimensiones Físicas
 					$props = array('icon' => esc_attr($icons["step2"]['icon']), 'title' => 'Paso 2: Dimensiones Físicas');
 
 					get_template_part('templates/icon-title', null, $props);
+					get_template_part('templates/progress-bar'); // -------- Progress bar 
+
+					$ubication_values = isset($getAttributes['ubicacion-de-bateria']['options']) ? $getAttributes['ubicacion-de-bateria']['options'] : $values;
 					?>
+					<figure class="relative z-0">
+						<div class="w-2/3 lg:w-1/2 flex flex-row justify-evenly absolute right-0 top-1/4">
+							<?php foreach ($ubication_values as $option) : ?>
+								<label for="input-ubication-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco !font-bold !rounded-full">
+									<input type="radio" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+									<span class="!text-white-eco"><?= esc_attr($option); ?></span>
+								</label>
+							<?php endforeach; ?>
+						</div>
+						<picture>
+							<img src="<?= get_stylesheet_directory_uri(). '/assets/PatineteInterior.jpg' ?>" alt="">
+						</picture>
+					</figure>
+					<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
+						<label for="alto-bateria">
+							<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Alto(cm):</span>
+							<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: 10">
+						</label>
+						<label for="ancho-bateria">
+							<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Ancho(cm):</span>
+							<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: 25">
+						</label>
+						<label for="largo-bateria">
+							<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Largo(cm):</span>
+							<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: 40">
+						</label>
+					</div>
+					<label for="modelo-patinete">
+						<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Modelo de patinete:</span>
+						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: Ninebot KickScooter Serie E E20">
+					</label>
+
 				</div>
+
+
+
+
+
 				<div id="sab-step-3" class="step !flex !flex-col !gap-y-10">
 					<?php
 					$props = array('icon' => esc_attr($icons["step3"]['icon']), 'title' => 'Paso 3: Conectores');
 
 					get_template_part('templates/icon-title', null, $props);
+					get_template_part('templates/progress-bar'); // -------- Progress bar 
 					?>
 					<div class="tipo-de-conector">
 						<h4 class="!text-white-eco !font-bold">Tipo de Conector:</h4>
 						<div class="label-container flex flex-row gap-4 justify-evenly">
 							<?php
-							$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : ['s', 'o', 'w'];
+							$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
 							foreach ($connector_values as $option) : ?>
 								<label for="input-connector-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco !font-bold !rounded-full">
 									<input type="radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
@@ -221,7 +247,16 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 					$props = array('icon' => "material-symbols:check-circle", 'title' => 'Gracias! - pedido realizado con éxito!');
 
 					get_template_part('templates/icon-title', null, $props);
+
+					$attributes = ['Voltios', 'Amperios', 'Medidas', 'Conectores'];
 					?>
+					<ul>
+					<?php foreach ($getAttributes as $attr) :
+						$value = $attr['name'];
+						?>
+						<li><?php echo esc_html($value); ?></li>
+					<?php endforeach; ?>
+					</ul>
 				</div>
 			</form>
 

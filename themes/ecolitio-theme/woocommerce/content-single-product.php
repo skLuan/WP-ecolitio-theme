@@ -46,14 +46,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
-		<div class="eco-main-info-header !sticky !py-4 top-36 !bg-black-eco border-b !border-blue-eco-dark">
-			<?php woocommerce_breadcrumb(); ?>
-
-			<?php do_action('ecolitio_single_product_summary'); ?>
-			<div class="prices-container flex flex-row justify-between h-fit items-center">
-				<?php do_action('ecolitio_single_product_prices'); ?>
-			</div>
-		</div>
+		<?php get_template_part('templates/info-header'); ?>
 		<?php
 		/**
 		 * Hook: woocommerce_single_product_summary.
