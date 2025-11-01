@@ -13,19 +13,17 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// =============================================================================
-// INCLUDES
-// =============================================================================
-
-/**
- * Include custom post types and taxonomies
- */
 require_once get_stylesheet_directory() . '/inc/custom-post-taxonomies.php';
 
 /**
  * Include AJAX handlers
  */
 require_once get_stylesheet_directory() . '/inc/ajax.php';
+
+/**
+ * Include Taller Sabway user role functionality
+ */
+require_once get_stylesheet_directory() . '/inc/class-taller-sabway-role.php';
 
 // =============================================================================
 // DEPENDENCIES & AUTOLOADING
