@@ -1,0 +1,251 @@
+/* Taller Sabway Role Specific Styles */
+
+/* Dashboard styling */
+.taller-sabway-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.taller-sabway-dashboard h2 {
+    color: #d02024;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid #d02024;
+    padding-bottom: 0.5rem;
+}
+
+.taller-sabway-welcome {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border-left: 5px solid #d02024;
+}
+
+.taller-sabway-welcome h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.taller-sabway-welcome p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Statistics grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.stat-box {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.stat-box:hover {
+    border-color: #d02024;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(208, 32, 36, 0.2);
+}
+
+.stat-box h4 {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #d02024;
+    display: block;
+}
+
+/* Action buttons */
+.taller-sabway-actions {
+    margin: 2rem 0;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.taller-sabway-actions .button {
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+}
+
+.taller-sabway-actions .button-primary {
+    background: #d02024;
+    color: white;
+    border: 2px solid #d02024;
+}
+
+.taller-sabway-actions .button-primary:hover {
+    background: white;
+    color: #d02024;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(208, 32, 36, 0.3);
+}
+
+.taller-sabway-actions .button {
+    background: transparent;
+    color: #d02024;
+    border: 2px solid #d02024;
+}
+
+.taller-sabway-actions .button:hover {
+    background: #d02024;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(208, 32, 36, 0.3);
+}
+
+/* Notice styling */
+.taller-sabway-notice {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+}
+
+.taller-sabway-notice h3 {
+    margin-top: 0;
+    font-size: 1.3rem;
+}
+
+.taller-sabway-notice p {
+    margin-bottom: 0.5rem;
+}
+
+.taller-sabway-notice a:hover {
+    text-decoration: none;
+    color: #ffd700 !important;
+}
+
+/* Navigation menu styling */
+.woocommerce-MyAccount-navigation ul li a[href*="taller-sabway-dashboard"] {
+    color: #d02024 !important;
+    font-weight: 600;
+    position: relative;
+}
+
+.woocommerce-MyAccount-navigation ul li a[href*="taller-sabway-dashboard"]:before {
+    content: "🔧";
+    margin-right: 8px;
+}
+
+/* Product filtering notice */
+.sabway-filter-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.sabway-filter-notice:before {
+    content: "🔒";
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.sabway-filter-notice h4 {
+    margin: 0 0 10px 0;
+    color: #856404;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .taller-sabway-dashboard {
+        padding: 10px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .taller-sabway-actions {
+        flex-direction: column;
+    }
+    
+    .taller-sabway-actions .button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Loading states */
+.taller-sabway-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.taller-sabway-loading:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #d02024;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: taller-sabway-spin 1s linear infinite;
+}
+
+@keyframes taller-sabway-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success/Error messages */
+.taller-sabway-message {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    font-weight: 500;
+}
+
+.taller-sabway-message.success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.taller-sabway-message.error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.taller-sabway-message.info {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}

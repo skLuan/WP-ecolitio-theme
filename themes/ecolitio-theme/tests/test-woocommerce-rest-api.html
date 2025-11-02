@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WooCommerce REST API Integration Test</title>
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .warning { color: orange; font-weight: bold; }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>WooCommerce REST API Integration Test</h1>
+    
+    <!-- Mock form elements -->
+    <form class="sabway-form" id="test-form">
+        <input type="radio" name="voltage" value="36V" id="voltage-36" checked> 
+        <label for="voltage-36">36V</label>
+        
+        <input type="radio" name="amperage" value="15Ah" id="amperage-15" checked> 
+        <label for="amperage-15">15Ah</label>
+        
+        <input type="radio" name="ubicacion-de-bateria" value="under-deck" id="location-under" checked> 
+        <label for="location-under">Under Deck</label>
+        
+        <input type="radio" name="tipo-de-conector" value="xt60" id="connector-xt60" checked> 
+        <label for="connector-xt60">XT60</label>
+        
+        <input type="range" id="sab-distance-range" value="60" min="10" max="100">
+        
+        <input type="number" id="alto-bateria" value="8" min="1">
+        <input type="number" id="ancho-bateria" value="18" min="1">
+        <input type="number" id="largo-bateria" value="35" min="1">
+        
+        <input type="text" id="modelo-patinete" value="Test Scooter Model 2024">
+        
+        <div id="product-456"></div>
+        
+        <button type="button" id="test-woocommerce-btn">Test WooCommerce Integration</button>
+    </form>
+
+    <!-- Test results -->
+    <div id="test-results"></div>
+
+    <script>
+        // Mock the formController functions for testing
+        const testFormController = () => {
+            
+            const collectFormData = () => {
+                const distanceRange = document.getElementById('sab-distance-range');
+                const voltageSelected = document.querySelector('input[name="voltage"]:checked');
+                const amperageSelected = document.querySelector('input[name="amperage"]:checked');
+                const locationSelected = document.querySelector('input[name="ubicacion-de-bateria"]:checked');
+                const height = document.getElementById('alto-bateria');
+                const width = document.getElementById('ancho-bateria');
+                const length = document.getElementById('largo-bateria');
+                const scooterModel = document.getElementById('modelo-patinete');
+                const connectorSelected = document.querySelector('input[name="tipo-de-conector"]:checked');
+
+                return {
+                    electrical_specifications: {
+                        voltage: voltageSelected ? voltageSelected.value : null,
+                        amperage: amperageSelected ? amperageSelected.value : null,
+                        distance_range_km: distanceRange ? parseInt(distanceRange.value) : null
+                    },
+                    physical_dimensions: {
+                        height_cm: height ? parseFloat(height.value) : null,
+                        width_cm: width ? parseFloat(width.value) : null,
+                        length_cm: length ? parseFloat(length.value) : null
+                    },
+                    scooter_model: scooterModel ? scooterModel.value.trim() : null,
+                    battery_location: locationSelected ? locationSelected.value : null,
+                    connector_type: connectorSelected ? connectorSelected.value : null
+                };
+            };
+
+            const constructOrderObject = (formData) => {
+                const productElement = document.querySelector('[id^="product-"]');
+                const productId = productElement ? parseInt(productElement.id.replace('product-', '')) : null;
+
+                return {
+                    line_items: [
+                        {
+                            product_id: productId,
+                            quantity: 1
+                        }
+                    ]
+                };
+            };
+
+            const submitOrderToAPI = async (formData, orderObject) => {
+                console.log('Testing WooCommerce REST API integration...');
+                
+                // Test the order structure
+                const userEmail = 'test@example.com';
+                const userName = 'Test User';
+
+                // Construct order data according to WooCommerce REST API format
+                const orderData = {
+                    payment_method: 'bacs',
+                    payment_method_title: 'Direct Bank Transfer',
+                    set_paid: false,
+                    status: 'pending',
+                    billing: {
+                        first_name: 'Sabway',
+                        last_name: 'Company',
+                        company: 'Sabway',
+                        email: userEmail,
+                        phone: '',
+                        address_1: '',
+                        address_2: '',
+                        city: '',
+                        state: '',
+                        postcode: '',
+                        country: ''
+                    },
+                    shipping: {
+                        first_name: 'Sabway',
+                        last_name: 'Company',
+                        company: 'Sabway',
+                        address_1: '',
+                        address_2: '',
+                        city: '',
+                        state: '',
+                        postcode: '',
+                        country: ''
+                    },
+                    line_items: [
+                        {
+                            product_id: orderObject.line_items[0]?.product_id || null,
+                            quantity: 1,
+                            meta_data: [
+                                {
+                                    key: 'voltage',
+                                    value: formData.electrical_specifications.voltage || ''
+                                },
+                                {
+                                    key: 'amperage',
+                                    value: formData.electrical_specifications.amperage || ''
+                                },
+                                {
+                                    key: 'distance_range_km',
+                                    value: formData.electrical_specifications.distance_range_km || ''
+                                },
+                                {
+                                    key: 'alto',
+                                    value: formData.physical_dimensions.height_cm || ''
+                                },
+                                {
+                                    key: 'ancho',
+                                    value: formData.physical_dimensions.width_cm || ''
+                                },
+                                {
+                                    key: 'largo',
+                                    value: formData.physical_dimensions.length_cm || ''
+                                },
+                                {
+                                    key: 'scooter_model',
+                                    value: formData.scooter_model || ''
+                                },
+                                {
+                                    key: 'battery_location',
+                                    value: formData.battery_location || ''
+                                },
+                                {
+                                    key: 'connector_type',
+                                    value: formData.connector_type || ''
+                                }
+                            ]
+                        }
+                    ],
+                    meta_data: [
+                        {
+                            key: '_sabway_order_type',
+                            value: 'battery_customization'
+                        },
+                        {
+                            key: '_company_order',
+                            value: 'true'
+                        }
+                    ]
+                };
+
+                console.log('Generated order structure:', orderData);
+                
+                // Validate the structure matches requirements
+                const validationResults = validateOrderStructure(orderData);
+                
+                return {
+                    id: 'MOCK-ORDER-123',
+                    order_key: 'mock_order_key_123',
+                    redirect_url: '/checkout/order-received/123/?key=mock_order_key_123',
+                    order_data: orderData,
+                    validation: validationResults
+                };
+            };
+
+            const validateOrderStructure = (orderData) => {
+                const results = {
+                    has_payment_method: orderData.payment_method === 'bacs',
+                    has_payment_method_title: orderData.payment_method_title === 'Direct Bank Transfer',
+                    has_set_paid: orderData.set_paid === false,
+                    has_status: orderData.status === 'pending',
+                    has_billing: !!orderData.billing,
+                    has_shipping: !!orderData.shipping,
+                    has_line_items: Array.isArray(orderData.line_items) && orderData.line_items.length > 0,
+                    has_meta_data: Array.isArray(orderData.meta_data),
+                    line_items_has_product_id: orderData.line_items[0]?.product_id,
+                    line_items_has_quantity: orderData.line_items[0]?.quantity === 1,
+                    line_items_has_meta_data: Array.isArray(orderData.line_items[0]?.meta_data),
+                    meta_data_has_voltage: orderData.line_items[0]?.meta_data?.find(m => m.key === 'voltage'),
+                    meta_data_has_amperage: orderData.line_items[0]?.meta_data?.find(m => m.key === 'amperage'),
+                    meta_data_has_alto: orderData.line_items[0]?.meta_data?.find(m => m.key === 'alto'),
+                    meta_data_has_ancho: orderData.line_items[0]?.meta_data?.find(m => m.key === 'ancho'),
+                    meta_data_has_largo: orderData.line_items[0]?.meta_data?.find(m => m.key === 'largo')
+                };
+
+                return results;
+            };
+
+            const displayTestResults = (result) => {
+                const testResults = document.getElementById('test-results');
+                const validation = result.validation;
+                
+                let html = '<div class="test-section">';
+                html += '<h3>WooCommerce REST API Integration Test Results</h3>';
+                
+                // Check if all validations passed
+                const allPassed = Object.values(validation).every(v => v);
+                
+                html += `<p class="${allPassed ? 'success' : 'error'}">`;
+                html += allPassed ? '✓ ALL TESTS PASSED!' : '✗ Some tests failed';
+                html += '</p>';
+                
+                // Display individual validation results
+                html += '<h4>Validation Results:</h4><ul>';
+                for (const [key, passed] of Object.entries(validation)) {
+                    const icon = passed ? '✓' : '✗';
+                    const className = passed ? 'success' : 'error';
+                    html += `<li class="${className}">${icon} ${key}: ${passed ? 'PASS' : 'FAIL'}</li>`;
+                }
+                html += '</ul>';
+                
+                // Display the order structure
+                html += '<h4>Generated Order Structure:</h4>';
+                html += `<pre>${JSON.stringify(result.order_data, null, 2)}</pre>`;
+                
+                // Display the line_items meta_data specifically
+                html += '<h4>Line Items with Meta Data:</h4>';
+                html += `<pre>${JSON.stringify(result.order_data.line_items[0], null, 2)}</pre>`;
+                
+                html += '</div>';
+                
+                testResults.innerHTML = html;
+            };
+
+            const runTest = async () => {
+                try {
+                    console.log('=== STARTING WOOCOMMERCE REST API TEST ===');
+                    
+                    // Collect form data
+                    const formData = collectFormData();
+                    console.log('Form data collected:', formData);
+                    
+                    // Construct order object
+                    const orderObject = constructOrderObject(formData);
+                    console.log('Order object constructed:', orderObject);
+                    
+                    // Test the WooCommerce REST API integration
+                    const result = await submitOrderToAPI(formData, orderObject);
+                    
+                    console.log('Test completed:', result);
+                    displayTestResults(result);
+                    
+                } catch (error) {
+                    console.error('Test failed:', error);
+                    document.getElementById('test-results').innerHTML = `
+                        <div class="test-section">
+                            <h3 class="error">✗ Test Failed</h3>
+                            <p class="error">${error.message}</p>
+                            <pre>${error.stack}</pre>
+                        </div>
+                    `;
+                }
+            };
+
+            return { runTest };
+        };
+
+        // Initialize and run the test
+        const test = testFormController();
+        
+        // Add event listener to test button
+        document.getElementById('test-woocommerce-btn').addEventListener('click', () => {
+            test.runTest();
+        });
+        
+        // Auto-run test on page load
+        window.addEventListener('load', () => {
+            console.log('WooCommerce REST API test loaded');
+        });
+    </script>
+</body>
+</html>

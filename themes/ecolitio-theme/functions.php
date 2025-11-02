@@ -13,19 +13,17 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// =============================================================================
-// INCLUDES
-// =============================================================================
-
-/**
- * Include custom post types and taxonomies
- */
 require_once get_stylesheet_directory() . '/inc/custom-post-taxonomies.php';
 
 /**
  * Include AJAX handlers
  */
 require_once get_stylesheet_directory() . '/inc/ajax.php';
+
+/**
+ * Include Taller Sabway user role functionality
+ */
+require_once get_stylesheet_directory() . '/inc/class-taller-sabway-role.php';
 
 // =============================================================================
 // DEPENDENCIES & AUTOLOADING
@@ -105,7 +103,21 @@ function ecolitio_enqueue_scripts() {
     // Separate Vite JS and CSS enqueuing for better control
     ecolitio_enqueue_vite_js();
     ecolitio_enqueue_vite_css();
-
+    
+    // Generate and localize WooCommerce REST API nonce for taller_sabway role
+    if (ecolitio_is_woocommerce_active() && current_user_can('taller_sabway')) {
+        $wc_rest_nonce = wp_create_nonce('wp_rest');
+        wp_localize_script('ecolitio-main-js', 'ecolitioWcApi', array(
+            'restUrl' => rest_url('wc/v3/'),
+            'restNonce' => $wc_rest_nonce,
+            'userId' => get_current_user_id(),
+            'userCapabilities' => array(
+                'edit_shop_orders' => current_user_can('edit_shop_orders'),
+                'create_shop_orders' => current_user_can('create_shop_orders'),
+                'edit_shop_order_items' => current_user_can('edit_shop_order_items')
+            )
+        ));
+    }
 }
 
 /**

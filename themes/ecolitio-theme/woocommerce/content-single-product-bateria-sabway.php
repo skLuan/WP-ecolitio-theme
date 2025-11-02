@@ -90,6 +90,11 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 		<article class="my-6">
 			<span><?= print_r($getAttributes); ?></span>
 			<form action="submit" method="post" class="sabway-form !bg-black !rounded-lg !px-4 !py-6">
+				<?php
+				// Generate nonce for form submission
+				$sabway_form_nonce = wp_create_nonce('ecolitio_sabway_form_nonce');
+				?>
+				<input type="hidden" name="ecolitio_sabway_nonce" value="<?php echo esc_attr($sabway_form_nonce); ?>" data-sabway-nonce="<?php echo esc_attr($sabway_form_nonce); ?>">
 
 				<div id="sab-step-0" class="step !flex !flex-col !gap-y-10">
 					<div class="!flex !flex-row !gap-4"><iconify-icon icon="" class="!hidden"></iconify-icon>
@@ -105,13 +110,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 						<?php endforeach; ?>
 					</div>
 					<?php get_template_part('templates/progress-bar'); // -------- Progress bar 
+
+					get_template_part('templates/sab-batery-controls', null); // -------- Progress bar
 					?>
-					<div id="sab-form-controls" class="!flex !flex-row !justify-end !w-full">
-						<button type="button" id="sab-back-button" class="sab-button-next !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
-							<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
-							Atrás</button>
-						<button type="button" id="sab-start-button" class="sab-button-next !w-fit !bg-green-eco !border-green-eco !text-black-eco !rounded-full !px-14 !py-3">Crear bateria</button>
-					</div>
 				</div>
 
 
@@ -163,6 +164,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 							</div>
 						</div>
 					</div>
+					<?php
+					get_template_part('templates/sab-batery-controls', null); // -------- Progress bar
+					?>
 				</div>
 
 
@@ -184,9 +188,10 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 									<span class="!text-white-eco"><?= esc_attr($option); ?></span>
 								</label>
 							<?php endforeach; ?>
+
 						</div>
 						<picture>
-							<img src="<?= get_stylesheet_directory_uri(). '/assets/PatineteInterior.jpg' ?>" alt="">
+							<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
 						</picture>
 					</figure>
 					<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
@@ -207,7 +212,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 						<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Modelo de patinete:</span>
 						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: Ninebot KickScooter Serie E E20">
 					</label>
-
+					<?php
+					get_template_part('templates/sab-batery-controls', null); // -------- Progress bar
+					?>
 				</div>
 
 
@@ -234,28 +241,54 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 							<?php endforeach; ?>
 						</div>
 					</div>
+					<?php
+					get_template_part('templates/sab-batery-controls', null); // -------- Progress bar
+					?>
 				</div>
 				<div id="sab-step-4" class="step !flex !flex-col !gap-y-10">
-					<?php
-					$props = array('icon' => esc_attr($icons["step4"]['icon']), 'title' => 'Paso 4: Confirmación');
+					<?php $props = array('icon' => esc_attr($icons["step4"]['icon']), 'title' => 'Paso 4: Confirmación');
+					get_template_part('templates/icon-title', null, $props); ?>
 
+					<?php $props = array('icon' => "material-symbols:check-circle", 'title' => 'Gracias! - pedido realizado con éxito!');
 					get_template_part('templates/icon-title', null, $props);
+
 					?>
+					<ul>
+						<?php foreach ($getAttributes as $attr) :
+							$value = $attr['name'];
+						?>
+							<li id="final-check-<?=esc_html($value)?>" class="block">
+								<strong><?= esc_html($value); ?></strong>
+								<p>
+									<!-- this will be fullfiled with js as is reactive for the user input before send  -->
+								</p>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+					<div id="sab-form-controls" class="!flex !flex-row !justify-end !w-full">
+						<button type="button" id="sab-back-button" class="sab-button-next !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
+							<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
+							Atrás</button>
+						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-green-eco !border-green-eco !text-black-eco !rounded-full !px-14 !py-3">Finalizar Pedido</button>
+					</div>
 				</div>
 				<div id="sab-step-5" class="step !flex !flex-col !gap-y-10">
 					<?php
 					$props = array('icon' => "material-symbols:check-circle", 'title' => 'Gracias! - pedido realizado con éxito!');
 
 					get_template_part('templates/icon-title', null, $props);
-
-					$attributes = ['Voltios', 'Amperios', 'Medidas', 'Conectores'];
 					?>
 					<ul>
-					<?php foreach ($getAttributes as $attr) :
-						$value = $attr['name'];
+						<?php foreach ($getAttributes as $attr) :
+							$value = $attr['name'];
 						?>
-						<li><?php echo esc_html($value); ?></li>
-					<?php endforeach; ?>
+							<li id="final-check-<?=esc_html($value)?>" class="block">
+								<strong><?= esc_html($value); ?></strong>
+								<p>
+									<!-- this will be fullfiled with js as is reactive for the user input before send  -->
+								</p>
+							</li>
+						<?php endforeach; ?>
 					</ul>
 				</div>
 			</form>
