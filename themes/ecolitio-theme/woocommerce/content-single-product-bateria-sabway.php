@@ -90,6 +90,11 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 		<article class="my-6">
 			<span><?= print_r($getAttributes); ?></span>
 			<form action="submit" method="post" class="sabway-form !bg-black !rounded-lg !px-4 !py-6">
+				<?php
+				// Generate nonce for form submission
+				$sabway_form_nonce = wp_create_nonce('ecolitio_sabway_form_nonce');
+				?>
+				<input type="hidden" name="ecolitio_sabway_nonce" value="<?php echo esc_attr($sabway_form_nonce); ?>" data-sabway-nonce="<?php echo esc_attr($sabway_form_nonce); ?>">
 
 				<div id="sab-step-0" class="step !flex !flex-col !gap-y-10">
 					<div class="!flex !flex-row !gap-4"><iconify-icon icon="" class="!hidden"></iconify-icon>

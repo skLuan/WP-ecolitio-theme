@@ -236,37 +236,158 @@ export const formController = () => {
 
   /**
    * Submits order to WooCommerce REST API
+   * @param {Object} formData - Form data object
    * @param {Object} orderObject - Order object to submit
    * @returns {Promise} API response
    */
-  const submitOrderToAPI = async (orderObject) => {
+  const submitOrderToAPI = async (formData, orderObject) => {
     try {
-      // Get WooCommerce REST API endpoint and nonce
+      // Use WooCommerce REST API endpoint
       const apiUrl = `${window.location.origin}/wp-json/wc/v3/orders`;
       
-      // Get nonce from page (should be added by WordPress)
-      const nonce = document.querySelector('input[name="_wpnonce"]')?.value || 
-                   document.querySelector('[data-nonce]')?.dataset.nonce;
+      // Get current user info for authentication
+      const userEmail = document.querySelector('input[name="billing_email"]')?.value || 'sabway@company.com';
+      const userName = document.querySelector('input[name="billing_first_name"]')?.value || 'Sabway Company';
+
+      // Get REST API nonce from localized script (proper WooCommerce REST API nonce)
+      const wcRestNonce = window.ecolitioWcApi?.restNonce ||
+                         document.querySelector('input[name="wc-ajax-cart-update"]')?.value ||
+                         'ecolitio_wc_rest_nonce';
+
+      console.log('Using REST API nonce:', wcRestNonce);
+      console.log('ecolitioWcApi object:', window.ecolitioWcApi);
+
+      // Construct order data according to WooCommerce REST API format
+      const orderData = {
+        payment_method: 'bacs',
+        payment_method_title: 'Direct Bank Transfer',
+        set_paid: false,
+        status: 'pending',
+        billing: {
+          first_name: 'Sabway',
+          last_name: 'Company',
+          company: 'Sabway',
+          email: userEmail,
+          phone: '',
+          address_1: '',
+          address_2: '',
+          city: '',
+          state: '',
+          postcode: '',
+          country: ''
+        },
+        shipping: {
+          first_name: 'Sabway',
+          last_name: 'Company',
+          company: 'Sabway',
+          address_1: '',
+          address_2: '',
+          city: '',
+          state: '',
+          postcode: '',
+          country: ''
+        },
+        line_items: [
+          {
+            product_id: orderObject.line_items[0]?.product_id || null,
+            quantity: 1,
+            meta_data: [
+              {
+                key: 'voltage',
+                value: formData.electrical_specifications.voltage || ''
+              },
+              {
+                key: 'amperage',
+                value: formData.electrical_specifications.amperage || ''
+              },
+              {
+                key: 'distance_range_km',
+                value: formData.electrical_specifications.distance_range_km || ''
+              },
+              {
+                key: 'alto',
+                value: formData.physical_dimensions.height_cm || ''
+              },
+              {
+                key: 'ancho',
+                value: formData.physical_dimensions.width_cm || ''
+              },
+              {
+                key: 'largo',
+                value: formData.physical_dimensions.length_cm || ''
+              },
+              {
+                key: 'scooter_model',
+                value: formData.scooter_model || ''
+              },
+              {
+                key: 'battery_location',
+                value: formData.battery_location || ''
+              },
+              {
+                key: 'connector_type',
+                value: formData.connector_type || ''
+              }
+            ]
+          }
+        ],
+        meta_data: [
+          {
+            key: '_sabway_order_type',
+            value: 'battery_customization'
+          },
+          {
+            key: '_company_order',
+            value: 'true'
+          }
+        ]
+      };
+
+      // Prepare headers with proper REST API authentication
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-WP-Nonce': wcRestNonce // Use the proper REST API nonce
+      };
+
+      console.log('Sending request with headers:', headers);
+      console.log('Order data:', orderData);
 
       const response = await fetch(apiUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-WP-Nonce': nonce || ''
-        },
-        credentials: 'include', // Include cookies for authentication
-        body: JSON.stringify(orderObject)
+        headers: headers,
+        credentials: 'include', // Include cookies for session-based authentication
+        body: JSON.stringify(orderData)
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `API Error: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        
+        // Provide more specific error messages based on status code
+        if (response.status === 403) {
+          throw new Error(`Authentication Error (403): Cookie check failed. Nonce: ${wcRestNonce}. Please check if you're logged in and have proper permissions.`);
+        } else if (response.status === 401) {
+          throw new Error(`Authorization Error (401): Insufficient permissions. Check user role capabilities.`);
+        } else {
+          throw new Error(`WooCommerce API Error: ${response.status} - ${errorText}`);
+        }
       }
 
       const result = await response.json();
-      return result;
+      console.log('Order created successfully:', result);
+      
+      return {
+        id: result.id,
+        order_key: result.order_key,
+        redirect_url: result._links?.checkout?.href || `${window.location.origin}/checkout/order-received/${result.id}/?key=${result.order_key}`
+      };
     } catch (error) {
-      console.error('API Submission Error:', error);
+      console.error('WooCommerce API Submission Error:', error);
       throw error;
     }
   };
@@ -299,8 +420,8 @@ export const formController = () => {
       const orderObject = constructOrderObject(formData);
       console.log('Order Object Constructed:', orderObject);
 
-      // Submit to API
-      const result = await submitOrderToAPI(orderObject);
+      // Submit to API with both formData and orderObject
+      const result = await submitOrderToAPI(formData, orderObject);
       console.log('Order Created Successfully:', result);
 
       // Show success message

@@ -62,10 +62,11 @@ class Taller_Sabway_Role {
                 'read_private_products' => true,
                 'edit_products' => false,
                 'edit_product_terms' => false,
-                'edit_shop_orders' => false,
+                'edit_shop_orders' => true, // ✅ Allow creating/editing shop orders via REST API
                 'read_shop_orders' => true,
                 'view_woocommerce_reports' => false,
-                'edit_shop_order_items' => false,
+                'edit_shop_order_items' => true, // ✅ Allow editing order items
+                'create_shop_orders' => true, // ✅ Allow creating orders
                 
                 // Additional capabilities for restricted product access
                 'view_sabway_products' => true,
@@ -105,6 +106,7 @@ class Taller_Sabway_Role {
             wp_localize_script('taller-sabway-script', 'taller_sabway_ajax', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce' => wp_create_nonce('taller_sabway_nonce'),
+                'sabway_form_nonce' => wp_create_nonce('ecolitio_sabway_form_nonce'),
                 'is_taller_sabway' => current_user_can('taller_sabway')
             ));
         }
