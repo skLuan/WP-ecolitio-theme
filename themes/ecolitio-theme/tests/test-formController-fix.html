@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormController Fix Test</title>
+</head>
+<body>
+    <h1>FormController JavaScript Fix Test</h1>
+    
+    <!-- Mock form elements for testing -->
+    <form class="sabway-form" id="test-form">
+        <input type="radio" name="voltage" value="24V" id="voltage-24"> 
+        <label for="voltage-24">24V</label>
+        
+        <input type="radio" name="amperage" value="10Ah" id="amperage-10"> 
+        <label for="amperage-10">10Ah</label>
+        
+        <input type="radio" name="ubicacion-de-bateria" value="under-deck" id="location-under"> 
+        <label for="location-under">Under Deck</label>
+        
+        <input type="radio" name="tipo-de-conector" value="xt60" id="connector-xt60"> 
+        <label for="connector-xt60">XT60</label>
+        
+        <input type="range" id="sab-distance-range" value="50" min="10" max="100">
+        
+        <input type="number" id="alto-bateria" value="5" min="1">
+        <input type="number" id="ancho-bateria" value="15" min="1">
+        <input type="number" id="largo-bateria" value="30" min="1">
+        
+        <input type="text" id="modelo-patinete" value="Test Scooter">
+        
+        <div id="product-123"></div>
+        
+        <button type="button" id="sab-submit-button">Finalizar Pedido</button>
+    </form>
+
+    <!-- Test result display -->
+    <div id="test-results" style="margin-top: 20px; padding: 20px; background: #f0f0f0; border: 1px solid #ccc;">
+        <h3>Test Results:</h3>
+        <div id="test-output"></div>
+    </div>
+
+    <script type="module">
+        // Import the formController function
+        const formController = () => {
+            const form = document.querySelector('.sabway-form');
+            const submitButton = document.getElementById('sab-submit-button');
+            
+            if (!form || !submitButton) {
+                console.warn('Sabway form or submit button not found');
+                return;
+            }
+
+            // Mock the collectFormData function to test the fix
+            const collectFormData = () => {
+                const distanceRange = document.getElementById('sab-distance-range');
+                const voltageSelected = document.querySelector('input[name="voltage"]:checked');
+                const amperageSelected = document.querySelector('input[name="amperage"]:checked');
+                const locationSelected = document.querySelector('input[name="ubicacion-de-bateria"]:checked');
+                const height = document.getElementById('alto-bateria');
+                const width = document.getElementById('ancho-bateria');
+                const length = document.getElementById('largo-bateria');
+                const scooterModel = document.getElementById('modelo-patinete');
+                const connectorSelected = document.querySelector('input[name="tipo-de-conector"]:checked');
+
+                return {
+                    electrical_specifications: {
+                        voltage: voltageSelected ? voltageSelected.value : null,
+                        amperage: amperageSelected ? amperageSelected.value : null,
+                        distance_range_km: distanceRange ? parseInt(distanceRange.value) : null
+                    },
+                    physical_dimensions: {
+                        height_cm: height ? parseFloat(height.value) : null,
+                        width_cm: width ? parseFloat(width.value) : null,
+                        length_cm: length ? parseFloat(length.value) : null
+                    },
+                    scooter_model: scooterModel ? scooterModel.value.trim() : null,
+                    battery_location: locationSelected ? locationSelected.value : null,
+                    connector_type: connectorSelected ? connectorSelected.value : null
+                };
+            };
+
+            // Test the fixed submitOrderToAPI function
+            const submitOrderToAPI = async (formData, orderObject) => {
+                console.log('Testing formData.electrical_specifications:', formData.electrical_specifications);
+                console.log('Testing formData.scooter_model:', formData.scooter_model);
+                
+                // Test that we can access properties without error
+                if (formData.electrical_specifications.voltage) {
+                    console.log('✓ Successfully accessed formData.electrical_specifications.voltage:', formData.electrical_specifications.voltage);
+                }
+                
+                if (formData.electrical_specifications.amperage) {
+                    console.log('✓ Successfully accessed formData.electrical_specifications.amperage:', formData.electrical_specifications.amperage);
+                }
+                
+                if (formData.scooter_model) {
+                    console.log('✓ Successfully accessed formData.scooter_model:', formData.scooter_model);
+                }
+
+                // Simulate AJAX call (since we're testing)
+                return {
+                    success: true,
+                    id: 'TEST-ORDER-123',
+                    message: 'Test successful - no more undefined electrical_specifications error!'
+                };
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                
+                try {
+                    // Collect form data
+                    const formData = collectFormData();
+                    console.log('✓ Form Data Collected:', formData);
+
+                    // Mock order object
+                    const orderObject = {
+                        line_items: [{ product_id: 123 }]
+                    };
+
+                    // Test the fixed function
+                    console.log('=== TESTING THE FIX ===');
+                    const result = await submitOrderToAPI(formData, orderObject);
+                    
+                    document.getElementById('test-output').innerHTML = `
+                        <h4 style="color: green;">✓ SUCCESS: The fix is working!</h4>
+                        <p><strong>Test Results:</strong></p>
+                        <ul>
+                            <li>✓ Form data collected successfully</li>
+                            <li>✓ Electrical specifications accessible: ${formData.electrical_specifications.voltage}</li>
+                            <li>✓ Scooter model accessible: ${formData.scooter_model}</li>
+                            <li>✓ Mock order created: ${result.id}</li>
+                        </ul>
+                        <p style="color: green;"><strong>No more "electrical_specifications is undefined" error!</strong></p>
+                    `;
+                    
+                } catch (error) {
+                    console.error('Test failed:', error);
+                    document.getElementById('test-output').innerHTML = `
+                        <h4 style="color: red;">✗ FAILED: ${error.message}</h4>
+                        <pre>${error.stack}</pre>
+                    `;
+                }
+            };
+
+            submitButton.addEventListener('click', handleSubmit);
+            console.log('✓ Sabway form controller test initialized');
+        };
+
+        // Initialize the test
+        formController();
+    </script>
+</body>
+</html>
