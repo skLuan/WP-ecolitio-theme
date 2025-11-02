@@ -242,20 +242,20 @@ export const formController = () => {
    */
   const submitOrderToAPI = async (formData, orderObject) => {
     try {
-      // Use WooCommerce REST API endpoint
-      const apiUrl = `${window.location.origin}/wp-json/wc/v3/orders`;
+      // Use WooCommerce REST API endpoint with consumer key authentication
+      const wcApi = window.ecolitioWcApi;
+      const baseUrl = wcApi?.restUrl || `${window.location.origin}/wp-json/wc/v3/`;
+      const apiUrl = `${baseUrl}orders`;
       
       // Get current user info for authentication
       const userEmail = document.querySelector('input[name="billing_email"]')?.value || 'sabway@company.com';
       const userName = document.querySelector('input[name="billing_first_name"]')?.value || 'Sabway Company';
 
-      // Get REST API nonce from localized script (proper WooCommerce REST API nonce)
-      const wcRestNonce = window.ecolitioWcApi?.restNonce ||
-                         document.querySelector('input[name="wc-ajax-cart-update"]')?.value ||
-                         'ecolitio_wc_rest_nonce';
-
-      console.log('Using REST API nonce:', wcRestNonce);
-      console.log('ecolitioWcApi object:', window.ecolitioWcApi);
+      // Get authentication method
+      const authMethod = wcApi?.authenticationMethod || 'consumer_key';
+      
+      console.log('Using authentication method:', authMethod);
+      console.log('ecolitioWcApi object:', wcApi);
 
       // Construct order data according to WooCommerce REST API format
       const orderData = {
@@ -343,17 +343,33 @@ export const formController = () => {
         ]
       };
 
-      // Prepare headers with proper REST API authentication
+      // Prepare headers
+      let finalApiUrl = apiUrl;
       const headers = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-WP-Nonce': wcRestNonce // Use the proper REST API nonce
+        'Accept': 'application/json'
       };
 
-      console.log('Sending request with headers:', headers);
+      // Apply authentication based on method
+      if (authMethod === 'consumer_key' && wcApi?.consumerKey && wcApi?.consumerSecret) {
+        // Use Consumer Key authentication (recommended for WooCommerce REST API)
+        finalApiUrl = `${apiUrl}?consumer_key=${encodeURIComponent(wcApi.consumerKey)}&consumer_secret=${encodeURIComponent(wcApi.consumerSecret)}`;
+        console.log('Using Consumer Key authentication');
+      } else if (authMethod === 'consumer_key_dev') {
+        // Use development/test consumer keys
+        finalApiUrl = `${apiUrl}?consumer_key=ck_test_123456789&consumer_secret=cs_test_987654321`;
+        console.log('Using development Consumer Key authentication');
+      } else {
+        // Fallback to session-based authentication
+        headers['X-WP-Nonce'] = wcApi?.restNonce || 'ecolitio_wc_rest_nonce';
+        console.log('Using session-based authentication');
+      }
+
+      console.log('Final API URL:', finalApiUrl);
+      console.log('Request headers:', headers);
       console.log('Order data:', orderData);
 
-      const response = await fetch(apiUrl, {
+      const response = await fetch(finalApiUrl, {
         method: 'POST',
         headers: headers,
         credentials: 'include', // Include cookies for session-based authentication
@@ -365,14 +381,15 @@ export const formController = () => {
         console.error('API Error Response:', {
           status: response.status,
           statusText: response.statusText,
-          body: errorText
+          body: errorText,
+          api_url: finalApiUrl
         });
         
         // Provide more specific error messages based on status code
         if (response.status === 403) {
-          throw new Error(`Authentication Error (403): Cookie check failed. Nonce: ${wcRestNonce}. Please check if you're logged in and have proper permissions.`);
+          throw new Error(`Authentication Error (403): ${errorText}. Authentication method: ${authMethod}`);
         } else if (response.status === 401) {
-          throw new Error(`Authorization Error (401): Insufficient permissions. Check user role capabilities.`);
+          throw new Error(`Authorization Error (401): ${errorText}. Check consumer keys or user permissions.`);
         } else {
           throw new Error(`WooCommerce API Error: ${response.status} - ${errorText}`);
         }

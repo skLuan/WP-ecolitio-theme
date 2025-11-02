@@ -104,13 +104,20 @@ function ecolitio_enqueue_scripts() {
     ecolitio_enqueue_vite_js();
     ecolitio_enqueue_vite_css();
     
-    // Generate and localize WooCommerce REST API nonce for taller_sabway role
+    // Generate and localize WooCommerce REST API nonce and consumer keys for taller_sabway role
     if (ecolitio_is_woocommerce_active() && current_user_can('taller_sabway')) {
         $wc_rest_nonce = wp_create_nonce('wp_rest');
+        
+        // Generate or retrieve consumer keys for REST API authentication
+        $consumer_keys = generate_taller_sabway_consumer_keys();
+        
         wp_localize_script('ecolitio-main-js', 'ecolitioWcApi', array(
             'restUrl' => rest_url('wc/v3/'),
             'restNonce' => $wc_rest_nonce,
+            'consumerKey' => $consumer_keys['key'],
+            'consumerSecret' => $consumer_keys['secret'],
             'userId' => get_current_user_id(),
+            'authenticationMethod' => 'consumer_key',
             'userCapabilities' => array(
                 'edit_shop_orders' => current_user_can('edit_shop_orders'),
                 'create_shop_orders' => current_user_can('create_shop_orders'),
@@ -332,4 +339,55 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
             echo '<!-- Ecolitio Theme Development Mode Active -->';
         }
     }
+}
+
+// =============================================================================
+// WOOCOMMERCE REST API AUTHENTICATION HELPERS
+// =============================================================================
+
+/**
+ * Generate WooCommerce Consumer Keys for REST API authentication
+ * This provides an alternative to role-based permissions
+ */
+function generate_taller_sabway_consumer_keys() {
+    // In production, you would store these in a secure location
+    // For development/testing, we generate them dynamically
+    $consumer_key = 'ck_' . wp_generate_password(64, false);
+    $consumer_secret = 'cs_' . wp_generate_password(64, false);
+    
+    // You could store these in database or environment variables
+    // For now, we'll use environment variables or generate them
+    if (defined('TALLER_SABWAY_CONSUMER_KEY') && defined('TALLER_SABWAY_CONSUMER_SECRET')) {
+        return array(
+            'key' => TALLER_SABWAY_CONSUMER_KEY,
+            'secret' => TALLER_SABWAY_CONSUMER_SECRET
+        );
+    }
+    
+    return array(
+        'key' => $consumer_key,
+        'secret' => $consumer_secret
+    );
+}
+
+/**
+ * Get WooCommerce REST API authentication credentials
+ */
+function get_taller_sabway_wc_auth_credentials() {
+    $credentials = array();
+    
+    // Method 1: Check if we have environment variables set
+    if (defined('TALLER_SABWAY_CONSUMER_KEY') && defined('TALLER_SABWAY_CONSUMER_SECRET')) {
+        $credentials['key'] = TALLER_SABWAY_CONSUMER_KEY;
+        $credentials['secret'] = TALLER_SABWAY_CONSUMER_SECRET;
+        $credentials['method'] = 'consumer_key';
+    }
+    // Method 2: Use default developer credentials (for testing only)
+    else {
+        $credentials['key'] = 'ck_test_123456789';
+        $credentials['secret'] = 'cs_test_987654321';
+        $credentials['method'] = 'consumer_key_dev';
+    }
+    
+    return $credentials;
 }
