@@ -104,13 +104,20 @@ function ecolitio_enqueue_scripts() {
     ecolitio_enqueue_vite_js();
     ecolitio_enqueue_vite_css();
     
-    // Generate and localize WooCommerce REST API nonce for taller_sabway role
+    // Generate and localize WooCommerce REST API nonce and consumer keys for taller_sabway role
     if (ecolitio_is_woocommerce_active() && current_user_can('taller_sabway')) {
         $wc_rest_nonce = wp_create_nonce('wp_rest');
+        
+        // Generate or retrieve consumer keys for REST API authentication
+        $consumer_keys = generate_taller_sabway_consumer_keys();
+        
         wp_localize_script('ecolitio-main-js', 'ecolitioWcApi', array(
             'restUrl' => rest_url('wc/v3/'),
             'restNonce' => $wc_rest_nonce,
+            'consumerKey' => $consumer_keys['key'],
+            'consumerSecret' => $consumer_keys['secret'],
             'userId' => get_current_user_id(),
+            'authenticationMethod' => 'consumer_key',
             'userCapabilities' => array(
                 'edit_shop_orders' => current_user_can('edit_shop_orders'),
                 'create_shop_orders' => current_user_can('create_shop_orders'),
@@ -332,4 +339,157 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
             echo '<!-- Ecolitio Theme Development Mode Active -->';
         }
     }
+}
+
+// =============================================================================
+// WOOCOMMERCE REST API AUTHENTICATION HELPERS
+// =============================================================================
+
+/**
+ * Generate WooCommerce Consumer Keys for REST API authentication
+ * This provides an alternative to role-based permissions
+ */
+function generate_taller_sabway_consumer_keys() {
+    // In production, you would store these in a secure location
+    // For development/testing, we generate them dynamically
+    $consumer_key = 'ck_' . wp_generate_password(64, false);
+    $consumer_secret = 'cs_' . wp_generate_password(64, false);
+    
+    // You could store these in database or environment variables
+    // For now, we'll use environment variables or generate them
+    if (defined('TALLER_SABWAY_CONSUMER_KEY') && defined('TALLER_SABWAY_CONSUMER_SECRET')) {
+        return array(
+            'key' => TALLER_SABWAY_CONSUMER_KEY,
+            'secret' => TALLER_SABWAY_CONSUMER_SECRET
+        );
+    }
+    
+    return array(
+        'key' => $consumer_key,
+        'secret' => $consumer_secret
+    );
+}
+
+/**
+ * Get WooCommerce REST API authentication credentials
+ */
+function get_taller_sabway_wc_auth_credentials() {
+    $credentials = array();
+    
+    // Method 1: Check if we have environment variables set
+    if (defined('TALLER_SABWAY_CONSUMER_KEY') && defined('TALLER_SABWAY_CONSUMER_SECRET')) {
+        $credentials['key'] = TALLER_SABWAY_CONSUMER_KEY;
+        $credentials['secret'] = TALLER_SABWAY_CONSUMER_SECRET;
+        $credentials['method'] = 'consumer_key';
+    }
+    // Method 2: Use default developer credentials (for testing only)
+    else {
+        $credentials['key'] = 'ck_test_123456789';
+        $credentials['secret'] = 'cs_test_987654321';
+        $credentials['method'] = 'consumer_key_dev';
+    }
+    
+    return $credentials;
+/**
+ * Enhanced Sabway Form Security System
+ * Provides comprehensive security for form submissions
+ */
+class Sabway_Form_Security {
+    
+    /**
+     * Create and manage form nonces
+     */
+    public static function create_form_nonce() {
+        return wp_create_nonce('ecolitio_sabway_form_nonce');
+    }
+    
+    /**
+     * Verify form nonce
+     */
+    public static function verify_form_nonce($nonce) {
+        return wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce');
+    }
+    
+    /**
+     * Get enhanced AJAX configuration for frontend
+     */
+    public static function get_ajax_config() {
+        $ajax_config = array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => self::create_form_nonce(),
+            'sabway_form_nonce' => self::create_form_nonce(),
+            'user_logged_in' => is_user_logged_in(),
+            'current_user_id' => get_current_user_id(),
+            'user_capabilities' => array(
+                'taller_sabway' => current_user_can('taller_sabway'),
+                'edit_shop_orders' => current_user_can('edit_shop_orders'),
+                'create_shop_orders' => current_user_can('create_shop_orders'),
+            ),
+            'strings' => array(
+                'loading' => __('Cargando...', 'ecolitio-theme'),
+                'error' => __('Error al enviar el pedido', 'ecolitio-theme'),
+                'validation_failed' => __('Datos del formulario inválidos', 'ecolitio-theme'),
+                'permission_denied' => __('No tienes permisos para realizar esta acción', 'ecolitio-theme'),
+                'session_expired' => __('Sesión expirada. Por favor, recarga la página', 'ecolitio-theme'),
+                'nonce_failed' => __('Verificación de seguridad fallida', 'ecolitio-theme'),
+            ),
+            'validation_rules' => array(
+                'voltage' => array('required' => true),
+                'amperage' => array('required' => true),
+                'distance_range_km' => array('required' => true, 'min' => 10, 'max' => 100),
+                'height_cm' => array('required' => true, 'min' => 0.1),
+                'width_cm' => array('required' => true, 'min' => 0.1),
+                'length_cm' => array('required' => true, 'min' => 0.1),
+                'scooter_model' => array('required' => true),
+                'battery_location' => array('required' => true),
+                'connector_type' => array('required' => true),
+            )
+        );
+        
+        return apply_filters('sabway_ajax_config', $ajax_config);
+    }
+}
+
+/**
+ * Enhanced script enqueue with security measures for Sabway forms
+ */
+add_action('wp_enqueue_scripts', 'ecolitio_enqueue_sabway_form_security', 25);
+function ecolitio_enqueue_sabway_form_security() {
+    // Check if current page/post has the Sabway form
+    global $post;
+    if (!$post || strpos($post->post_content, 'sabway-form') === false) {
+        return;
+    }
+
+    // Get script handle from main enqueue function
+    $main_script_handle = 'ecolitio-main-js';
+    if (!wp_script_is($main_script_handle, 'enqueued')) {
+        return;
+    }
+
+    // Localize script with enhanced AJAX data and security
+    wp_localize_script($main_script_handle, 'taller_sabway_ajax', Sabway_Form_Security::get_ajax_config());
+    
+    // Also provide legacy support for old scripts
+    wp_localize_script($main_script_handle, 'ecolitio_ajax', Sabway_Form_Security::get_ajax_config());
+    
+    // Add additional security headers via JavaScript
+    wp_add_inline_script($main_script_handle, '
+        // Security headers for AJAX requests
+        (function() {
+            // Add security headers for WordPress AJAX
+            var originalFetch = window.fetch;
+            window.fetch = function(url, options) {
+                if (url.includes("admin-ajax.php") && url.includes("action=sabway_submit_form")) {
+                    options = options || {};
+                    options.credentials = "include";
+                    options.headers = options.headers || {};
+                    options.headers["X-Requested-With"] = "XMLHttpRequest";
+                    options.headers["X-WP-Nonce"] = window.taller_sabway_ajax?.nonce || "";
+                }
+                return originalFetch.call(this, url, options);
+            };
+        })();
+    ');
+}
 }
