@@ -2,7 +2,30 @@ import "../styles/tailwind.css";
 import "iconify-icon";
 import { startNavigation } from "./navigation";
 import { formController } from "./formController";
+import Swiper from "swiper";
+import { Navigation, Pagination } from 'swiper/modules';
+// import Swiper styles
+import "swiper/css";
+// import "swiper/css/navigation";
+// import "swiper/css/pagination";
 
+if (document.querySelector(".swiper-sab-batery")) {
+  
+  const swiper = new Swiper(".swiper-sab-batery", {
+    slidesPerView: 1,
+    spaceBetween: 8,
+    autoHeight: true,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+      addIcons: false,
+    },
+    modules: [Navigation, Pagination],
+  });
+
+  
+  console.log(swiper);
+}
 
 const baseUrl = "wp-content/themes/ecolitio-theme/";
 document.addEventListener("DOMContentLoaded", function () {
@@ -31,14 +54,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
-
-    
-
-if(this.documentURI.includes('bateria-sabway')) {
-  console.log('si es');
-  formController();
-}
-
-
+  if (this.documentURI.includes("bateria-sabway")) {
+    console.log("si es");
+    formController();
+  }
 });
