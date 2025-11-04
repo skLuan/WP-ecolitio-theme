@@ -118,9 +118,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								</div>
 								<?php get_template_part('templates/progress-bar'); // -------- Progress bar
 								?>
-							</div>
 							<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
 							?>
+							</div>
 						</div>
 						<div class="swiper-slide">
 							<div id="sab-step-1" class="step !flex !flex-col !gap-y-10">
