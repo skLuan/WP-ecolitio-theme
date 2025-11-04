@@ -180,6 +180,15 @@ const orderConstructor = {
     // Get current user info (if logged in)
     const userEmail = document.querySelector('input[name="billing_email"]')?.value || 'sabway@company.com';
     const userName = document.querySelector('input[name="billing_first_name"]')?.value || 'Sabway Company';
+    const userLastName = document.querySelector('input[name="billing_last_name"]')?.value || 'Company';
+    const userCompany = document.querySelector('input[name="billing_company"]')?.value || 'Sabway';
+    const userPhone = document.querySelector('input[name="billing_phone"]')?.value || '';
+    const userAddress1 = document.querySelector('input[name="billing_address_1"]')?.value || '';
+    const userAddress2 = document.querySelector('input[name="billing_address_2"]')?.value || '';
+    const userCity = document.querySelector('input[name="billing_city"]')?.value || '';
+    const userState = document.querySelector('input[name="billing_state"]')?.value || '';
+    const userPostcode = document.querySelector('input[name="billing_postcode"]')?.value || '';
+    const userCountry = document.querySelector('input[name="billing_country"]')?.value || '';
 
     // Construct order meta data with all specifications
     const orderMeta = {
@@ -192,6 +201,22 @@ const orderConstructor = {
       company_order: true
     };
 
+    // Construct order note with form resume for internal staff
+    const orderNote = `SABWAY BATTERY CUSTOMIZATION ORDER RESUME\n\n` +
+      `ELECTRICAL SPECIFICATIONS:\n` +
+      `- Voltage: ${formData.electrical_specifications.voltage}\n` +
+      `- Amperage: ${formData.electrical_specifications.amperage}\n` +
+      `- Distance Range: ${formData.electrical_specifications.distance_range_km}km\n\n` +
+      `PHYSICAL DIMENSIONS:\n` +
+      `- Height: ${formData.physical_dimensions.height_cm}cm\n` +
+      `- Width: ${formData.physical_dimensions.width_cm}cm\n` +
+      `- Length: ${formData.physical_dimensions.length_cm}cm\n\n` +
+      `SCOOTER SPECIFICATIONS:\n` +
+      `- Model: ${formData.scooter_model}\n` +
+      `- Battery Location: ${formData.battery_location}\n` +
+      `- Connector Type: ${formData.connector_type}\n\n` +
+      `ORDER SOURCE: Sabway Space (sabway-space)`;
+
     // Construct the order object
     const orderObject = {
       payment_method: 'bacs', // Bank transfer (BACS) as default
@@ -199,6 +224,7 @@ const orderConstructor = {
       set_paid: false, // Sabway will handle payment consolidation
       status: 'pending', // Order starts as pending
       customer_note: `Sabway Battery Customization Order\n\nElectrical Specifications:\n- Voltage: ${formData.electrical_specifications.voltage}\n- Amperage: ${formData.electrical_specifications.amperage}\n- Distance Range: ${formData.electrical_specifications.distance_range_km}km\n\nPhysical Dimensions:\n- Height: ${formData.physical_dimensions.height_cm}cm\n- Width: ${formData.physical_dimensions.width_cm}cm\n- Length: ${formData.physical_dimensions.length_cm}cm\n\nScooter Model: ${formData.scooter_model}\nBattery Location: ${formData.battery_location}\nConnector Type: ${formData.connector_type}`,
+      order_note: orderNote,
       line_items: [
         {
           product_id: productId,
@@ -219,31 +245,35 @@ const orderConstructor = {
         {
           key: '_company_order',
           value: 'true'
+        },
+        {
+          key: '_wc_order_origin',
+          value: 'sabway-space'
         }
       ],
       billing: {
-        first_name: 'Sabway',
-        last_name: 'Company',
-        company: 'Sabway',
+        first_name: userName,
+        last_name: userLastName,
+        company: userCompany,
         email: userEmail,
-        phone: '',
-        address_1: '',
-        address_2: '',
-        city: '',
-        state: '',
-        postcode: '',
-        country: ''
+        phone: userPhone,
+        address_1: userAddress1,
+        address_2: userAddress2,
+        city: userCity,
+        state: userState,
+        postcode: userPostcode,
+        country: userCountry
       },
       shipping: {
-        first_name: 'Sabway',
-        last_name: 'Company',
-        company: 'Sabway',
-        address_1: '',
-        address_2: '',
-        city: '',
-        state: '',
-        postcode: '',
-        country: ''
+        first_name: userName,
+        last_name: userLastName,
+        company: userCompany,
+        address_1: userAddress1,
+        address_2: userAddress2,
+        city: userCity,
+        state: userState,
+        postcode: userPostcode,
+        country: userCountry
       }
     };
 
