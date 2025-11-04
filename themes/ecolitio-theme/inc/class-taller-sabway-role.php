@@ -277,7 +277,15 @@ class Taller_Sabway_Role
         ));
 
         foreach ($taller_sabway_users as $user) {
-            $user_id = $user->ID;
+            // FIXED: $user is already a user ID (string/int), not an object
+            // since get_users() was called with 'fields' => 'ID'
+            $user_id = is_object($user) ? $user->ID : intval($user);
+            
+            // Prevent any output before headers are sent
+            if (headers_sent()) {
+                error_log("Taller Sabway: Cannot modify headers, output already started at line " . __LINE__);
+                return;
+            }
 
             // Check if user already has consumer keys
             $existing_keys = get_user_meta($user_id, 'woocommerce_api_consumer_key', true);
