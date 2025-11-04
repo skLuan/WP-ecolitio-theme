@@ -1,17 +1,13 @@
-export const formController = () => {
-  const form = document.querySelector('.sabway-form');
-  const submitButton = document.getElementById('sab-submit-button');
-  
-  if (!form || !submitButton) {
-    console.warn('Sabway form or submit button not found');
-    return;
-  }
-
+/**
+ * Form Validation Module
+ * Handles all form validation logic with comprehensive error checking
+ */
+const formValidator = {
   /**
    * Validates all form fields
    * @returns {Object} Validation result with isValid flag and errors array
    */
-  const validateForm = () => {
+  validate() {
     const errors = [];
     
     // Validate distance range
@@ -71,13 +67,19 @@ export const formController = () => {
       isValid: errors.length === 0,
       errors
     };
-  };
+  }
+};
 
+/**
+ * Data Collection Module
+ * Handles collecting form data with proper sanitization
+ */
+const dataCollector = {
   /**
    * Collects all form field values
    * @returns {Object} Form data object
    */
-  const collectFormData = () => {
+  collect() {
     const distanceRange = document.getElementById('sab-distance-range');
     const voltageSelected = document.querySelector('input[name="voltage"]:checked');
     const amperageSelected = document.querySelector('input[name="amperage"]:checked');
@@ -103,14 +105,21 @@ export const formController = () => {
       battery_location: locationSelected ? locationSelected.value : null,
       connector_type: connectorSelected ? connectorSelected.value : null
     };
-  };
+  }
+};
 
+/**
+ * UI Management Module
+ * Handles all UI interactions and feedback
+ */
+const uiManager = {
   /**
    * Shows user feedback message
    * @param {string} message - Message to display
    * @param {string} type - Message type: 'success', 'error', 'info'
+   * @param {HTMLElement} formElement - Form element to attach feedback to
    */
-  const showFeedback = (message, type = 'info') => {
+  showFeedback(message, type = 'info', formElement) {
     // Remove existing feedback if present
     const existingFeedback = document.querySelector('.sabway-form-feedback');
     if (existingFeedback) {
@@ -125,7 +134,7 @@ export const formController = () => {
     }`;
     feedbackDiv.textContent = message;
 
-    form.insertBefore(feedbackDiv, form.firstChild);
+    formElement.insertBefore(feedbackDiv, formElement.firstChild);
 
     // Auto-remove success messages after 5 seconds
     if (type === 'success') {
@@ -133,13 +142,14 @@ export const formController = () => {
         feedbackDiv.remove();
       }, 5000);
     }
-  };
+  },
 
   /**
    * Sets loading state on submit button
+   * @param {HTMLElement} submitButton - Submit button element
    * @param {boolean} isLoading - Loading state
    */
-  const setLoadingState = (isLoading) => {
+  setLoadingState(submitButton, isLoading) {
     if (isLoading) {
       submitButton.disabled = true;
       submitButton.classList.add('opacity-50', 'cursor-not-allowed');
@@ -149,14 +159,20 @@ export const formController = () => {
       submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
       submitButton.innerHTML = 'Finalizar Pedido';
     }
-  };
+  }
+};
 
+/**
+ * Order Construction Module
+ * Handles creating order objects for submission
+ */
+const orderConstructor = {
   /**
    * Constructs comprehensive order object for WooCommerce
    * @param {Object} formData - Collected form data
-   * @returns {Object} Order object for WooCommerce REST API
+   * @returns {Object} Order object for WooCommerce
    */
-  const constructOrderObject = (formData) => {
+  construct(formData) {
     // Get product ID from the page
     const productElement = document.querySelector('[id^="product-"]');
     const productId = productElement ? parseInt(productElement.id.replace('product-', '')) : null;
@@ -232,250 +248,132 @@ export const formController = () => {
     };
 
     return orderObject;
-  };
+  }
+};
 
+/**
+ * AJAX Submission Module
+ * Handles order submission to WordPress AJAX endpoint
+ */
+const ajaxSubmitter = {
   /**
-   * Submits order to WooCommerce REST API
+   * Submits order to WordPress AJAX endpoint with enhanced security
    * @param {Object} formData - Form data object
    * @param {Object} orderObject - Order object to submit
    * @returns {Promise} API response
    */
-  const submitOrderToAPI = async (formData, orderObject) => {
+  async submit(formData, orderObject) {
     try {
-      // Use WooCommerce REST API endpoint with consumer key authentication
-      const wcApi = window.ecolitioWcApi;
-      const baseUrl = wcApi?.restUrl || `${window.location.origin}/wp-json/wc/v3/`;
-      const apiUrl = `${baseUrl}orders`;
+      // Get AJAX configuration from localized script
+      const ajaxConfig = window.taller_sabway_ajax || window.ecolitio_ajax || {};
+      const ajaxUrl = ajaxConfig.ajax_url || `${window.location.origin}/wp-admin/admin-ajax.php`;
+      const nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || '';
       
-      // Get current user info for authentication
-      const userEmail = document.querySelector('input[name="billing_email"]')?.value || 'sabway@company.com';
-      const userName = document.querySelector('input[name="billing_first_name"]')?.value || 'Sabway Company';
+      console.log('Using WordPress AJAX submission');
+      console.log('AJAX URL:', ajaxUrl);
+      console.log('Nonce:', nonce ? 'Present' : 'Missing');
+      console.log('AJAX Config:', ajaxConfig);
 
-      // Get authentication method
-      const authMethod = wcApi?.authenticationMethod || 'consumer_key';
+      // Get product ID from order object
+      const productId = orderObject.line_items[0]?.product_id || null;
+
+      // Prepare FormData for WordPress AJAX submission
+      const formDataSubmit = new FormData();
+      formDataSubmit.append('action', 'sabway_submit_form');
+      formDataSubmit.append('nonce', nonce);
       
-      console.log('Using authentication method:', authMethod);
-      console.log('ecolitioWcApi object:', wcApi);
+      // Add form fields according to AJAX handler expectations
+      formDataSubmit.append('voltage', formData.electrical_specifications.voltage || '');
+      formDataSubmit.append('amperage', formData.electrical_specifications.amperage || '');
+      formDataSubmit.append('distance_range_km', formData.electrical_specifications.distance_range_km || 0);
+      formDataSubmit.append('height_cm', formData.physical_dimensions.height_cm || 0);
+      formDataSubmit.append('width_cm', formData.physical_dimensions.width_cm || 0);
+      formDataSubmit.append('length_cm', formData.physical_dimensions.length_cm || 0);
+      formDataSubmit.append('scooter_model', formData.scooter_model || '');
+      formDataSubmit.append('battery_location', formData.battery_location || '');
+      formDataSubmit.append('connector_type', formData.connector_type || '');
+      formDataSubmit.append('product_id', productId || 0);
 
-      // Construct order data according to WooCommerce REST API format
-      const orderData = {
-        payment_method: 'bacs',
-        payment_method_title: 'Direct Bank Transfer',
-        set_paid: false,
-        status: 'pending',
-        billing: {
-          first_name: 'Sabway',
-          last_name: 'Company',
-          company: 'Sabway',
-          email: userEmail,
-          phone: '',
-          address_1: '',
-          address_2: '',
-          city: '',
-          state: '',
-          postcode: '',
-          country: ''
-        },
-        shipping: {
-          first_name: 'Sabway',
-          last_name: 'Company',
-          company: 'Sabway',
-          address_1: '',
-          address_2: '',
-          city: '',
-          state: '',
-          postcode: '',
-          country: ''
-        },
-        line_items: [
-          {
-            product_id: orderObject.line_items[0]?.product_id || null,
-            quantity: 1,
-            meta_data: [
-              {
-                key: 'voltage',
-                value: formData.electrical_specifications.voltage || ''
-              },
-              {
-                key: 'amperage',
-                value: formData.electrical_specifications.amperage || ''
-              },
-              {
-                key: 'distance_range_km',
-                value: formData.electrical_specifications.distance_range_km || ''
-              },
-              {
-                key: 'alto',
-                value: formData.physical_dimensions.height_cm || ''
-              },
-              {
-                key: 'ancho',
-                value: formData.physical_dimensions.width_cm || ''
-              },
-              {
-                key: 'largo',
-                value: formData.physical_dimensions.length_cm || ''
-              },
-              {
-                key: 'scooter_model',
-                value: formData.scooter_model || ''
-              },
-              {
-                key: 'battery_location',
-                value: formData.battery_location || ''
-              },
-              {
-                key: 'connector_type',
-                value: formData.connector_type || ''
-              }
-            ]
-          }
-        ],
-        meta_data: [
-          {
-            key: '_sabway_order_type',
-            value: 'battery_customization'
-          },
-          {
-            key: '_company_order',
-            value: 'true'
-          }
-        ]
-      };
+      console.log('Form data prepared for submission:', Object.fromEntries(formDataSubmit));
 
-      // Prepare headers
-      let finalApiUrl = apiUrl;
-      const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-
-      // Apply authentication based on method
-      if (authMethod === 'consumer_key' && wcApi?.consumerKey && wcApi?.consumerSecret) {
-        // Use Consumer Key authentication (recommended for WooCommerce REST API)
-        finalApiUrl = `${apiUrl}?consumer_key=${encodeURIComponent(wcApi.consumerKey)}&consumer_secret=${encodeURIComponent(wcApi.consumerSecret)}`;
-        console.log('Using Consumer Key authentication');
-      } else if (authMethod === 'consumer_key_dev') {
-        // Use development/test consumer keys
-        finalApiUrl = `${apiUrl}?consumer_key=ck_test_123456789&consumer_secret=cs_test_987654321`;
-        console.log('Using development Consumer Key authentication');
-      } else {
-        // Fallback to session-based authentication
-        headers['X-WP-Nonce'] = wcApi?.restNonce || 'ecolitio_wc_rest_nonce';
-        console.log('Using session-based authentication');
-      }
-
-      console.log('Final API URL:', finalApiUrl);
-      console.log('Request headers:', headers);
-      console.log('Order data:', orderData);
-
-      const response = await fetch(finalApiUrl, {
+      // Submit to WordPress AJAX endpoint
+      const response = await fetch(ajaxUrl, {
         method: 'POST',
-        headers: headers,
-        credentials: 'include', // Include cookies for session-based authentication
-        body: JSON.stringify(orderData)
+        credentials: 'include', // Include cookies for authentication
+        body: formDataSubmit
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('API Error Response:', {
+        console.error('AJAX Error Response:', {
           status: response.status,
           statusText: response.statusText,
-          body: errorText,
-          api_url: finalApiUrl
+          body: errorText
         });
-        
-        // Provide more specific error messages based on status code
-        if (response.status === 403) {
-          throw new Error(`Authentication Error (403): ${errorText}. Authentication method: ${authMethod}`);
-        } else if (response.status === 401) {
-          throw new Error(`Authorization Error (401): ${errorText}. Check consumer keys or user permissions.`);
-        } else {
-          throw new Error(`WooCommerce API Error: ${response.status} - ${errorText}`);
-        }
+        throw new Error(`Network Error: ${response.status} - ${errorText}`);
       }
 
       const result = await response.json();
-      console.log('Order created successfully:', result);
+      console.log('AJAX Response:', result);
       
-      return {
-        id: result.id,
-        order_key: result.order_key,
-        redirect_url: result._links?.checkout?.href || `${window.location.origin}/checkout/order-received/${result.id}/?key=${result.order_key}`
-      };
-    } catch (error) {
-      console.error('WooCommerce API Submission Error:', error);
-      throw error;
-    }
-  };
-
-  /**
-   * Handles form submission
-   */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate form
-    const validation = validateForm();
-    if (!validation.isValid) {
-      showFeedback(
-        `Please fix the following errors:\n${validation.errors.join('\n')}`,
-        'error'
-      );
-      return;
-    }
-
-    // Set loading state
-    setLoadingState(true);
-
-    try {
-      // Collect form data
-      const formData = collectFormData();
-      console.log('Form Data Collected:', formData);
-
-      // Construct order object
-      const orderObject = constructOrderObject(formData);
-      console.log('Order Object Constructed:', orderObject);
-
-      // Submit to API with both formData and orderObject
-      const result = await submitOrderToAPI(formData, orderObject);
-      console.log('Order Created Successfully:', result);
-
-      // Show success message
-      showFeedback(
-        `¡Pedido realizado con éxito! Order ID: ${result.id}`,
-        'success'
-      );
-
-      // Navigate to confirmation step (step 5)
-      const step5 = document.getElementById('sab-step-5');
-      if (step5) {
-        // Hide all steps
-        document.querySelectorAll('.step').forEach(step => {
-          step.style.display = 'none';
-        });
-        // Show success step
-        step5.style.display = 'flex';
+      if (!result.success) {
+        // Handle different types of errors from the AJAX handler
+        const errorData = result.data || {};
+        const errorMessage = errorData.message || 'Error desconocido';
+        const errorCode = errorData.code || 'unknown_error';
         
-        // Populate final confirmation with order details
-        populateConfirmation(formData, result.id);
+        console.error('AJAX Submission Error:', {
+          code: errorCode,
+          message: errorMessage,
+          details: errorData
+        });
+        
+        // Provide user-friendly error messages based on error code
+        if (errorCode === 'nonce_failed') {
+          throw new Error('Verificación de seguridad fallida. Por favor, recarga la página e intenta de nuevo.');
+        } else if (errorCode === 'session_failed') {
+          throw new Error('Sesión inválida o expirada. Por favor, inicia sesión nuevamente.');
+        } else if (errorCode === 'permission_failed') {
+          throw new Error('No tienes permisos para realizar esta acción.');
+        } else if (errorCode === 'validation_failed') {
+          const validationErrors = errorData.errors || [];
+          throw new Error(`Datos del formulario inválidos:\n${validationErrors.join('\n')}`);
+        } else if (errorCode === 'product_unavailable') {
+          throw new Error('El producto seleccionado no está disponible.');
+        } else {
+          throw new Error(errorMessage);
+        }
       }
 
-      // Reset form after successful submission
-      setTimeout(() => {
-        form.reset();
-      }, 2000);
-
+      // Success response from AJAX handler
+      const successData = result.data || {};
+      console.log('Order created successfully via AJAX:', successData);
+      
+      return {
+        id: successData.order_id,
+        order_key: successData.order_key,
+        redirect_url: successData.redirect_url || `${window.location.origin}/checkout/order-received/${successData.order_id}/?key=${successData.order_key}`,
+        message: successData.message || 'Pedido realizado con éxito'
+      };
     } catch (error) {
-      console.error('Form Submission Error:', error);
-      showFeedback(
-        `Error al enviar el pedido: ${error.message}. Por favor, intente de nuevo.`,
-        'error'
-      );
-    } finally {
-      setLoadingState(false);
+      console.error('AJAX Submission Error:', error);
+      throw error;
     }
-  };
+  }
+};
+
+/**
+ * Main Form Controller
+ * Coordinates all modules for form handling
+ */
+export const formController = () => {
+  const form = document.querySelector('.sabway-form');
+  const submitButton = document.getElementById('sab-submit-button');
+  
+  if (!form || !submitButton) {
+    console.warn('Sabway form or submit button not found');
+    return;
+  }
 
   /**
    * Populates confirmation step with order details
@@ -515,10 +413,80 @@ export const formController = () => {
     }
   };
 
-  // Attach submit handler to button
-  submitButton.addEventListener('click', handleSubmit);
+  /**
+   * Main form submission handler
+   * @param {Event} e - Form submit event
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Also handle form submission if form is submitted directly
+    // Step 1: Validate form using validator module
+    const validation = formValidator.validate();
+    if (!validation.isValid) {
+      uiManager.showFeedback(
+        `Please fix the following errors:\n${validation.errors.join('\n')}`,
+        'error',
+        form
+      );
+      return;
+    }
+
+    // Step 2: Set loading state
+    uiManager.setLoadingState(submitButton, true);
+
+    try {
+      // Step 3: Collect form data
+      const formData = dataCollector.collect();
+      console.log('Form Data Collected:', formData);
+
+      // Step 4: Construct order object
+      const orderObject = orderConstructor.construct(formData);
+      console.log('Order Object Constructed:', orderObject);
+
+      // Step 5: Submit via AJAX
+      const result = await ajaxSubmitter.submit(formData, orderObject);
+      console.log('Order Created Successfully:', result);
+
+      // Step 6: Show success feedback
+      uiManager.showFeedback(
+        `¡Pedido realizado con éxito! Order ID: ${result.id}`,
+        'success',
+        form
+      );
+
+      // Step 7: Navigate to confirmation step (step 5)
+      const step5 = document.getElementById('sab-step-5');
+      if (step5) {
+        // Hide all steps
+        document.querySelectorAll('.step').forEach(step => {
+          step.style.display = 'none';
+        });
+        // Show success step
+        step5.style.display = 'flex';
+        
+        // Populate final confirmation with order details
+        populateConfirmation(formData, result.id);
+      }
+
+      // Step 8: Reset form after successful submission
+      setTimeout(() => {
+        form.reset();
+      }, 2000);
+
+    } catch (error) {
+      console.error('Form Submission Error:', error);
+      uiManager.showFeedback(
+        `Error al enviar el pedido: ${error.message}. Por favor, intente de nuevo.`,
+        'error',
+        form
+      );
+    } finally {
+      uiManager.setLoadingState(submitButton, false);
+    }
+  };
+
+  // Step 9: Attach event listeners
+  submitButton.addEventListener('click', handleSubmit);
   form.addEventListener('submit', handleSubmit);
 
   console.log('Sabway form controller initialized');
