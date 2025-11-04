@@ -373,6 +373,7 @@ function ecolitio_sabway_submit_form() {
             ),
             '_sabway_order_type' => 'battery_customization',
             '_sabway_order_source' => 'taller_sabway_form',
+            '_wc_order_origin' => 'sabway-space',
         );
         
         foreach ($order_meta as $key => $value) {
@@ -389,11 +390,83 @@ function ecolitio_sabway_submit_form() {
         $order->set_payment_method_title('Transferencia Bancaria');
         $order->set_payment_method('bacs');
         
-        // Set customer details (use defaults or form data)
-        $order->set_billing_first_name('Sabway');
-        $order->set_billing_last_name('Company');
-        $order->set_billing_company('Sabway Company');
-        $order->set_billing_email('sabway@company.com');
+        // Link order to current user (if logged in)
+        $current_user_id = get_current_user_id();
+        if ($current_user_id) {
+            $order->set_customer_id($current_user_id);
+            error_log('Ecolitio Sabway: Order linked to user ID: ' . $current_user_id);
+        }
+        
+        // Get user data for billing and shipping (with fallbacks)
+        $user_id = $current_user_id ? $current_user_id : 0;
+        $user_data = $user_id ? get_userdata($user_id) : null;
+        
+        // Extract user billing information with fallbacks
+        $billing_first_name = $user_id ? get_user_meta($user_id, 'billing_first_name', true) : '';
+        $billing_last_name = $user_id ? get_user_meta($user_id, 'billing_last_name', true) : '';
+        $billing_company = $user_id ? get_user_meta($user_id, 'billing_company', true) : '';
+        $billing_email = $user_id && $user_data ? $user_data->user_email : '';
+        $billing_phone = $user_id ? get_user_meta($user_id, 'billing_phone', true) : '';
+        $billing_address_1 = $user_id ? get_user_meta($user_id, 'billing_address_1', true) : '';
+        $billing_address_2 = $user_id ? get_user_meta($user_id, 'billing_address_2', true) : '';
+        $billing_city = $user_id ? get_user_meta($user_id, 'billing_city', true) : '';
+        $billing_state = $user_id ? get_user_meta($user_id, 'billing_state', true) : '';
+        $billing_postcode = $user_id ? get_user_meta($user_id, 'billing_postcode', true) : '';
+        $billing_country = $user_id ? get_user_meta($user_id, 'billing_country', true) : '';
+        
+        // Set billing address with user data or defaults
+        $order->set_billing_first_name($billing_first_name ?: 'Sabway');
+        $order->set_billing_last_name($billing_last_name ?: 'Company');
+        $order->set_billing_company($billing_company ?: 'Sabway');
+        $order->set_billing_email($billing_email ?: 'sabway@company.com');
+        $order->set_billing_phone($billing_phone);
+        $order->set_billing_address_1($billing_address_1);
+        $order->set_billing_address_2($billing_address_2);
+        $order->set_billing_city($billing_city);
+        $order->set_billing_state($billing_state);
+        $order->set_billing_postcode($billing_postcode);
+        $order->set_billing_country($billing_country);
+        
+        // Set shipping address (same as billing for Sabway orders)
+        $order->set_shipping_first_name($billing_first_name ?: 'Sabway');
+        $order->set_shipping_last_name($billing_last_name ?: 'Company');
+        $order->set_shipping_company($billing_company ?: 'Sabway');
+        $order->set_shipping_address_1($billing_address_1);
+        $order->set_shipping_address_2($billing_address_2);
+        $order->set_shipping_city($billing_city);
+        $order->set_shipping_state($billing_state);
+        $order->set_shipping_postcode($billing_postcode);
+        $order->set_shipping_country($billing_country);
+        
+        // Create order note with form specifications resume
+        $order_note = sprintf(
+            "SABWAY BATTERY CUSTOMIZATION ORDER RESUME\n\n" .
+            "ELECTRICAL SPECIFICATIONS:\n" .
+            "- Voltage: %s\n" .
+            "- Amperage: %s\n" .
+            "- Distance Range: %skm\n\n" .
+            "PHYSICAL DIMENSIONS:\n" .
+            "- Height: %scm\n" .
+            "- Width: %scm\n" .
+            "- Length: %scm\n\n" .
+            "SCOOTER SPECIFICATIONS:\n" .
+            "- Model: %s\n" .
+            "- Battery Location: %s\n" .
+            "- Connector Type: %s\n\n" .
+            "ORDER SOURCE: Sabway Space (sabway-space)",
+            $form_data['voltage'],
+            $form_data['amperage'],
+            $form_data['distance_range_km'],
+            $form_data['height_cm'],
+            $form_data['width_cm'],
+            $form_data['length_cm'],
+            $form_data['scooter_model'],
+            $form_data['battery_location'],
+            $form_data['connector_type']
+        );
+        
+        // Add order note (internal note for staff)
+        $order->add_order_note($order_note, 0, false);
         
         // Calculate totals
         $order->calculate_totals();
