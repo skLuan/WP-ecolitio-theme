@@ -147,7 +147,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 										<div class="label-container flex flex-row gap-4 justify-evenly">
 											<?php
 
-											$value = $getAttributes['voltios']['options'];
+											$values = $getAttributes['voltios']['options'];
 											foreach ($values as $option) : ?>
 												<label for="input-voltage-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco ! font-bold !rounded-full">
 													<input type="radio" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
@@ -160,7 +160,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 										<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['amperios']['name'], 'text-domain'); ?>:</h5>
 										<div class="label-container flex flex-row gap-4 justify-evenly">
 											<?php
-											$value = $getAttributes['amperios']['options'];
+											$values = $getAttributes['amperios']['options'];
 											foreach ($values as $option) : ?>
 												<label for="input-amperage-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco ! font-bold !rounded-full">
 													<input type="radio" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
