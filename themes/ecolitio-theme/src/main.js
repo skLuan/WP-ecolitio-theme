@@ -8,13 +8,14 @@ import { Navigation, Pagination } from 'swiper/modules';
 import "swiper/css";
 // import "swiper/css/navigation";
 // import "swiper/css/pagination";
-
+let sabwaySwiper;
 if (document.querySelector(".swiper-sab-batery")) {
   
   const swiper = new Swiper(".swiper-sab-batery", {
     slidesPerView: 1,
     spaceBetween: 8,
     autoHeight: true,
+    allowTouchMove: false,
     navigation: {
       nextEl: ".swiper-button-next",
       prevEl: ".swiper-button-prev",
@@ -22,10 +23,12 @@ if (document.querySelector(".swiper-sab-batery")) {
     },
     modules: [Navigation, Pagination],
   });
-
-  
+  sabwaySwiper = swiper;
   console.log(swiper);
 }
+export const nextSlide = () => {
+  sabwaySwiper.slideNext();
+};
 
 const baseUrl = "wp-content/themes/ecolitio-theme/";
 document.addEventListener("DOMContentLoaded", function () {
