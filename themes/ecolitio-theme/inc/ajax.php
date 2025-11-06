@@ -373,7 +373,7 @@ function ecolitio_sabway_submit_form() {
             ),
             '_sabway_order_type' => 'battery_customization',
             '_sabway_order_source' => 'taller_sabway_form',
-            '_wc_order_origin' => 'sabway-space',
+            '_wc_order_origin' => 'direct',
         );
         
         foreach ($order_meta as $key => $value) {
@@ -388,7 +388,6 @@ function ecolitio_sabway_submit_form() {
         $order->set_status('pending');
         $order->set_payment_method('bacs');
         $order->set_payment_method_title('Transferencia Bancaria');
-        $order->set_payment_method('bacs');
         
         // Link order to current user (if logged in)
         $current_user_id = get_current_user_id();
@@ -441,19 +440,19 @@ function ecolitio_sabway_submit_form() {
         // Create order note with form specifications resume
         $order_note = sprintf(
             "SABWAY BATTERY CUSTOMIZATION ORDER RESUME\n\n" .
-            "ELECTRICAL SPECIFICATIONS:\n" .
-            "- Voltage: %s\n" .
-            "- Amperage: %s\n" .
-            "- Distance Range: %skm\n\n" .
-            "PHYSICAL DIMENSIONS:\n" .
-            "- Height: %scm\n" .
-            "- Width: %scm\n" .
-            "- Length: %scm\n\n" .
-            "SCOOTER SPECIFICATIONS:\n" .
-            "- Model: %s\n" .
-            "- Battery Location: %s\n" .
-            "- Connector Type: %s\n\n" .
-            "ORDER SOURCE: Sabway Space (sabway-space)",
+            "ESPECIFICACIONES ELECTRICAS:\n" .
+            "- Voltaje: %s\n" .
+            "- Ameraje: %s\n" .
+            "- Rango de distancia: %skm\n\n" .
+            "DIMENSIONES FISICAS:\n" .
+            "- Alto: %scm\n" .
+            "- Largo: %scm\n" .
+            "- Ancho: %scm\n\n" .
+            "ESPECIFICACIONES DEL PATINETE:\n" .
+            "- Modelo: %s\n" .
+            "- Ubicación de batería: %s\n" .
+            "- Tipo de conector: %s\n\n" .
+            "Origen de la orden: Sabway Space (sabway-space)",
             $form_data['voltage'],
             $form_data['amperage'],
             $form_data['distance_range_km'],
@@ -475,6 +474,20 @@ function ecolitio_sabway_submit_form() {
         $order->save();
         
         error_log('Ecolitio Sabway: Order created successfully - ID: ' . $order->get_id());
+        
+        // Send emails after order is saved
+        try {
+            // Send email to client
+            send_sabway_order_emails($order, 'client');
+            
+            // Send email to admin
+            send_sabway_order_emails($order, 'admin');
+            
+            error_log('Ecolitio Sabway: Order emails sent successfully');
+        } catch (Exception $email_e) {
+            // Log email error but don't fail the order
+            error_log('Ecolitio Sabway: Email sending failed - ' . $email_e->getMessage());
+        }
         
         // Return success response
         wp_send_json_success(array(
@@ -639,4 +652,139 @@ function validate_sabway_form_data($data) {
     }
     
     return $errors;
+}
+
+/**
+ * Send order confirmation emails for Sabway form submissions
+ *
+ * @param WC_Order $order The order object
+ * @param string $recipient_type 'client' or 'admin'
+ * @return bool Success status
+ */
+function send_sabway_order_emails($order, $recipient_type = 'client') {
+    if (!$order instanceof WC_Order) {
+        return false;
+    }
+    
+    // Get order data
+    $order_id = $order->get_id();
+    $order_key = $order->get_order_key();
+    $billing_email = $order->get_billing_email();
+    $billing_name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name());
+    
+    // Get admin email
+    $admin_email = 'erazo..luan@gmail.com';
+    
+    // Build email content
+    if ($recipient_type === 'client') {
+        $to = $billing_email;
+        $subject = sprintf(__('Confirmación de Pedido - Batería Sabway #%s', 'ecolitio-theme'), $order_id);
+        
+        // Extract sabway meta data for email
+        $electrical_specs = $order->get_meta('_sabway_electrical_specs');
+        $physical_dims = $order->get_meta('_sabway_physical_dimensions');
+        $specs = $order->get_meta('_sabway_specifications');
+        
+        $email_message = sprintf(
+            __("Hola %s,\n\n" .
+            "Gracias por tu pedido de batería personalizada Sabway. Aquí están los detalles:\n\n" .
+            "NÚMERO DE PEDIDO: #%d\n\n" .
+            "ESPECIFICACIONES ELÉCTRICAS:\n" .
+            "• Voltaje: %s\n" .
+            "• Amperaje: %s\n" .
+            "• Rango de distancia: %s km\n\n" .
+            "DIMENSIONES FÍSICAS:\n" .
+            "• Alto: %s cm\n" .
+            "• Ancho: %s cm\n" .
+            "• Largo: %s cm\n\n" .
+            "ESPECIFICACIONES DEL PATINETE:\n" .
+            "• Modelo: %s\n" .
+            "• Ubicación de batería: %s\n" .
+            "• Tipo de conector: %s\n\n" .
+            "Precio: %s\n\n" .
+            "Próximos pasos:\n" .
+            "1. Nuestro equipo de Taller Sabway revisará tu pedido\n" .
+            "2. Te contactaremos para confirmar los detalles\n" .
+            "3. Comenzaremos la fabricación de tu batería personalizada\n\n" .
+            "Puedes revisar el estado de tu pedido en: %s\n\n" .
+            "¡Gracias por confiar en nosotros!\n\n" .
+            "Equipo Ecolitio", 'ecolitio-theme'),
+            $billing_name ?: 'Estimado cliente',
+            $order_id,
+            $electrical_specs['voltage'] ?? 'N/A',
+            $electrical_specs['amperage'] ?? 'N/A',
+            $electrical_specs['distance_range_km'] ?? 'N/A',
+            $physical_dims['height_cm'] ?? 'N/A',
+            $physical_dims['width_cm'] ?? 'N/A',
+            $physical_dims['length_cm'] ?? 'N/A',
+            $specs['scooter_model'] ?? 'N/A',
+            $specs['battery_location'] ?? 'N/A',
+            $specs['connector_type'] ?? 'N/A',
+            $order->get_formatted_order_total(),
+            $order->get_checkout_order_received_url()
+        );
+        
+    } else { // admin
+        $to = $admin_email;
+        $subject = sprintf(__('Nuevo Pedido Sabway - Batería Personalizada #%s', 'ecolitio-theme'), $order_id);
+        
+        $email_message = sprintf(
+            __("NUEVO PEDIDO DE BATERÍA PERSONALIZADA SABWAY\n\n" .
+            "Número de pedido: #%d\n" .
+            "Cliente: %s (%s)\n" .
+            "Fecha: %s\n\n" .
+            "ESPECIFICACIONES DEL PEDIDO:\n" .
+            "El cliente ha solicitado una batería personalizada con las siguientes características:\n\n" .
+            "ELECTRICAS:\n" .
+            "- Voltaje: %s\n" .
+            "- Amperaje: %s\n" .
+            "- Rango de distancia: %s km\n\n" .
+            "FÍSICAS:\n" .
+            "- Alto: %s cm\n" .
+            "- Ancho: %s cm\n" .
+            "- Largo: %s cm\n\n" .
+            "PATINETE:\n" .
+            "- Modelo: %s\n" .
+            "- Ubicación de batería: %s\n" .
+            "- Tipo de conector: %s\n\n" .
+            "MONTO: %s\n" .
+            "ESTADO: %s\n\n" .
+            "URL del pedido: %s\n\n" .
+            "Este pedido requiere atención del equipo de Taller Sabway para la fabricación personalizada.", 'ecolitio-theme'),
+            $order_id,
+            $billing_name ?: 'No disponible',
+            $billing_email ?: 'No disponible',
+            $order->get_date_created()->date('Y-m-d H:i:s'),
+            $order->get_meta('_sabway_electrical_specs')['voltage'] ?? 'N/A',
+            $order->get_meta('_sabway_electrical_specs')['amperage'] ?? 'N/A',
+            $order->get_meta('_sabway_electrical_specs')['distance_range_km'] ?? 'N/A',
+            $order->get_meta('_sabway_physical_dimensions')['height_cm'] ?? 'N/A',
+            $order->get_meta('_sabway_physical_dimensions')['width_cm'] ?? 'N/A',
+            $order->get_meta('_sabway_physical_dimensions')['length_cm'] ?? 'N/A',
+            $order->get_meta('_sabway_specifications')['scooter_model'] ?? 'N/A',
+            $order->get_meta('_sabway_specifications')['battery_location'] ?? 'N/A',
+            $order->get_meta('_sabway_specifications')['connector_type'] ?? 'N/A',
+            $order->get_formatted_order_total(),
+            $order->get_status(),
+            admin_url('post.php?post=' . $order_id . '&action=edit')
+        );
+    }
+    
+    // Set headers
+    $headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ' . get_bloginfo('name') . ' <' . get_option('admin_email') . '>',
+        'Reply-To: ' . get_option('admin_email')
+    );
+    
+    // Send the email
+    $sent = wp_mail($to, $subject, $email_message, $headers);
+    
+    if ($sent) {
+        error_log("Ecolitio Sabway: Email sent successfully to {$recipient_type} - Order #{$order_id}");
+    } else {
+        error_log("Ecolitio Sabway: Failed to send email to {$recipient_type} - Order #{$order_id}");
+    }
+    
+    return $sent;
 }

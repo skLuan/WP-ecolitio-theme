@@ -9,6 +9,8 @@ import "swiper/css";
 // import "swiper/css/navigation";
 // import "swiper/css/pagination";
 
+let _swiper;
+
 if (document.querySelector(".swiper-sab-batery")) {
   
   const swiper = new Swiper(".swiper-sab-batery", {
@@ -24,10 +26,13 @@ if (document.querySelector(".swiper-sab-batery")) {
     modules: [Navigation, Pagination],
   });
 
-  
+  _swiper = swiper;
   console.log(swiper);
 }
-
+export const nextSlide = () => {
+  _swiper.slideNext();
+};
+;
 const baseUrl = "wp-content/themes/ecolitio-theme/";
 document.addEventListener("DOMContentLoaded", function () {
   startNavigation();

@@ -1,3 +1,5 @@
+import { nextSlide } from "./main";
+
 /**
  * Form Validation Module
  * Handles all form validation logic with comprehensive error checking
@@ -174,27 +176,24 @@ const uiManager = {
       connectorType: document.querySelector('input[name="tipo-de-conector"]:checked')?.value || 'No seleccionado'
     };
 
-    const sumaryNodes = document.querySelectorAll('.ec-item-sumary');
-    const sumaryIds = sumaryNodes.map(node => node.getAttribute('sumaryId'));
-
     // Update confirmation fields with current values
-    this.updateConfirmationField('Voltios', formData.voltage);
-    this.updateConfirmationField('Amperios', formData.amperage);
-    this.updateConfirmationField('Autonomía', `${formData.distanceRange}km`);
-    this.updateConfirmationField('Alto', `${formData.height}cm`);
-    this.updateConfirmationField('Ancho', `${formData.width}cm`);
-    this.updateConfirmationField('Largo', `${formData.length}cm`);
-    this.updateConfirmationField('Modelo', formData.scooterModel);
-    this.updateConfirmationField('Ubicación', formData.batteryLocation);
-    this.updateConfirmationField('Conector', formData.connectorType);
+    this.updateConfirmationField('voltios', formData.voltage);
+    this.updateConfirmationField('amperios', formData.amperage);
+    this.updateConfirmationField('autonomia', `${formData.distanceRange}km`);
+    this.updateConfirmationField('altocm', `${formData.height}cm`);
+    this.updateConfirmationField('anchocm', `${formData.width}cm`);
+    this.updateConfirmationField('largocm', `${formData.length}cm`);
+    this.updateConfirmationField('modelo-de-patinete-elctrico', formData.scooterModel);
+    this.updateConfirmationField('ubicacin-de-bateria', formData.batteryLocation);
+    this.updateConfirmationField('tipo-de-conector', formData.connectorType);
   },
   /**
    * Updates a specific confirmation field
-   * @param {number} fieldId - The field name to update
+   * @param {string} fieldName - The field name to update
    * @param {string} value - The value to display
    */
-  updateConfirmationField(fieldId, value) {
-    const confirmationElement = document.getElementById(`final-check-${fieldId}`);
+  updateConfirmationField(fieldName, value) {
+    const confirmationElement = document.getElementById(`final-check-${fieldName}`);
     if (confirmationElement) {
       const valueElement = confirmationElement.querySelector('p');
       if (valueElement) {
@@ -416,7 +415,7 @@ const ajaxSubmitter = {
           throw new Error(errorMessage);
         }
       }
-
+      nextSlide();
       // Success response from AJAX handler
       const successData = result.data || {};
       console.log('Order created successfully via AJAX:', successData);
@@ -453,28 +452,6 @@ export const formController = () => {
    * @param {number} orderId - Created order ID
    */
   const populateConfirmation = (formData, orderId) => {
-    const confirmationItems = [
-      { id: 'Voltios', value: formData.electrical_specifications.voltage },
-      { id: 'Amperios', value: formData.electrical_specifications.amperage },
-      { id: 'Autonomía', value: `${formData.electrical_specifications.distance_range_km}km` },
-      { id: 'Alto', value: `${formData.physical_dimensions.height_cm}cm` },
-      { id: 'Ancho', value: `${formData.physical_dimensions.width_cm}cm` },
-      { id: 'Largo', value: `${formData.physical_dimensions.length_cm}cm` },
-      { id: 'Modelo', value: formData.scooter_model },
-      { id: 'Ubicación', value: formData.battery_location },
-      { id: 'Conector', value: formData.connector_type }
-    ];
-
-    confirmationItems.forEach(item => {
-      const element = document.getElementById(`final-check-${item.id}`);
-      if (element) {
-        const pElement = element.querySelector('p');
-        if (pElement) {
-          pElement.textContent = item.value;
-        }
-      }
-    });
-
     // Add order ID to confirmation
     const orderIdElement = document.createElement('li');
     orderIdElement.className = 'block';

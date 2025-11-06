@@ -118,8 +118,8 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								</div>
 								<?php get_template_part('templates/progress-bar'); // -------- Progress bar
 								?>
-							<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
-							?>
+								<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
+								?>
 							</div>
 						</div>
 						<div class="swiper-slide">
@@ -252,11 +252,10 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								<ul>
 									<?php foreach ($getAttributes as $attr) :
 										$value = $attr['name'];
-										$id = $attr['id'];
 										// Sanitize value for HTML ID by removing spaces and special characters
 										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 									?>
-										<li sumaryId="<?= esc_attr( $id )?>" id="final-check-<?= esc_attr($sanitized_id) ?>" class="ec-item-sumary block">
+										<li id="final-check-<?= esc_attr($sanitized_id) ?>" class="ec-item-sumary grid grid-cols-2 gap-2">
 											<strong><?= esc_html($value); ?></strong>
 											<p id="">
 											</p>
@@ -264,40 +263,41 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 									<?php endforeach; ?>
 								</ul>
 								<div id="sab-form-controls" class="!flex !flex-row !justify-end !w-full">
-									<<div id="" class="swiper-button-prev sab-back-button cursor-pointer !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
+									<div id="" class="swiper-button-prev sab-back-button cursor-pointer !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
 										<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
 										Atrás
+									</div>
+									<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-green-eco !border-green-eco !text-black-eco !rounded-full !px-14 !py-3">Finalizar Pedido</button>
 								</div>
-								<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-green-eco !border-green-eco !text-black-eco !rounded-full !px-14 !py-3">Finalizar Pedido</button>
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div id="sab-step-5" class="step !flex !flex-col !gap-y-10">
+								<?php
+								$props = array('icon' => "material-symbols:check-circle", 'title' => 'Gracias! - pedido realizado con éxito!');
+
+								get_template_part('templates/icon-title', null, $props);
+								?>
+								<ul>
+									<?php foreach ($getAttributes as $attr) :
+										$value = $attr['name'];
+										// Sanitize value for HTML ID by removing spaces and special characters
+										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
+									?>
+										<li id="final-check-<?= esc_attr($sanitized_id) ?>" class="ec-item-sumary grid grid-cols-2 gap-2">
+											<strong><?= esc_html($value); ?></strong>
+											<p id="">
+											</p>
+										</li>
+									<?php endforeach; ?>
+								</ul>
 							</div>
 						</div>
 					</div>
-					<div class="swiper-slide">
-						<div id="sab-step-5" class="step !flex !flex-col !gap-y-10">
-							<?php
-							$props = array('icon' => "material-symbols:check-circle", 'title' => 'Gracias! - pedido realizado con éxito!');
-
-							get_template_part('templates/icon-title', null, $props);
-							?>
-							<ul>
-								<?php foreach ($getAttributes as $attr) :
-									$value = $attr['name'];
-								?>
-									<li id="final-check-<?= esc_html($value) ?>" class="block">
-										<strong><?= esc_html($value); ?></strong>
-										<p>
-											<!-- this will be fullfiled with js as is reactive for the user input before send  -->
-										</p>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-						</div>
-					</div>
 				</div>
+			</form>
+		</article>
 	</div>
-	</form>
-	</article>
-</div>
 </div>
 
 <?php
