@@ -49,6 +49,9 @@
    ========================================================================== */
 
 @layer components {
+  .swiper-slide {
+    @apply !p-2;
+  }
   .storefront-breadcrumb {
     @apply !mb-0 !pt-0 !pb-1;
     .col-full {

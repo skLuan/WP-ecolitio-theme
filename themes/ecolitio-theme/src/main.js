@@ -32,7 +32,10 @@ if (document.querySelector(".swiper-sab-batery")) {
 export const nextSlide = () => {
   _swiper.slideNext();
 };
-;
+export const swiperSab = () => {
+  return _swiper;
+};
+
 const baseUrl = "wp-content/themes/ecolitio-theme/";
 document.addEventListener("DOMContentLoaded", function () {
   startNavigation();
