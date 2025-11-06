@@ -255,7 +255,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 										// Sanitize value for HTML ID by removing spaces and special characters
 										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 									?>
-										<li id="final-check-<?= esc_attr($sanitized_id) ?>" class="ec-item-sumary grid grid-cols-2 gap-2">
+										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2">
 											<strong><?= esc_html($value); ?></strong>
 											<p id="">
 											</p>
@@ -284,13 +284,19 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 										// Sanitize value for HTML ID by removing spaces and special characters
 										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 									?>
-										<li id="final-check-<?= esc_attr($sanitized_id) ?>" class="ec-item-sumary grid grid-cols-2 gap-2">
+										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2">
 											<strong><?= esc_html($value); ?></strong>
 											<p id="">
 											</p>
 										</li>
 									<?php endforeach; ?>
 								</ul>
+							</div>
+							<div id="sab-form-controls" class="!flex !flex-row !justify-end !w-full">
+								<button type="button" id="reset-form-button" class="cursor-pointer !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
+									<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
+									Crear nueva batería
+								</button>
 							</div>
 						</div>
 					</div>
