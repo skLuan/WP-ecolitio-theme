@@ -79,7 +79,7 @@ if (! defined('ABSPATH')) {
 					<?php endif; ?>
 
 					<!-- Zona Sabway -->
-					<a href="#" class="zona-sabway"><?php esc_html_e('Zona Sabway', 'ecolitio-theme'); ?></a>
+					<a href="<?= esc_url(get_permalink(2453)); //Id of Sabway-taller ?>" class="zona-sabway"><?php esc_html_e('Zona Sabway', 'ecolitio-theme'); ?></a>
 				</div>
 			</div>
 
