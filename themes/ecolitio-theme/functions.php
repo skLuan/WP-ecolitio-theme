@@ -325,6 +325,10 @@ function ecolitio_modify_products_per_page($per_page) {
     return apply_filters('ecolitio_products_per_page_override', $per_page);
 }
 
+if ( has_action( 'storefront_sidebar' ) ) {
+	remove_action( 'storefront_sidebar' );
+}
+
 // =============================================================================
 // DEVELOPMENT HELPERS (Remove in production)
 // =============================================================================

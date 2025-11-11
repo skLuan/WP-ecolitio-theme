@@ -6,7 +6,6 @@
  */
 
 get_header();
-remove_action( 'storefront_sidebar' );
 ?>
 
 	<div id="primary" class="content-area !w-full">

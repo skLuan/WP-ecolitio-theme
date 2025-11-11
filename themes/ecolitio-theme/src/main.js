@@ -36,7 +36,7 @@ export const swiperSab = () => {
   return _swiper;
 };
 
-const baseUrl = "wp-content/themes/ecolitio-theme/";
+const baseUrl = "https://ecolitio.com/wp-content/themes/ecolitio-theme/";
 document.addEventListener("DOMContentLoaded", function () {
   startNavigation();
 

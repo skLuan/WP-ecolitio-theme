@@ -73,13 +73,13 @@ if (! defined('ABSPATH')) {
 					</div>
 					<!-- User account -->
 					<?php if (is_user_logged_in()) : ?>
-						<a href="<?= esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="account-link"><?php esc_html_e('My Account', 'ecolitio-theme'); ?></a>
+						<a href="<?= esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="account-link"><?php esc_html_e('Mi cuenta', 'ecolitio-theme'); ?></a>
 					<?php else: ?>
-						<a href="<?= esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="account-link"><?php esc_html_e('Login', 'ecolitio-theme'); ?></a>
+						<a href="<?= esc_url(get_permalink(get_option('2448'))); ?>" class="account-link"><?php esc_html_e('Login', 'ecolitio-theme'); ?></a>
+						<a href="<?= esc_url(get_permalink(2453)); //Id of Sabway-taller ?>" class="zona-sabway"><?php esc_html_e('Zona Sabway', 'ecolitio-theme'); ?></a>
 					<?php endif; ?>
 
 					<!-- Zona Sabway -->
-					<a href="<?= esc_url(get_permalink(2453)); //Id of Sabway-taller ?>" class="zona-sabway"><?php esc_html_e('Zona Sabway', 'ecolitio-theme'); ?></a>
 				</div>
 			</div>
 
