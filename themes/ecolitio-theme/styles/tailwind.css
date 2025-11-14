@@ -22,15 +22,15 @@
 
 @layer base {
   body {
-    @apply !bg-black-eco !text-white-eco;
+    @apply !bg-black-eco;
   }
   /* Typography */
   h2 {
-    @apply text-white-eco !leading-normal;
+    @apply !leading-normal;
   }
 
   h3 {
-    @apply !leading-none !text-white-eco;
+    @apply !leading-none;
   }
 
   section {
@@ -51,6 +51,17 @@
 @layer components {
   .swiper-slide {
     @apply !p-2;
+  }
+  .swiper-button-next, .swiper-button-prev {
+    @apply static;
+  }
+  form.sabway-form {
+    label {
+      
+    }
+    label input[type="radio"] {
+      @apply hidden;
+    }
   }
   .storefront-breadcrumb {
     @apply !mb-0 !pt-0 !pb-1;

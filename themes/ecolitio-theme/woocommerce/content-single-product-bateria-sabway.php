@@ -143,7 +143,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 									</p>
 									<div class="mb-8 voltage">
 										<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['voltios']['name'], 'text-domain'); ?>:</h5>
-										<div class="label-container flex flex-row gap-4 justify-evenly">
+										<div class="label-container flex flex-row gap-4 justify-evenly flex-wrap">
 											<?php
 
 											$values = $getAttributes['voltios']['options'];
@@ -157,7 +157,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 									</div>
 									<div class="mb-8 amperage">
 										<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['amperios']['name'], 'text-domain'); ?>:</h5>
-										<div class="label-container flex flex-row gap-4 justify-evenly">
+										<div class="label-container flex flex-row gap-4 justify-evenly flex-wrap">
 											<?php
 											$values = $getAttributes['amperios']['options'];
 											foreach ($values as $option) : ?>
@@ -184,19 +184,19 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								$ubication_values = isset($getAttributes['ubicacion-de-bateria']['options']) ? $getAttributes['ubicacion-de-bateria']['options'] : $values;
 								?>
 								<figure class="relative z-0">
-									<div class="w-2/3 lg:w-1/2 flex flex-row justify-evenly absolute right-0 top-1/4">
-										<?php foreach ($ubication_values as $option) : ?>
-											<label for="input-ubication-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco !font-bold !rounded-full">
-												<input type="radio" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-												<span class="!text-white-eco"><?= esc_attr($option); ?></span>
-											</label>
-										<?php endforeach; ?>
-
-									</div>
 									<picture>
 										<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
 									</picture>
 								</figure>
+								<div class="w-2/3 lg:w-1/2 flex flex-row justify-evenly">
+									<?php foreach ($ubication_values as $option) : ?>
+										<label for="input-ubication-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco !font-bold !rounded-full">
+											<input type="radio" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+											<span class="!text-white-eco"><?= esc_attr($option); ?></span>
+										</label>
+									<?php endforeach; ?>
+
+								</div>
 								<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
 									<label for="alto-bateria">
 										<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Alto(cm):</span>
