@@ -60,9 +60,6 @@
     label input[type="radio"] {
       @apply hidden;
     }
-    label span {
-      @apply peer-checked:bg-green-eco;
-    }
   }
   .storefront-breadcrumb {
     @apply !mb-0 !pt-0 !pb-1;

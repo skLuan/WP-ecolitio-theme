@@ -61,27 +61,39 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 		do_action('woocommerce_single_product_summary');
 		?>
 	</div>
-
-	<?php
-	/**
-	 * Hook: woocommerce_before_single_product_summary.
-	 *
-	 * @hooked woocommerce_show_product_sale_flash - 10
-	 * @hooked woocommerce_show_product_images - 20
-	 */
-	do_action('woocommerce_before_single_product_summary');
-	?>
+	<div class="column-2">
+		<?php
+		/**
+		 * Hook: woocommerce_before_single_product_summary.
+		 *
+		 * @hooked woocommerce_show_product_sale_flash - 10
+		 * @hooked woocommerce_show_product_images - 20
+		 */
+		do_action('woocommerce_before_single_product_summary');
+		?>
+			<?php
+			/**
+			 * Hook: ecolitio_single_product_prices.
+			 *
+			 * @hooked woocommerce_template_single_price - 20
+			 * @hooked woocommerce_template_single_add_to_cart - 20
+			 */
+			do_action('ecolitio_single_product_prices');
+			?>
+		<?php 
+		?>
+	</div>
 
 </div>
-	<?php
-	/**
-	 * Hook: woocommerce_after_single_product_summary.
-	 *
-	 * @hooked woocommerce_output_product_data_tabs - 10
-	 * @hooked woocommerce_upsell_display - 15
-	 * @hooked woocommerce_output_related_products - 20
-	 */
-	//do_action('woocommerce_after_single_product_summary');
-	?>
+<?php
+/**
+ * Hook: woocommerce_after_single_product_summary.
+ *
+ * @hooked woocommerce_output_product_data_tabs - 10
+ * @hooked woocommerce_upsell_display - 15
+ * @hooked woocommerce_output_related_products - 20
+ */
+//do_action('woocommerce_after_single_product_summary');
+?>
 
 <?php do_action('woocommerce_after_single_product'); ?>
