@@ -36,6 +36,7 @@ remove_action('woocommerce_single_product_summary', 'woocommerce_template_single
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
 
 
 add_action('ecolitio_single_product_summary', 'woocommerce_template_single_title', 15);
@@ -161,9 +162,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 											<?php
 											$values = $getAttributes['amperios']['options'];
 											foreach ($values as $option) : ?>
-												<label for="input-amperage-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco ! font-bold !rounded-full">
+												<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 													<input type="radio" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco"><?= esc_attr($option); ?></span>
+													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco ! font-bold !rounded-full"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
@@ -303,18 +304,16 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 			</form>
 		</article>
 	</div>
-</div>
 
-<?php
-/**
- * Hook: woocommerce_before_single_product_summary.
- *
- * @hooked woocommerce_show_product_sale_flash - 10
- * @hooked woocommerce_show_product_images - 20
- */
-do_action('woocommerce_before_single_product_summary');
-?>
-
+	<?php
+	/**
+	 * Hook: woocommerce_before_single_product_summary.
+	 *
+	 * @hooked woocommerce_show_product_sale_flash - 10
+	 * @hooked woocommerce_show_product_images - 20
+	 */
+	do_action('woocommerce_before_single_product_summary');
+	?>
 </div>
 <?php
 /**
@@ -324,7 +323,7 @@ do_action('woocommerce_before_single_product_summary');
  * @hooked woocommerce_upsell_display - 15
  * @hooked woocommerce_output_related_products - 20
  */
-do_action('woocommerce_after_single_product_summary');
+//do_action('woocommerce_after_single_product_summary');
 ?>
 
 <?php do_action('woocommerce_after_single_product'); ?>
