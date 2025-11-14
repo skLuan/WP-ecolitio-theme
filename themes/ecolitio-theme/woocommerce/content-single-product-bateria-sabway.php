@@ -149,9 +149,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 
 											$values = $getAttributes['voltios']['options'];
 											foreach ($values as $option) : ?>
-												<label for="input-voltage-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco ! font-bold !rounded-full">
-													<input type="radio" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco"><?= esc_attr($option); ?></span>
+												<label for="input-voltage-<?= esc_attr($option); ?>" class="">
+													<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
@@ -163,8 +163,8 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 											$values = $getAttributes['amperios']['options'];
 											foreach ($values as $option) : ?>
 												<label for="input-amperage-<?= esc_attr($option); ?>" class="">
-													<input type="radio" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco ! font-bold !rounded-full"><?= esc_attr($option); ?></span>
+													<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
@@ -191,9 +191,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								</figure>
 								<div class="w-2/3 lg:w-1/2 flex flex-row justify-evenly">
 									<?php foreach ($ubication_values as $option) : ?>
-										<label for="input-ubication-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco !font-bold !rounded-full">
+										<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 											<input type="radio" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-											<span class="!text-white-eco"><?= esc_attr($option); ?></span>
+											<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full"><?= esc_attr($option); ?></span>
 										</label>
 									<?php endforeach; ?>
 
@@ -234,9 +234,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 										<?php
 										$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
 										foreach ($connector_values as $option) : ?>
-											<label for="input-connector-<?= esc_attr($option); ?>" class="!px-9 !py-2 !bg-blue-eco !text-white-eco !font-bold !rounded-full">
+											<label for="input-connector-<?= esc_attr($option); ?>" class="">
 												<input type="radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-												<span class="!text-white-eco"><?= esc_attr($option); ?></span>
+												<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full"><?= esc_attr($option); ?></span>
 											</label>
 										<?php endforeach; ?>
 									</div>
