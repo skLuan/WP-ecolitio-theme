@@ -63,8 +63,24 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  const changeImagePatinete = () => {
+    const imageInterior = document.querySelector('#image-patinete-interior');
+    const imageExterior = document.querySelector('#image-patinete-exterior');
+    const ubicaciones = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
+    ubicaciones.forEach(ubicacion => {
+      if(ubicacion.nodeValue.contains('interior')){
+        imageInterior.style.display = 'block';
+        imageExterior.style.display = 'none';
+      }else{
+        imageInterior.style.display = 'none';
+        imageExterior.style.display = 'block';
+      }
+    });
+  }
+
   if (this.documentURI.includes("bateria-sabway")) {
-    console.log("si es");
     formController();
+
+    changeImagePatinete();
   }
 });
