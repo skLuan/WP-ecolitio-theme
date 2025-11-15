@@ -68,12 +68,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const imageExterior = document.querySelector('#image-patinete-exterior');
     const ubicaciones = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
     ubicaciones.forEach(ubicacion => {
-      if(ubicacion.checked && ubicacion.value.includes('interior')){
-        imageInterior.style.opacity = 0;
-        imageExterior.style.opacity = 1;
-      }else if(ubicacion.checked && ubicacion.value.includes('exterior')){
-        imageInterior.style.opacity = 1;
-        imageExterior.style.opacity = 0;
+      if(ubicacion.checked && ubicacion.value.includes('Interna')){
+        imageInterior.classList.remove('opacity-0');
+        imageExterior.classList.add('opacity-0');
+      }else if(ubicacion.checked && ubicacion.value.includes('Externa')){
+        imageInterior.classList.add('opacity-0');
+        imageExterior.classList.remove('opacity-0');
       }
     });
   }

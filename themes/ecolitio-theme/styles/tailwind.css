@@ -48,10 +48,10 @@
   .swiper-button-next,
   .swiper-button-prev {
     @apply !static !m-0;
-    ::after{
-      @apply hidden;
-    
-    }
+  }
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    @apply !hidden;
   }
   form.sabway-form {
     label span, label image {
@@ -78,7 +78,7 @@
     @apply !w-full !mr-0 !float-none;
   }
   .product {
-    @apply flex flex-wrap !overflow-visible;
+    @apply !grid grid-cols-2 gap-3 !overflow-visible;
 
     .ecolitio-item,
     .woocommerce-product-gallery {

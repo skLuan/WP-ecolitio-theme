@@ -68,7 +68,7 @@ $values = ['s', 'o', 'w'];
 
 $distance = 30;
 ?>
-<div id="product-<?php the_ID(); ?>" <?php wc_product_class('!mt-[133px]', $product); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class('!mt-[133px] md:max-w-10/12 mx-auto', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
 		<?php get_template_part('templates/info-header'); ?>
@@ -174,7 +174,7 @@ $distance = 30;
 										<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
 									</picture>
 								</figure>
-								<figure id="image-patinete-exterior" class="relative z-0">
+								<figure id="image-patinete-exterior" class="absolute top-0 left-0 z-0">
 									<picture>
 										<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteExterior.jpg' ?>" alt="">
 									</picture>
