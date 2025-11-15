@@ -77,15 +77,19 @@
   .content-area {
     @apply !w-full !mr-0 !float-none;
   }
+  .product::after,
+  .product::before {
+    @apply !content-none;
+  }
   .product {
-    @apply !grid grid-cols-2 gap-3 !overflow-visible;
+    @apply grid grid-cols-2 gap-3 !overflow-visible;
 
     .ecolitio-item,
     .woocommerce-product-gallery {
       @apply !float-none;
     }
     .ecolitio-item {
-      @apply md:!w-7/12 !relative !pb-4 !px-4 !border border-blue-eco-dark !rounded-lg;
+      @apply md:!w-[unset] !relative !pb-4 !px-4 !border border-blue-eco-dark !rounded-lg;
 
       form.cart {
         @apply !mb-0 !py-1;
