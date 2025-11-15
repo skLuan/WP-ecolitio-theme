@@ -29,15 +29,8 @@
     @apply !leading-normal;
   }
 
-  h3 {
-    @apply !leading-none;
-  }
-
   section {
     @apply min-h-56;
-  }
-  #main.site-main {
-    @apply !px-4 md:max-w-10/12 mx-auto;
   }
   input:focus {
     @apply !outline-green-eco;
@@ -57,6 +50,9 @@
     @apply !static;
   }
   form.sabway-form {
+    label span {
+      @apply block;
+    }
     label input[type="radio"] {
       @apply hidden;
     }

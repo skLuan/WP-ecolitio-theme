@@ -151,7 +151,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 											foreach ($values as $option) : ?>
 												<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 													<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:bg-green-eco"><?= esc_attr($option); ?></span>
+													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:!bg-green-eco"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
@@ -164,7 +164,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 											foreach ($values as $option) : ?>
 												<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 													<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:bg-green-eco"><?= esc_attr($option); ?></span>
+													<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:!bg-green-eco"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
@@ -193,7 +193,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 									<?php foreach ($ubication_values as $option) : ?>
 										<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 											<input type="radio" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-											<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:bg-green-eco"><?= esc_attr($option); ?></span>
+											<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:!bg-green-eco"><?= esc_attr($option); ?></span>
 										</label>
 									<?php endforeach; ?>
 
@@ -228,15 +228,18 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 								get_template_part('templates/icon-title', null, $props);
 								get_template_part('templates/progress-bar'); // -------- Progress bar 
 								?>
-								<div class="tipo-de-conector">
+								<div class="tipo-de-conector pb-2">
 									<h4 class="!text-white-eco !font-bold">Tipo de Conector:</h4>
 									<div class="label-container flex flex-row gap-4 justify-evenly">
 										<?php
 										$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
 										foreach ($connector_values as $option) : ?>
 											<label for="input-connector-<?= esc_attr($option); ?>" class="">
-												<input type="radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-												<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:bg-green-eco"><?= esc_attr($option); ?></span>
+												<input type="radio" class="peer" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+												<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-green-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+												<picture>
+													<img width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores" . esc_attr($option) . ".png"?>" alt="<?= esc_attr($option) ?>">
+												</picture>
 											</label>
 										<?php endforeach; ?>
 									</div>
