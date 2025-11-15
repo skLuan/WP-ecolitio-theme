@@ -68,10 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const imageExterior = document.querySelector('#image-patinete-exterior');
     const ubicaciones = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
     ubicaciones.forEach(ubicacion => {
-      if(ubicacion.nodeValue.contains('interior')){
+      if(ubicacion.checked && ubicacion.value.includes('interior')){
         imageInterior.style.display = 'block';
         imageExterior.style.display = 'none';
-      }else{
+      }else if(ubicacion.checked){
         imageInterior.style.display = 'none';
         imageExterior.style.display = 'block';
       }
@@ -82,5 +82,11 @@ document.addEventListener("DOMContentLoaded", function () {
     formController();
 
     changeImagePatinete();
+    
+    // Add event listeners to update image when radio button selection changes
+    const ubicaciones = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
+    ubicaciones.forEach(ubicacion => {
+      ubicacion.addEventListener('change', changeImagePatinete);
+    });
   }
 });

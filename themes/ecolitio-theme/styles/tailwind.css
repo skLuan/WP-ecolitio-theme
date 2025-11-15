@@ -47,7 +47,7 @@
   }
   .swiper-button-next,
   .swiper-button-prev {
-    @apply !static;
+    @apply !static !m-0;
   }
   form.sabway-form {
     label span {

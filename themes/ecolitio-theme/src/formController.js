@@ -585,7 +585,7 @@ export const formController = () => {
     const validation = formValidator.validate();
     if (!validation.isValid) {
       uiManager.showFeedback(
-        `Please fix the following errors:\n${validation.errors.join("\n")}`,
+        `Por favor, corrige los siguientes errores:\n${validation.errors.join("\n")}`,
         "error",
         form
       );
@@ -610,7 +610,7 @@ export const formController = () => {
 
       // Step 6: Show success feedback
       uiManager.showFeedback(
-        `¡Pedido realizado con éxito! Order ID: ${result.id}`,
+        `¡Pedido realizado con éxito! ID del Pedido: ${result.id}`,
         "success",
         form
       );
@@ -636,7 +636,7 @@ export const formController = () => {
     } catch (error) {
       console.error("Form Submission Error:", error);
       uiManager.showFeedback(
-        `Error al enviar el pedido: ${error.message}. Por favor, intente de nuevo.`,
+        `Error al enviar el pedido: ${error.message}. Por favor, intenta de nuevo.`,
         "error",
         form
       );

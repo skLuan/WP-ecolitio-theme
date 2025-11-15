@@ -43,50 +43,35 @@ add_action('ecolitio_single_product_summary', 'woocommerce_template_single_title
 add_action('ecolitio_single_product_summary', 'woocommerce_template_single_rating', 20);
 add_action('ecolitio_single_product_prices', 'woocommerce_template_single_price', 20);
 add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to_cart', 20);
+//----------------------------------------------------------------------------------------------------
+$icons = [
+	"step1" => [
+		"icon" => "ix:electrical-energy-filled",
+		"title" => "Parte eléctrica",
+	],
+	"step2" => [
+		"icon" => "tabler:dimensions",
+		"title" => "Dimensiones",
+	],
+	"step3" => [
+		"icon" => "material-symbols:cable",
+		"title" => "Conectores",
+	],
+	"step4" => [
+		"icon" => "material-symbols:check-circle",
+		"title" => "Confirmación",
+	],
+];
+
+$getAttributes = $product->get_attributes();
+$values = ['s', 'o', 'w'];
+
+$distance = 30;
 ?>
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
 		<?php get_template_part('templates/info-header'); ?>
-		<div>
-		</div>
-		<?php
-		/**
-		 * Hook: woocommerce_single_product_summary.
-		 *
-		 * @hooked woocommerce_template_single_excerpt - 20
-		 * @hooked woocommerce_template_single_meta - 40
-		 * @hooked woocommerce_template_single_sharing - 50
-		 * @hooked WC_Structured_Data::generate_product_data() - 60
-		 */
-		do_action('woocommerce_single_product_summary');
-
-		$icons = [
-			"step1" => [
-				"icon" => "ix:electrical-energy-filled",
-				"title" => "Parte eléctrica",
-			],
-			"step2" => [
-				"icon" => "tabler:dimensions",
-				"title" => "Dimensiones",
-			],
-			"step3" => [
-				"icon" => "material-symbols:cable",
-				"title" => "Conectores",
-			],
-			"step4" => [
-				"icon" => "material-symbols:check-circle",
-				"title" => "Confirmación",
-			],
-		];
-
-
-		$getAttributes = $product->get_attributes();
-		$values = ['s', 'o', 'w'];
-
-
-		$distance = 30;
-		?>
 
 		<article class="my-6">
 			<form action="submit" method="post" class="sabway-form !bg-black !rounded-lg !px-4 !py-6">
@@ -242,7 +227,7 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 											<label for="input-connector-<?= esc_attr($option); ?>" class="">
 												<input type="radio" class="peer" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
 												<picture>
-													<img class="border border-gray-300 rounded-lg" width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png"?>" alt="<?= esc_attr($option) ?>">
+													<img class="rounded-lg peer-checked:!border peer-checked:border-green-eco" width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 												</picture>
 												<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-green-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 											</label>
@@ -263,9 +248,9 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 										// Sanitize value for HTML ID by removing spaces and special characters
 										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 									?>
-										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2">
+										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 !border-y border-azul-eco justify-center p-4">
 											<strong><?= esc_html($value); ?></strong>
-											<p id="">
+											<p id="" class="!m-0">
 											</p>
 										</li>
 									<?php endforeach; ?>
@@ -311,6 +296,17 @@ add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to
 				</div>
 			</form>
 		</article>
+		<?php
+		/**
+		 * Hook: woocommerce_single_product_summary.
+		 *
+		 * @hooked woocommerce_template_single_excerpt - 20
+		 * @hooked woocommerce_template_single_meta - 40
+		 * @hooked woocommerce_template_single_sharing - 50
+		 * @hooked WC_Structured_Data::generate_product_data() - 60
+		 */
+		do_action('woocommerce_single_product_summary');
+		?>
 	</div>
 
 	<?php
