@@ -88,7 +88,7 @@ $distance = 30;
 					<div class="swiper-wrapper">
 						<!-- Slides -->
 						<div class="swiper-slide">
-							<div id="sab-step-0" class="step !flex !flex-col !gap-y-10">
+							<div id="sab-step-0" class="step !flex !flex-col !gap-y-6">
 								<div class="!flex !flex-row !gap-4"><iconify-icon icon="" class="!hidden"></iconify-icon>
 									<h2 class="!text-white-eco">Tu bateria a media</h2>
 								</div>
@@ -103,12 +103,12 @@ $distance = 30;
 								</div>
 								<?php get_template_part('templates/progress-bar'); // -------- Progress bar
 								?>
-								<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
-								?>
 							</div>
+							<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
+							?>
 						</div>
 						<div class="swiper-slide">
-							<div id="sab-step-1" class="step !flex !flex-col !gap-y-10">
+							<div id="sab-step-1" class="step !flex !flex-col gap-y-10">
 								<?php //----------------------------------------------------- 1. Especificaciones eléctricas
 								$props = array('icon' => esc_attr($icons["step1"]['icon']), 'title' => 'Paso 1: Especificaciones Eléctricas');
 								get_template_part('templates/icon-title', null, $props);
@@ -160,7 +160,7 @@ $distance = 30;
 							?>
 						</div>
 						<div class="swiper-slide">
-							<div id="sab-step-2" class="step !flex !flex-col !gap-y-10">
+							<div id="sab-step-2" class="step !flex !flex-col !gap-y-6">
 								<?php //----------------------------------------------------- 2. Dimensiones Físicas
 								$props = array('icon' => esc_attr($icons["step2"]['icon']), 'title' => 'Paso 2: Dimensiones Físicas');
 
@@ -169,7 +169,7 @@ $distance = 30;
 
 								$ubication_values = isset($getAttributes['ubicacion-de-bateria']['options']) ? $getAttributes['ubicacion-de-bateria']['options'] : $values;
 								?>
-								<figure id="image-patinete-interior" class="relative z-0">
+								<figure id="image-patinete-interior" class="relative z-0 transition-all ease-in-out duration-300">
 									<picture>
 										<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
 									</picture>
@@ -211,7 +211,7 @@ $distance = 30;
 							?>
 						</div>
 						<div class="swiper-slide">
-							<div id="sab-step-3" class="step !flex !flex-col !gap-y-10">
+							<div id="sab-step-3" class="step !flex !flex-col !gap-y-6">
 								<?php
 								$props = array('icon' => esc_attr($icons["step3"]['icon']), 'title' => 'Paso 3: Conectores');
 
@@ -239,7 +239,7 @@ $distance = 30;
 							?>
 						</div>
 						<div class="swiper-slide">
-							<div id="sab-step-4" class="step !flex !flex-col !gap-y-10">
+							<div id="sab-step-4" class="step !flex !flex-col !gap-y-6">
 								<?php $props = array('icon' => esc_attr($icons["step4"]['icon']), 'title' => 'Paso 4: Confirmación');
 								get_template_part('templates/icon-title', null, $props); ?>
 								<ul>
@@ -265,7 +265,7 @@ $distance = 30;
 							</div>
 						</div>
 						<div class="swiper-slide">
-							<div id="sab-step-5" class="step !flex !flex-col !gap-y-10">
+							<div id="sab-step-5" class="step !flex !flex-col !gap-y-6">
 								<?php
 								$props = array('icon' => "material-symbols:check-circle", 'title' => 'Gracias! - pedido realizado con éxito!');
 

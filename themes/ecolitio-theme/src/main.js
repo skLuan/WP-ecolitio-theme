@@ -69,11 +69,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const ubicaciones = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
     ubicaciones.forEach(ubicacion => {
       if(ubicacion.checked && ubicacion.value.includes('interior')){
-        imageInterior.style.display = 'block';
-        imageExterior.style.display = 'none';
-      }else if(ubicacion.checked){
-        imageInterior.style.display = 'none';
-        imageExterior.style.display = 'block';
+        imageInterior.style.opacity = 0;
+        imageExterior.style.opacity = 1;
+      }else if(ubicacion.checked && ubicacion.value.includes('exterior')){
+        imageInterior.style.opacity = 1;
+        imageExterior.style.opacity = 0;
       }
     });
   }
