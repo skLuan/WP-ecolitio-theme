@@ -45,7 +45,7 @@ add_action('ecolitio_single_product_summary', 'woocommerce_template_single_ratin
 add_action('ecolitio_single_product_prices', 'woocommerce_template_single_price', 20);
 add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to_cart', 20);
 ?>
-<div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class('!mt-[133px]', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
 		<?php get_template_part('templates/info-header'); ?>
