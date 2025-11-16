@@ -57,8 +57,11 @@
   /* -------------------------------------------------- */
   .eco-main-info-header .variations_form {
     .value {
-      @apply !bg-black !text-green-eco !rounded-md !border !border-blue-eco-clarisimo;
-    
+      @apply !bg-black !rounded-md !border !border-blue-eco-clarisimo;
+      
+      selector {
+        @apply !text-green-eco;
+      }
     }
   }
   form.sabway-form {
