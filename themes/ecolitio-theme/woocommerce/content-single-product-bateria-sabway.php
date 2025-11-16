@@ -224,7 +224,7 @@ $distance = 30;
 								?>
 								<div class="tipo-de-conector pb-2">
 									<h4 class="!text-white-eco !font-bold">Tipo de Conector:</h4>
-									<div class="label-container flex flex-row gap-4 justify-evenly">
+									<div class="label-container grid grid-cols-2 gap-2 grid-rows-2 justify-evenly">
 										<?php
 										$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
 										foreach ($connector_values as $option) : ?>
@@ -254,7 +254,7 @@ $distance = 30;
 										// Sanitize value for HTML ID by removing spaces and special characters
 										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 									?>
-										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 first:!border-t !border-b last:!border-b-0 border-blue-eco-clarisimo justify-center p-4">
+										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 !border-b last:!border-b-0 border-blue-eco-clarisimo justify-center p-4">
 											<strong><?= esc_html($value); ?></strong>
 											<p id="" class="!m-0">
 											</p>

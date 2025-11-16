@@ -57,7 +57,7 @@
   /* -------------------------------------------------- */
   .eco-main-info-header .variations_form {
     .value {
-      @apply !bg-black !rounded-md !border !border-blue-eco-clarisimo;
+      @apply !bg-black !rounded-md !border !border-blue-eco-clarisimo w-fit;
       
       select {
         @apply !text-green-eco bg-black;
