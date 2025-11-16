@@ -54,6 +54,10 @@
     @apply !hidden;
   }
   form.sabway-form {
+    label span {
+      @apply cursor-pointer hover:bg-black hover:!text-green-eco hover:!border border-green-eco;
+    }
+
     label span, label image {
       @apply block transition-all duration-300 ease-in-out;
     }
