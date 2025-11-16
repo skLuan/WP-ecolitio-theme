@@ -136,7 +136,7 @@ $distance = 30;
 											foreach ($values as $option) : ?>
 												<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 													<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco !px-9 !py-2 bg-blue-eco !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+													<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-green-eco hover:!border !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
@@ -149,7 +149,7 @@ $distance = 30;
 											foreach ($values as $option) : ?>
 												<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 													<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-													<span class="!text-white-eco !px-9 !py-2 bg-blue-eco !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+													<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-green-eco hover:!border !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 												</label>
 											<?php endforeach; ?>
 										</div>
