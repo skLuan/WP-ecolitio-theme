@@ -177,7 +177,7 @@ $distance = 30;
 											<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
 										</picture>
 									</figure>
-									<figure id="image-patinete-exterior" class="absolute top-0 left-0 z-0">
+									<figure id="image-patinete-exterior" class="absolute top-0 left-0 z-0 transition-all ease-in-out duration-300">
 										<picture>
 											<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteExterior.jpg' ?>" alt="">
 										</picture>
@@ -261,7 +261,7 @@ $distance = 30;
 										</li>
 									<?php endforeach; ?>
 								</ul>
-								<div id="sab-form-controls" class="!flex !flex-row !justify-end !w-full">
+								<div id="sab-form-controls" class="!flex !flex-row !justify-end gap-4 items-center !w-full">
 									<div id="" class="swiper-button-prev sab-back-button cursor-pointer !w-fit border !border-white-eco opacity-70 !text-white-eco !bg-transparent !rounded-full !px-14 !py-3">
 										<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
 										Atrás
