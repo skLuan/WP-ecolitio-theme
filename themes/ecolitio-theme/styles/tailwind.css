@@ -58,11 +58,44 @@
       @apply cursor-pointer border-green-eco;
     }
 
-    label span, label image {
+    label span,
+    label image {
       @apply block transition-all duration-300 ease-in-out;
     }
     label input[type="radio"] {
       @apply hidden;
+    }
+    label .custom-range {
+      @apply appearance-none w-full h-2 rounded-lg bg-gray-700;
+    }
+
+    label .custom-range::-webkit-slider-thumb {
+      @apply appearance-none h-6 w-6 rounded-full bg-blue-eco-clarisimo transition;
+    }
+    label .custom-range:focus::-webkit-slider-thumb {
+      @apply ring-2 ring-blue-eco;
+    }
+
+    label .custom-range::-webkit-slider-runnable-track {
+      @apply h-2 rounded-lg bg-green-eco-dark;
+    }
+
+    /* For Firefox */                        /* For IE */
+    label .custom-range::-moz-range-thumb, label .custom-range::-ms-thumb {
+      @apply h-6 w-6 rounded-full bg-blue-eco-clarisimo transition;
+    }
+    label .custom-range:focus::-moz-range-thumb, label .custom-range:focus::-ms-thumb {
+      @apply ring-2 ring-blue-eco;
+    }
+    label .custom-range::-moz-range-track {
+      @apply h-2 rounded-lg bg-green-eco-dark;
+    }
+
+    label .custom-range::-ms-fill-lower {
+      @apply bg-green-eco-dark rounded-lg;
+    }
+    label .custom-range::-ms-fill-upper {
+      @apply bg-gray-700 rounded-lg;
     }
   }
   .storefront-breadcrumb {

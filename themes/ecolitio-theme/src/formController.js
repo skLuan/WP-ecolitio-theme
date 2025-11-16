@@ -15,7 +15,7 @@ const formValidator = {
     // Validate distance range
     const distanceRange = document.getElementById("sab-distance-range");
     if (!distanceRange || !distanceRange.value) {
-      errors.push("Distance range is required");
+      errors.push("El rango de distancia es requerido");
     }
 
     // Validate voltage selection
@@ -23,7 +23,7 @@ const formValidator = {
       'input[name="voltage"]:checked'
     );
     if (!voltageSelected) {
-      errors.push("Voltage specification is required");
+      errors.push("La especificación de voltaje es requerida");
     }
 
     // Validate amperage selection
@@ -31,7 +31,7 @@ const formValidator = {
       'input[name="amperage"]:checked'
     );
     if (!amperageSelected) {
-      errors.push("Amperage specification is required");
+      errors.push("La especificación de amperaje es requerida");
     }
 
     // Validate battery location
@@ -39,7 +39,7 @@ const formValidator = {
       'input[name="ubicacion-de-bateria"]:checked'
     );
     if (!locationSelected) {
-      errors.push("Battery location is required");
+      errors.push("La ubicación de la batería es requerida");
     }
 
     // Validate physical dimensions
@@ -53,7 +53,7 @@ const formValidator = {
       isNaN(height.value) ||
       parseFloat(height.value) <= 0
     ) {
-      errors.push("Valid height (cm) is required");
+      errors.push("Se requiere una altura válida (cm)");
     }
 
     if (
@@ -62,7 +62,7 @@ const formValidator = {
       isNaN(width.value) ||
       parseFloat(width.value) <= 0
     ) {
-      errors.push("Valid width (cm) is required");
+      errors.push("Se requiere un ancho válido (cm)");
     }
 
     if (
@@ -71,13 +71,13 @@ const formValidator = {
       isNaN(length.value) ||
       parseFloat(length.value) <= 0
     ) {
-      errors.push("Valid length (cm) is required");
+      errors.push("Se requiere una longitud válida (cm)");
     }
 
     // Validate scooter model
     const scooterModel = document.getElementById("modelo-patinete");
     if (!scooterModel || !scooterModel.value.trim()) {
-      errors.push("Scooter model is required");
+      errors.push("El modelo del patinete es requerido");
     }
 
     // Validate connector type
@@ -85,7 +85,7 @@ const formValidator = {
       'input[name="tipo-de-conector"]:checked'
     );
     if (!connectorSelected) {
-      errors.push("Connector type is required");
+      errors.push("El tipo de conector es requerido");
     }
 
     return {
@@ -169,7 +169,7 @@ const uiManager = {
     }`;
     feedbackDiv.textContent = message;
 
-    formElement.insertBefore(feedbackDiv, formElement.firstChild);
+    formElement.appendChild(feedbackDiv);
 
     // Auto-remove success messages after 5 seconds
     if (type === "success") {

@@ -96,7 +96,7 @@ $distance = 30;
 								<div class="ec-icons !flex !flex-row !w-full !justify-around">
 									<?php foreach ($icons as $icon) : ?>
 										<div class="ec-icon-container flex !flex-col !items-center justify-center !gap-1">
-											<iconify-icon  icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-blue-eco-dark bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
+											<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-blue-eco-dark bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
 											<h4 class="!text-white-eco"><?= esc_html($icon['title']); ?></h4>
 										</div>
 									<?php endforeach; ?>
@@ -115,12 +115,14 @@ $distance = 30;
 								?>
 								<?php get_template_part('templates/progress-bar'); // -------- Progress bar 
 								?>
-								<p>Cuantos kilometros extra quieres recorrer?</p>
 								<div class="flex flex-col">
+									<p class="mb-3">Cuantos kilometros extra quieres recorrer?</p>
 									<p><strong>Autonomia: </strong><span><?= esc_attr($distance) ?></span>Km</p>
-									<input type="range" id="sab-distance-range" name="sab-distance-range" min="10" max="100" value="<?= intval($distance) ?>" step="1" class="w-full">
-									<span id="progress-minval" class="">Min value</span>
-									<span id="progress-maxval" class="ml-auto">Max value</span>
+									<input type="range" id="sab-distance-range" class="custom-range" name="sab-distance-range" min="10" max="100" value="<?= intval($distance) ?>" step="1" class="w-full">
+									<div class="flex flex-row w-full">
+										<span id="progress-minval" class="">8 km</span>
+										<span id="progress-maxval" class="ml-auto">184 km</span>
+									</div>
 								</div>
 								<div id="sab-form-energy-advanced">
 									<h4 class="!text-white-eco !font-bold !flex flex-row items-center gap-2 !mb-0">Opciones Avanzadas <iconify-icon icon="material-symbols:arrow-drop-down" class="!text-white-eco !cursor-pointer" width="24" height="24"></iconify-icon></h4>
@@ -169,21 +171,23 @@ $distance = 30;
 
 								$ubication_values = isset($getAttributes['ubicacion-de-bateria']['options']) ? $getAttributes['ubicacion-de-bateria']['options'] : $values;
 								?>
-								<figure id="image-patinete-interior" class="relative z-0 transition-all ease-in-out duration-300">
-									<picture>
-										<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
-									</picture>
-								</figure>
-								<figure id="image-patinete-exterior" class="absolute top-0 left-0 z-0">
-									<picture>
-										<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteExterior.jpg' ?>" alt="">
-									</picture>
-								</figure>
-								<div class="w-2/3 lg:w-1/2 flex flex-row justify-evenly">
+								<div class="relative">
+									<figure id="image-patinete-interior" class="relative z-0 transition-all ease-in-out duration-300">
+										<picture>
+											<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteInterior.jpg' ?>" alt="">
+										</picture>
+									</figure>
+									<figure id="image-patinete-exterior" class="absolute top-0 left-0 z-0">
+										<picture>
+											<img src="<?= get_stylesheet_directory_uri() . '/assets/PatineteExterior.jpg' ?>" alt="">
+										</picture>
+									</figure>
+								</div>
+								<div class="flex flex-row gap-4">
 									<?php foreach ($ubication_values as $option) : ?>
 										<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 											<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-											<span class="!text-white-eco !px-9 !py-2 !bg-blue-eco !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+											<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-green-eco hover:!border !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 										</label>
 									<?php endforeach; ?>
 
@@ -226,9 +230,11 @@ $distance = 30;
 										foreach ($connector_values as $option) : ?>
 											<label for="input-connector-<?= esc_attr($option); ?>" class="">
 												<input type="radio" class="peer" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-												<picture>
-													<img class="rounded-lg peer-checked:!border peer-checked:border-green-eco" width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
-												</picture>
+												<figure class="cursor-pointer peer-checked:!border peer-checked:border-green-eco rounded-lg overflow-hidden">
+													<picture>
+														<img class="" width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
+													</picture>
+												</figure>
 												<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-green-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 											</label>
 										<?php endforeach; ?>
@@ -248,7 +254,7 @@ $distance = 30;
 										// Sanitize value for HTML ID by removing spaces and special characters
 										$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 									?>
-										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 !border-y border-azul-eco justify-center p-4">
+										<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 first:!border-t !border-b last:!border-b-0 border-blue-eco-clarisimo justify-center p-4">
 											<strong><?= esc_html($value); ?></strong>
 											<p id="" class="!m-0">
 											</p>
@@ -311,14 +317,14 @@ $distance = 30;
 	<div class="column2">
 
 		<?php
-	/**
-	 * Hook: woocommerce_before_single_product_summary.
-	*
-	* @hooked woocommerce_show_product_sale_flash - 10
-	* @hooked woocommerce_show_product_images - 20
-	*/
-	do_action('woocommerce_before_single_product_summary');
-	?>
+		/**
+		 * Hook: woocommerce_before_single_product_summary.
+		 *
+		 * @hooked woocommerce_show_product_sale_flash - 10
+		 * @hooked woocommerce_show_product_images - 20
+		 */
+		do_action('woocommerce_before_single_product_summary');
+		?>
 	</div>
 </div>
 <?php
