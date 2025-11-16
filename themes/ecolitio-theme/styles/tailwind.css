@@ -59,8 +59,8 @@
     .value {
       @apply !bg-black !rounded-md !border !border-blue-eco-clarisimo;
       
-      selector {
-        @apply !text-green-eco;
+      select {
+        @apply !text-green-eco bg-black;
       }
     }
   }
