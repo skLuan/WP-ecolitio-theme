@@ -24,17 +24,6 @@ $attribute_keys  = array_keys($attributes);
 $variations_json = wp_json_encode($available_variations);
 $variations_attr = function_exists('wc_esc_json') ? wc_esc_json($variations_json) : _wp_specialchars($variations_json, ENT_QUOTES, 'UTF-8', true);
 
-
-/**
- * Hook: woocommerce_single_variation. Used to output the cart button and placeholder for variation data.
- *
- * @since 2.4.0
- * @hooked woocommerce_single_variation - 10 Empty div for variation data.
- * @hooked woocommerce_single_variation_add_to_cart_button - 20 Qty and cart button.
- */
-remove_action('woocommerce_single_variation', 'woocommerce_single_variation', 10);
-
-
 do_action('woocommerce_before_add_to_cart_form'); ?>
 
 <form class="variations_form cart" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint($product->get_id()); ?>" data-product_variations="<?php echo $variations_attr; // WPCS: XSS ok. 

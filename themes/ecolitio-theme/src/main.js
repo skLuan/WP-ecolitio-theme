@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (this.documentURI.includes("bateria-sabway")) {
     formController();
-
     changeImagePatinete();
     
     // Add event listeners to update image when radio button selection changes
@@ -88,5 +87,59 @@ document.addEventListener("DOMContentLoaded", function () {
     ubicaciones.forEach(ubicacion => {
       ubicacion.addEventListener('change', changeImagePatinete);
     });
+  }
+
+  const updatePriceVariableProduct = () => {
+    const bigPrice = document.querySelector('h5.eco-price');
+    const siblingDescription = document.querySelector('.woocommerce-product-details__short-description');
+    // Store initial price backup
+    const initPriceNode = bigPrice ? bigPrice.innerHTML : null;
+    
+    // Get the variation container
+    const singleNodeAtributes = document.querySelector('form.variations_form .woocommerce-variation');
+    
+    if (!singleNodeAtributes || !bigPrice || !siblingDescription) {
+      return; // Exit if required elements don't exist
+    }
+    
+    // Setup MutationObserver to detect changes in variation
+    const observer = new MutationObserver(() => {
+      const varDescription = singleNodeAtributes.querySelector('.woocommerce-variation-description');
+      const varPrice = singleNodeAtributes.querySelector('.woocommerce-variation-price');
+      
+      // Update bigPrice with varPrice HTML content
+      if (varPrice && varPrice.innerHTML.trim()) {
+        bigPrice.innerHTML = varPrice.innerHTML;
+      }
+      
+      // Insert or replace varDescription before siblingDescription
+      if (varDescription && varDescription.innerHTML.trim()) {
+        // Check if description already exists
+        const existingVarDesc = siblingDescription.previousElementSibling;
+        
+        if (existingVarDesc && existingVarDesc.classList.contains('woocommerce-variation-description')) {
+          // Replace existing description
+          existingVarDesc.innerHTML = varDescription.innerHTML;
+        } else {
+          // Create new description element and insert before siblingDescription
+          const newDescElement = document.createElement('div');
+          newDescElement.className = 'woocommerce-variation-description';
+          newDescElement.innerHTML = varDescription.innerHTML;
+          siblingDescription.parentNode.insertBefore(newDescElement, siblingDescription);
+        }
+      }
+    });
+    
+    // Observe changes in the variation container
+    observer.observe(singleNodeAtributes, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  };
+
+  // Initialize price update for variable products
+  if (document.querySelector('form.variations_form')) {
+    updatePriceVariableProduct();
   }
 });
