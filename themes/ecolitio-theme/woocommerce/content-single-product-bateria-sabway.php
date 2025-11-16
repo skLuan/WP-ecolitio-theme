@@ -68,7 +68,7 @@ $values = ['s', 'o', 'w'];
 
 $distance = 30;
 ?>
-<div id="product-<?php the_ID(); ?>" <?php wc_product_class('!mt-[133px] md:max-w-10/12 mx-auto', $product); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class('!mt-[133px] md:max-w-10/12 mx-auto grid grid-cols-2 gap-3', $product); ?>>
 
 	<div class="summary entry-summary ecolitio-item">
 		<?php get_template_part('templates/info-header'); ?>
