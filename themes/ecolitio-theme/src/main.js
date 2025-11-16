@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const initPriceNode = bigPrice ? bigPrice.innerHTML : null;
     
     // Get the variation container
-    const singleNodeAtributes = document.querySelector('form.variations_form .woocommerce-variation');
+    const singleNodeAtributes = document.querySelector('form.variations_form');
     
     if (!singleNodeAtributes || !bigPrice || !siblingDescription) {
       return; // Exit if required elements don't exist
