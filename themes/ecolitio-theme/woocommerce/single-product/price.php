@@ -24,3 +24,4 @@ global $product;
 
 ?>
 <h5 class="!my-2 !font-bold !text-2xl !text-green-eco <?= esc_attr(apply_filters('woocommerce_product_price_class', 'price')); ?>"><?php echo $product->get_price_html(); ?></h5>
+<?php do_action('woocommerce_single_variation') ?>
