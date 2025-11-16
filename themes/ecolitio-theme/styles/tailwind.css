@@ -98,7 +98,7 @@
           @apply !rounded-full !bg-green-eco !text-black-eco !flex flex-row items-center gap-2 !py-1.5 !px-12;
         }
         .quantity input {
-          @apply !bg-black rounded-md !text-white-eco;
+          @apply !bg-black rounded-md !text-white-eco !border border-blue-eco-clarisimo;
         }
       }
 
@@ -111,7 +111,7 @@
       }
     }
     .woocommerce-product-gallery {
-      @apply !mr-0 md:!w-5/12;
+      @apply !mr-0;
     }
   }
   table td {
