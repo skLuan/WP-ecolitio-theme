@@ -29,50 +29,6 @@ get_header(); ?>
 
 			endwhile; // End of the loop.
 			?>
-			<section id="productos_destacados">
-				<div class="container mx-auto px-4 py-8">
-					<h2 class="text-2xl !text-white-eco font-bold mb-6 text-center"><?php _e('Productos Destacados', 'ecolitio-theme'); ?></h2>
-
-					<?php
-					// Query for featured products
-					$featured_products_args = array(
-						'post_type'      => 'product',
-						'posts_per_page' => 9,
-						'post_status'    => 'publish',
-						'meta_query'     => array(
-							array(
-								'key'   => '_featured',
-								'value' => 'yes',
-							),
-						),
-					);
-
-					$featured_products_query = new WP_Query($featured_products_args);
-
-					if ($featured_products_query->have_posts()) :
-						?>
-						<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-							<?php
-							while ($featured_products_query->have_posts()) :
-								$featured_products_query->the_post();
-								get_template_part('templates/product-card');
-							endwhile;
-							wp_reset_postdata();
-							?>
-						</div>
-						<?php
-					else :
-						// No featured products found
-						?>
-						<div class="text-center py-12">
-							<h3 class="text-xl font-semibold text-gray-600 mb-4"><?php _e('Próximamente', 'ecolitio-theme'); ?></h3>
-							<p class="text-gray-500"><?php _e('Productos destacados estarán disponibles pronto.', 'ecolitio-theme'); ?></p>
-						</div>
-						<?php
-					endif;
-					?>
-				</div>
-			</section>
 
 			<section id="preguntas-frecuentes" class="bg-white-eco py-8">
 				<div class="container mx-auto px-4 py-8">

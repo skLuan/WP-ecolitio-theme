@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const initPriceNode = bigPrice ? bigPrice.innerHTML : null;
     
     // Get the variation container
-    const singleNodeAtributes = document.querySelector('form.variations_form');
+    const singleNodeAtributes = document.querySelector('form.variations_form .woocommerce-variation');
     
     if (!singleNodeAtributes || !bigPrice || !siblingDescription) {
       return; // Exit if required elements don't exist
@@ -104,12 +104,15 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Setup MutationObserver to detect changes in variation
     const observer = new MutationObserver(() => {
+      const quantity = document.querySelector('input[name="quantity"]').value ? parseInt(document.querySelector('input[name="quantity"]').value) : 1;
       const varDescription = singleNodeAtributes.querySelector('.woocommerce-variation-description');
       const varPrice = singleNodeAtributes.querySelector('.woocommerce-variation-price');
       
       // Update bigPrice with varPrice HTML content
       if (varPrice && varPrice.innerHTML.trim()) {
         bigPrice.innerHTML = varPrice.innerHTML;
+        const priceNewValue = quantity * parseInt(varPrice.querySelector('bdi').lastChild.textContent);
+        bigPrice.querySelector('bdi').lastChild.textContent = priceNewValue;
       }
       
       // Insert or replace varDescription before siblingDescription
