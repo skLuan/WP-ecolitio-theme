@@ -35,10 +35,10 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 	<?php else : ?>
 		<div class="variations" cellspacing="0" role="presentation">
 			<?php foreach ($attributes as $attribute_name => $options) : ?>
-				<div class="flex flex-row gap-2 px-3 first:mb-1">
-					<div class="label p-2 w-1/3"><label class="!text-lg !font-bold" for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name); // WPCS: XSS ok. 
+				<div class="flex flex-row gap-2 px-1 my-1 first:mb-1">
+					<div class="label p-2 w-1/2"><label class="!text-lg !font-bold" for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name); // WPCS: XSS ok. 
 																													?></label></div>
-					<div class="value p-2 w-auto">
+					<div class="value p-2 w-auto h-fit">
 						<?php
 						wc_dropdown_variation_attribute_options(
 							array(
@@ -50,6 +50,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 
 						?>
 					</div>
+				</div>
 					<?php
 					/**
 					 * Filters the reset variation button.
@@ -60,7 +61,6 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 					 */
 					echo end($attribute_keys) === $attribute_name ? wp_kses_post(apply_filters('woocommerce_reset_variations_link', '<a class="reset_variations" href="#" aria-label="' . esc_attr__('Clear options', 'woocommerce') . '">' . esc_html__('Clear', 'woocommerce') . '</a>')) : '';
 					?>
-				</div>
 			<?php endforeach; ?>
 		</div>
 		<div class="reset_variations_alert screen-reader-text" role="alert" aria-live="polite" aria-relevant="all"></div>
