@@ -497,3 +497,113 @@ function ecolitio_enqueue_sabway_form_security() {
     ');
 }
 }
+
+/**
+ * Display custom battery data in cart
+ */
+add_filter('woocommerce_get_item_data', 'ecolitio_display_custom_battery_data_cart', 10, 2);
+function ecolitio_display_custom_battery_data_cart($item_data, $cart_item) {
+    if (isset($cart_item['_sabway_custom_order'])) {
+        // Electrical Specs
+        if (isset($cart_item['_sabway_electrical_specs'])) {
+            $specs = $cart_item['_sabway_electrical_specs'];
+            if (!empty($specs['voltage'])) {
+                $item_data[] = array(
+                    'key'     => __('Voltaje', 'ecolitio-theme'),
+                    'value'   => $specs['voltage'],
+                    'display' => $specs['voltage'],
+                );
+            }
+            if (!empty($specs['amperage'])) {
+                $item_data[] = array(
+                    'key'     => __('Amperaje', 'ecolitio-theme'),
+                    'value'   => $specs['amperage'],
+                    'display' => $specs['amperage'],
+                );
+            }
+            if (!empty($specs['distance_range_km'])) {
+                $item_data[] = array(
+                    'key'     => __('Autonomía', 'ecolitio-theme'),
+                    'value'   => $specs['distance_range_km'] . ' km',
+                    'display' => $specs['distance_range_km'] . ' km',
+                );
+            }
+        }
+
+        // Physical Dimensions
+        if (isset($cart_item['_sabway_physical_dimensions'])) {
+            $dims = $cart_item['_sabway_physical_dimensions'];
+            $dimensions_str = sprintf(
+                '%s x %s x %s cm',
+                $dims['height_cm'],
+                $dims['width_cm'],
+                $dims['length_cm']
+            );
+            $item_data[] = array(
+                'key'     => __('Dimensiones', 'ecolitio-theme'),
+                'value'   => $dimensions_str,
+                'display' => $dimensions_str,
+            );
+        }
+
+        // Other Specs
+        if (isset($cart_item['_sabway_specifications'])) {
+            $other = $cart_item['_sabway_specifications'];
+            if (!empty($other['scooter_model'])) {
+                $item_data[] = array(
+                    'key'     => __('Modelo Patinete', 'ecolitio-theme'),
+                    'value'   => $other['scooter_model'],
+                    'display' => $other['scooter_model'],
+                );
+            }
+            if (!empty($other['battery_location'])) {
+                $item_data[] = array(
+                    'key'     => __('Ubicación', 'ecolitio-theme'),
+                    'value'   => $other['battery_location'],
+                    'display' => $other['battery_location'],
+                );
+            }
+            if (!empty($other['connector_type'])) {
+                $item_data[] = array(
+                    'key'     => __('Conector', 'ecolitio-theme'),
+                    'value'   => $other['connector_type'],
+                    'display' => $other['connector_type'],
+                );
+            }
+        }
+    }
+    return $item_data;
+}
+
+/**
+ * Save custom battery data to order items
+ */
+add_action('woocommerce_checkout_create_order_line_item', 'ecolitio_save_custom_battery_data_order', 10, 4);
+function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values, $order) {
+    if (isset($values['_sabway_custom_order'])) {
+        $item->add_meta_data('_sabway_custom_order', true);
+        
+        if (isset($values['_sabway_electrical_specs'])) {
+            $item->add_meta_data('_sabway_electrical_specs', $values['_sabway_electrical_specs']);
+            // Add visible meta for customer
+            $specs = $values['_sabway_electrical_specs'];
+            $item->add_meta_data(__('Voltaje', 'ecolitio-theme'), $specs['voltage']);
+            $item->add_meta_data(__('Amperaje', 'ecolitio-theme'), $specs['amperage']);
+            $item->add_meta_data(__('Autonomía', 'ecolitio-theme'), $specs['distance_range_km'] . ' km');
+        }
+        
+        if (isset($values['_sabway_physical_dimensions'])) {
+            $item->add_meta_data('_sabway_physical_dimensions', $values['_sabway_physical_dimensions']);
+            $dims = $values['_sabway_physical_dimensions'];
+            $item->add_meta_data(__('Dimensiones', 'ecolitio-theme'), sprintf('%s x %s x %s cm', $dims['height_cm'], $dims['width_cm'], $dims['length_cm']));
+        }
+        
+        if (isset($values['_sabway_specifications'])) {
+            $item->add_meta_data('_sabway_specifications', $values['_sabway_specifications']);
+            $other = $values['_sabway_specifications'];
+            $item->add_meta_data(__('Modelo Patinete', 'ecolitio-theme'), $other['scooter_model']);
+            $item->add_meta_data(__('Ubicación', 'ecolitio-theme'), $other['battery_location']);
+            $item->add_meta_data(__('Conector', 'ecolitio-theme'), $other['connector_type']);
+        }
+    }
+}

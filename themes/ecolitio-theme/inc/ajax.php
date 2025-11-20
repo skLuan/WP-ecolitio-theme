@@ -508,6 +508,108 @@ function ecolitio_sabway_submit_form() {
 }
 
 /**
+ * AJAX handler for adding custom battery to cart
+ */
+add_action('wp_ajax_custom_batery_add_to_cart', 'ecolitio_custom_batery_add_to_cart');
+add_action('wp_ajax_nopriv_custom_batery_add_to_cart', 'ecolitio_custom_batery_add_to_cart');
+function ecolitio_custom_batery_add_to_cart() {
+    // 1. Verify Nonce
+    $nonce = $_POST['nonce'] ?? '';
+    if (!wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce')) {
+        wp_send_json_error(array(
+            'message' => __('Verificación de seguridad fallida (Nonce)', 'ecolitio-theme'),
+            'code' => 'nonce_failed'
+        ));
+        return;
+    }
+
+    // 2. Sanitize and Validate Form Data
+    $form_data = array();
+    try {
+        // Electrical specifications
+        $form_data['voltage'] = sanitize_text_field($_POST['voltage'] ?? '');
+        $form_data['amperage'] = sanitize_text_field($_POST['amperage'] ?? '');
+        $form_data['distance_range_km'] = intval($_POST['distance_range_km'] ?? 0);
+        
+        // Physical dimensions
+        $form_data['height_cm'] = floatval($_POST['height_cm'] ?? 0);
+        $form_data['width_cm'] = floatval($_POST['width_cm'] ?? 0);
+        $form_data['length_cm'] = floatval($_POST['length_cm'] ?? 0);
+        
+        // Other specifications
+        $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
+        $form_data['battery_location'] = sanitize_text_field($_POST['battery_location'] ?? '');
+        $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
+        $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
+        
+        // Validate required fields
+        $validation_errors = validate_sabway_form_data($form_data);
+        if (!empty($validation_errors)) {
+            wp_send_json_error(array(
+                'message' => __('Datos del formulario inválidos', 'ecolitio-theme'),
+                'errors' => $validation_errors,
+                'code' => 'validation_failed'
+            ));
+            return;
+        }
+        
+    } catch (Exception $e) {
+        wp_send_json_error(array(
+            'message' => __('Error procesando datos del formulario', 'ecolitio-theme'),
+            'code' => 'processing_failed'
+        ));
+        return;
+    }
+
+    // 3. Add to Cart
+    try {
+        $product_id = $form_data['product_id'];
+        $quantity = 1;
+        
+        // Prepare custom data to be stored in cart item
+        $cart_item_data = array(
+            '_sabway_electrical_specs' => array(
+                'voltage' => $form_data['voltage'],
+                'amperage' => $form_data['amperage'],
+                'distance_range_km' => $form_data['distance_range_km'],
+            ),
+            '_sabway_physical_dimensions' => array(
+                'height_cm' => $form_data['height_cm'],
+                'width_cm' => $form_data['width_cm'],
+                'length_cm' => $form_data['length_cm'],
+            ),
+            '_sabway_specifications' => array(
+                'scooter_model' => $form_data['scooter_model'],
+                'battery_location' => $form_data['battery_location'],
+                'connector_type' => $form_data['connector_type'],
+            ),
+            '_sabway_custom_order' => true
+        );
+
+        // Add to cart
+        $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity, 0, array(), $cart_item_data);
+
+        if ($cart_item_key) {
+            wp_send_json_success(array(
+                'message' => __('Producto añadido al carrito', 'ecolitio-theme'),
+                'cart_url' => wc_get_cart_url()
+            ));
+        } else {
+            wp_send_json_error(array(
+                'message' => __('Error al añadir al carrito', 'ecolitio-theme'),
+                'code' => 'add_to_cart_failed'
+            ));
+        }
+
+    } catch (Exception $e) {
+        wp_send_json_error(array(
+            'message' => __('Error añadiendo al carrito', 'ecolitio-theme'),
+            'code' => 'cart_exception'
+        ));
+    }
+}
+
+/**
  * Validate user session and cookies
  * FIXED: Removed private method call to WC_Session_Handler::init_session()
  * Enhanced session validation to prevent cookie check failures

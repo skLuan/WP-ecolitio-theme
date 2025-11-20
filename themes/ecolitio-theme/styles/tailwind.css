@@ -69,6 +69,10 @@
       @apply cursor-pointer border-green-eco;
     }
 
+    .progress-step{
+      @apply transition-all duration-300 ease-in-out;
+    }
+
     label span,
     label image {
       @apply block transition-all duration-300 ease-in-out;

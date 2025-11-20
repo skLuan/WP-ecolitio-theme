@@ -543,6 +543,92 @@ const ajaxSubmitter = {
       throw error;
     }
   },
+
+  /**
+   * Adds product to cart via AJAX
+   * @param {Object} formData - Form data object
+   * @returns {Promise} API response
+   */
+  async addToCart(formData) {
+    try {
+      // Get AJAX configuration
+      const ajaxConfig =
+        window.taller_sabway_ajax || window.ecolitio_ajax || {};
+      const ajaxUrl =
+        ajaxConfig.ajax_url ||
+        `${window.location.origin}/wp-admin/admin-ajax.php`;
+      const nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || "";
+
+      console.log("Adding to cart via AJAX");
+
+      // Get product ID from the page
+      const productElement = document.querySelector('[id^="product-"]');
+      const productId = productElement
+        ? parseInt(productElement.id.replace("product-", ""))
+        : null;
+
+      // Prepare FormData
+      const formDataSubmit = new FormData();
+      formDataSubmit.append("action", "custom_batery_add_to_cart");
+      formDataSubmit.append("nonce", nonce);
+
+      // Add form fields
+      formDataSubmit.append(
+        "voltage",
+        formData.electrical_specifications.voltage || ""
+      );
+      formDataSubmit.append(
+        "amperage",
+        formData.electrical_specifications.amperage || ""
+      );
+      formDataSubmit.append(
+        "distance_range_km",
+        formData.electrical_specifications.distance_range_km || 0
+      );
+      formDataSubmit.append(
+        "height_cm",
+        formData.physical_dimensions.height_cm || 0
+      );
+      formDataSubmit.append(
+        "width_cm",
+        formData.physical_dimensions.width_cm || 0
+      );
+      formDataSubmit.append(
+        "length_cm",
+        formData.physical_dimensions.length_cm || 0
+      );
+      formDataSubmit.append("scooter_model", formData.scooter_model || "");
+      formDataSubmit.append(
+        "battery_location",
+        formData.battery_location || ""
+      );
+      formDataSubmit.append("connector_type", formData.connector_type || "");
+      formDataSubmit.append("product_id", productId || 0);
+
+      // Submit to WordPress AJAX endpoint
+      const response = await fetch(ajaxUrl, {
+        method: "POST",
+        credentials: "include",
+        body: formDataSubmit,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Network Error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("AJAX Response:", result);
+
+      if (!result.success) {
+        throw new Error(result.data?.message || "Error al añadir al carrito");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("Add to Cart Error:", error);
+      throw error;
+    }
+  },
 };
 
 /**
@@ -600,39 +686,65 @@ export const formController = () => {
       const formData = dataCollector.collect();
       console.log("Form Data Collected:", formData);
 
-      // Step 4: Construct order object
-      const orderObject = orderConstructor.construct(formData);
-      console.log("Order Object Constructed:", orderObject);
+      // Check user role
+      const ajaxConfig =
+        window.taller_sabway_ajax || window.ecolitio_ajax || {};
+      const isTallerSabway =
+        ajaxConfig.user_capabilities &&
+        ajaxConfig.user_capabilities.taller_sabway;
 
-      // Step 5: Submit via AJAX
-      const result = await ajaxSubmitter.submit(formData, orderObject);
-      console.log("Order Created Successfully:", result);
+      if (isTallerSabway) {
+        // Step 4: Construct order object
+        const orderObject = orderConstructor.construct(formData);
+        console.log("Order Object Constructed:", orderObject);
 
-      // Step 6: Show success feedback
-      uiManager.showFeedback(
-        `¡Pedido realizado con éxito! ID del Pedido: ${result.id}`,
-        "success",
-        form
-      );
+        // Step 5: Submit via AJAX
+        const result = await ajaxSubmitter.submit(formData, orderObject);
+        console.log("Order Created Successfully:", result);
 
-      // Step 7: Navigate to confirmation step (step 5)
-      const step5 = document.getElementById("sab-step-5");
-      if (step5) {
-        // Hide all steps
-        document.querySelectorAll(".step").forEach((step) => {
-          step.style.display = "none";
-        });
-        // Show success step
-        step5.style.display = "flex";
+        // Step 6: Show success feedback
+        uiManager.showFeedback(
+          `¡Pedido realizado con éxito! ID del Pedido: ${result.id}`,
+          "success",
+          form
+        );
 
-        // Populate final confirmation with order details
-        populateConfirmation(formData, result.id);
+        // Step 7: Navigate to confirmation step (step 5)
+        const step5 = document.getElementById("sab-step-5");
+        if (step5) {
+          // Hide all steps
+          document.querySelectorAll(".step").forEach((step) => {
+            step.style.display = "none";
+          });
+          // Show success step
+          step5.style.display = "flex";
+
+          // Populate final confirmation with order details
+          populateConfirmation(formData, result.id);
+        }
+
+        // Step 8: Reset form after successful submission
+        setTimeout(() => {
+          form.reset();
+        }, 2000);
+      } else {
+        // General Customer Flow: Add to Cart
+        const result = await ajaxSubmitter.addToCart(formData);
+        console.log("Added to Cart Successfully:", result);
+
+        uiManager.showFeedback(
+          "¡Producto añadido al carrito! Redirigiendo...",
+          "success",
+          form
+        );
+
+        // Redirect to cart
+        if (result.cart_url) {
+          setTimeout(() => {
+            window.location.href = result.cart_url;
+          }, 1500);
+        }
       }
-
-      // Step 8: Reset form after successful submission
-      setTimeout(() => {
-        form.reset();
-      }, 2000);
     } catch (error) {
       console.error("Form Submission Error:", error);
       uiManager.showFeedback(
