@@ -460,8 +460,9 @@ class Sabway_Form_Security {
 add_action('wp_enqueue_scripts', 'ecolitio_enqueue_sabway_form_security', 25);
 function ecolitio_enqueue_sabway_form_security() {
     // Check if current page/post has the Sabway form
+    // Removed strict content check as the form might be in a template
     global $post;
-    if (!$post || strpos($post->post_content, 'sabway-form') === false) {
+    if (!$post) {
         return;
     }
 

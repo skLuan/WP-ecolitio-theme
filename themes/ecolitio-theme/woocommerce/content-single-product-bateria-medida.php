@@ -42,7 +42,7 @@ remove_action('woocommerce_single_product_summary', 'woocommerce_template_single
 add_action('ecolitio_single_product_summary', 'woocommerce_template_single_title', 15);
 add_action('ecolitio_single_product_summary', 'woocommerce_template_single_rating', 20);
 add_action('ecolitio_single_product_prices', 'woocommerce_template_single_price', 20);
-add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to_cart', 20);
+// add_action('ecolitio_single_product_prices', 'woocommerce_template_single_add_to_cart', 20);
 //----------------------------------------------------------------------------------------------------
 $icons = [
 	"step1" => [

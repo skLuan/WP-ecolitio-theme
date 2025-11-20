@@ -418,7 +418,18 @@ const ajaxSubmitter = {
       const ajaxUrl =
         ajaxConfig.ajax_url ||
         `${window.location.origin}/wp-admin/admin-ajax.php`;
-      const nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || "";
+      
+      // Try to get nonce from multiple sources
+      let nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || "";
+      
+      // Fallback: Try to get nonce from DOM input if not in global object
+      if (!nonce) {
+        const nonceInput = document.querySelector('input[name="ecolitio_sabway_nonce"]');
+        if (nonceInput) {
+          nonce = nonceInput.value;
+          console.log("Nonce retrieved from DOM input");
+        }
+      }
 
       console.log("Using WordPress AJAX submission");
       console.log("AJAX URL:", ajaxUrl);
@@ -557,7 +568,18 @@ const ajaxSubmitter = {
       const ajaxUrl =
         ajaxConfig.ajax_url ||
         `${window.location.origin}/wp-admin/admin-ajax.php`;
-      const nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || "";
+      
+      // Try to get nonce from multiple sources
+      let nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || "";
+      
+      // Fallback: Try to get nonce from DOM input if not in global object
+      if (!nonce) {
+        const nonceInput = document.querySelector('input[name="ecolitio_sabway_nonce"]');
+        if (nonceInput) {
+          nonce = nonceInput.value;
+          console.log("Nonce retrieved from DOM input");
+        }
+      }
 
       console.log("Adding to cart via AJAX");
 
