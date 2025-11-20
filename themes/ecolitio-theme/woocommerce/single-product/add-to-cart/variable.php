@@ -35,7 +35,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 	<?php else : ?>
 		<div class="variations" cellspacing="0" role="presentation">
 			<?php foreach ($attributes as $attribute_name => $options) : ?>
-				<div class="grid grid-cols-2 gap-2 px-3 first:mb-1">
+				<div class="flex flex-row gap-2 px-3 first:mb-1">
 					<div class="label p-2 w-1/3"><label class="!text-lg !font-bold" for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name); // WPCS: XSS ok. 
 																													?></label></div>
 					<div class="value p-2 w-auto">
