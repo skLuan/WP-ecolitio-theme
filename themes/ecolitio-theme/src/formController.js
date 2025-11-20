@@ -715,7 +715,7 @@ export const formController = () => {
         ajaxConfig.user_capabilities &&
         ajaxConfig.user_capabilities.taller_sabway;
 
-      if (isTallerSabway) {
+      if (isTallerSabway || document.URL.includes("sabway")) {
         // Step 4: Construct order object
         const orderObject = orderConstructor.construct(formData);
         console.log("Order Object Constructed:", orderObject);

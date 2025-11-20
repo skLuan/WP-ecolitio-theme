@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  if (this.documentURI.includes("bateria-sabway")) {
+  if (document.querySelector("form.sabway-form")) {
     formController();
     changeImagePatinete();
 
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Get the variation container
     const singleNodeAtributes = document.querySelector(
-      "form.variations_form .woocommerce-variation"
+      "form.variations_form"
     );
 
     if (!singleNodeAtributes || !bigPrice || !siblingDescription) {
