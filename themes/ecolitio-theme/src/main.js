@@ -101,9 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const initPriceNode = bigPrice ? bigPrice.innerHTML : null;
 
     // Get the variation container
-    const singleNodeAtributes = document.querySelector(
-      "form.variations_form"
-    );
+    const singleNodeAtributes = document.querySelector("form.variations_form");
 
     if (!singleNodeAtributes || !bigPrice || !siblingDescription) {
       return; // Exit if required elements don't exist
@@ -111,8 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Setup MutationObserver to detect changes in variation
     const observer = new MutationObserver(() => {
-      const quantity = document.querySelector('input[name="quantity"]').value
-        ? parseInt(document.querySelector('input[name="quantity"]').value)
+      const quantity = singleNodeAtributes.querySelector(
+        'input[name="quantity"]'
+      ).value
+        ? parseInt(
+            singleNodeAtributes.querySelector('input[name="quantity"]').value
+          )
         : 1;
       const varDescription = singleNodeAtributes.querySelector(
         ".woocommerce-variation-description"
@@ -124,9 +126,14 @@ document.addEventListener("DOMContentLoaded", function () {
       // Update bigPrice with varPrice HTML content
       if (varPrice && varPrice.innerHTML.trim()) {
         bigPrice.innerHTML = varPrice.innerHTML;
-        const priceNewValue =
-          quantity *
-          parseInt(varPrice.querySelector("bdi").lastChild.textContent);
+      }
+
+      const price = parseInt(
+        varPrice.querySelector("bdi").lastChild.textContent
+      );
+      if (quantity > 1) {
+        console.log("got:" + quantity);
+        const priceNewValue = quantity * price;
         bigPrice.querySelector("bdi").lastChild.textContent = priceNewValue;
       }
 
@@ -178,24 +185,28 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(activeIndex);
       let tempIndex = 0;
       steps.forEach((step, index) => {
-        if(index %4 === 0) tempIndex = 0;
+        if (index % 4 === 0) tempIndex = 0;
 
         if (tempIndex === activeIndex) {
-          step.classList.add("active","!bg-blue-eco");
-          step.classList.remove("filled","!bg-blue-eco-clarisimo");
-
+          step.classList.add("active", "!bg-blue-eco");
+          step.classList.remove("filled", "!bg-blue-eco-clarisimo");
         } else if (tempIndex < activeIndex) {
-          step.classList.remove("active","!bg-blue-eco");
-          step.classList.add('filled',"!bg-blue-eco-clarisimo");
+          step.classList.remove("active", "!bg-blue-eco");
+          step.classList.add("filled", "!bg-blue-eco-clarisimo");
         } else {
-          step.classList.remove("active", "!bg-blue-eco", "filled", "!bg-blue-eco-clarisimo");
+          step.classList.remove(
+            "active",
+            "!bg-blue-eco",
+            "filled",
+            "!bg-blue-eco-clarisimo"
+          );
         }
         tempIndex++;
       });
     });
   };
 
-    // Initialize price update for sab form
+  // Initialize price update for sab form
   if (document.querySelector("form.sabway-form")) {
     formStepper();
   }
