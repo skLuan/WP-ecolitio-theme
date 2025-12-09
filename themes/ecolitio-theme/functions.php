@@ -661,3 +661,18 @@ function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
     return $item_data;
 }
 
+add_action('rest_api_init', function() {
+    register_rest_route('custom/v1', '/logout', array(
+        'methods' => 'POST',
+        'callback' => 'custom_logout_handler',
+        'permission_callback' => function() {
+            return is_user_logged_in();
+        }
+    ));
+});
+
+function custom_logout_handler($request) {
+    wp_logout();
+    wp_redirect(home_url());
+    exit;
+}
