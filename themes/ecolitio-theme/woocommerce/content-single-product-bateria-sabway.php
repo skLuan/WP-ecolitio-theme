@@ -117,7 +117,7 @@ $distance = 30;
 								?>
 								<div class="flex flex-col">
 									<p class="mb-3">Cuantos kilometros extra quieres recorrer?</p>
-									<p><strong>Autonomia: </strong><span><?= esc_attr($distance) ?></span>Km</p>
+									<p><strong>Autonomia: </strong><span class="eco-distance-for-slider"><?= esc_attr($distance) ?>Km</span></p>
 									<input type="range" id="sab-distance-range" class="custom-range" name="sab-distance-range" min="10" max="100" value="<?= intval($distance) ?>" step="1" class="w-full">
 									<div class="flex flex-row w-full">
 										<span id="progress-minval" class="">8 km</span>

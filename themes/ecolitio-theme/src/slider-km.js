@@ -155,6 +155,9 @@ const sliderKmSync = {
         // Set slider to the midpoint of the distance range
         distanceSlider.value = distanceData.midpoint;
 
+        // Update the distance range display
+        this.updateDistanceRangeDisplay(distanceData);
+
         // Trigger input event to update summary
         distanceSlider.dispatchEvent(new Event("input", { bubbles: true }));
 
@@ -188,7 +191,7 @@ const sliderKmSync = {
       const closestMatch = this.findClosestMatch(sliderValue);
 
       if (closestMatch) {
-        const { voltage, amperage, distance } = closestMatch;
+        const { voltage, amperage, distance, range } = closestMatch;
 
         // Select the voltage radio button
         const voltageInput = form.querySelector(
@@ -207,6 +210,9 @@ const sliderKmSync = {
           amperageInput.checked = true;
           amperageInput.dispatchEvent(new Event("change", { bubbles: true }));
         }
+
+        // Update the distance range display
+        this.updateDistanceRangeDisplay({ min: parseInt(range.split('–')[0]), max: parseInt(range.split('–')[1]), midpoint: distance });
 
         console.log(
           `Slider value ${sliderValue}km matched to ${voltage}-${amperage} (midpoint: ${distance}km)`
@@ -239,12 +245,23 @@ const sliderKmSync = {
           voltage,
           amperage,
           distance: data.midpoint,
-          range: `${data.min}-${data.max}`,
+          range: `${data.min}–${data.max}`,
         };
       }
     }
 
     return closestMatch;
+  },
+
+  /**
+   * Update the distance range display in the span element
+   * @param {Object} distanceData - Object with min, max, and midpoint values
+   */
+  updateDistanceRangeDisplay(distanceData) {
+    const rangeSpan = document.querySelector(".eco-distance-for-slider");
+    if (rangeSpan) {
+      rangeSpan.textContent = `${distanceData.min}–${distanceData.max}km`;
+    }
   },
 };
 
