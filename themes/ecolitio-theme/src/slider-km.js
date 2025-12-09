@@ -7,57 +7,68 @@
 /**
  * Distance lookup table mapping voltage + amperage combinations to distance ranges
  * Format: "voltage-amperage" => { min: km, max: km, midpoint: km }
+ * Note: Amperage values use commas (4,8AH) and uppercase (AH) as per WooCommerce attributes
  */
 const distanceLookupTable = {
+  // 12V Battery
+  "12V-4,8AH": { min: 6, max: 8, midpoint: 7 },
+  "12V-9,6AH": { min: 12, max: 16, midpoint: 14 },
+  "12V-14,4AH": { min: 18, max: 24, midpoint: 21 },
+  "12V-19,2AH": { min: 24, max: 32, midpoint: 28 },
+  "12V-24AH": { min: 30, max: 40, midpoint: 35 },
+  "12V-28,8AH": { min: 36, max: 48, midpoint: 42 },
+  "12V-33,6AH": { min: 42, max: 56, midpoint: 49 },
+  "12V-38,4AH": { min: 48, max: 64, midpoint: 56 },
+
   // 24V Battery
-  "24V-4.8Ah": { min: 8, max: 10, midpoint: 9 },
-  "24V-9.6Ah": { min: 16, max: 20, midpoint: 18 },
-  "24V-14.4Ah": { min: 24, max: 30, midpoint: 27 },
-  "24V-19.2Ah": { min: 32, max: 40, midpoint: 36 },
-  "24V-24Ah": { min: 40, max: 50, midpoint: 45 },
-  "24V-28.8Ah": { min: 48, max: 58, midpoint: 53 },
-  "24V-33.6Ah": { min: 56, max: 68, midpoint: 62 },
-  "24V-38.4Ah": { min: 64, max: 78, midpoint: 71 },
+  "24V-4,8AH": { min: 8, max: 10, midpoint: 9 },
+  "24V-9,6AH": { min: 16, max: 20, midpoint: 18 },
+  "24V-14,4AH": { min: 24, max: 30, midpoint: 27 },
+  "24V-19,2AH": { min: 32, max: 40, midpoint: 36 },
+  "24V-24AH": { min: 40, max: 50, midpoint: 45 },
+  "24V-28,8AH": { min: 48, max: 58, midpoint: 53 },
+  "24V-33,6AH": { min: 56, max: 68, midpoint: 62 },
+  "24V-38,4AH": { min: 64, max: 78, midpoint: 71 },
 
   // 36V Battery
-  "36V-4.8Ah": { min: 12, max: 15, midpoint: 13 },
-  "36V-9.6Ah": { min: 24, max: 30, midpoint: 27 },
-  "36V-14.4Ah": { min: 36, max: 45, midpoint: 40 },
-  "36V-19.2Ah": { min: 48, max: 60, midpoint: 54 },
-  "36V-24Ah": { min: 60, max: 75, midpoint: 67 },
-  "36V-28.8Ah": { min: 72, max: 90, midpoint: 81 },
-  "36V-33.6Ah": { min: 84, max: 105, midpoint: 94 },
-  "36V-38.4Ah": { min: 96, max: 120, midpoint: 108 },
+  "36V-4,8AH": { min: 12, max: 15, midpoint: 13 },
+  "36V-9,6AH": { min: 24, max: 30, midpoint: 27 },
+  "36V-14,4AH": { min: 36, max: 45, midpoint: 40 },
+  "36V-19,2AH": { min: 48, max: 60, midpoint: 54 },
+  "36V-24AH": { min: 60, max: 75, midpoint: 67 },
+  "36V-28,8AH": { min: 72, max: 90, midpoint: 81 },
+  "36V-33,6AH": { min: 84, max: 105, midpoint: 94 },
+  "36V-38,4AH": { min: 96, max: 120, midpoint: 108 },
 
   // 48V Battery
-  "48V-4.8Ah": { min: 15, max: 18, midpoint: 16 },
-  "48V-9.6Ah": { min: 30, max: 36, midpoint: 33 },
-  "48V-14.4Ah": { min: 45, max: 54, midpoint: 49 },
-  "48V-19.2Ah": { min: 60, max: 72, midpoint: 66 },
-  "48V-24Ah": { min: 75, max: 90, midpoint: 82 },
-  "48V-28.8Ah": { min: 90, max: 108, midpoint: 99 },
-  "48V-33.6Ah": { min: 105, max: 126, midpoint: 115 },
-  "48V-38.4Ah": { min: 120, max: 144, midpoint: 132 },
+  "48V-4,8AH": { min: 15, max: 18, midpoint: 16 },
+  "48V-9,6AH": { min: 30, max: 36, midpoint: 33 },
+  "48V-14,4AH": { min: 45, max: 54, midpoint: 49 },
+  "48V-19,2AH": { min: 60, max: 72, midpoint: 66 },
+  "48V-24AH": { min: 75, max: 90, midpoint: 82 },
+  "48V-28,8AH": { min: 90, max: 108, midpoint: 99 },
+  "48V-33,6AH": { min: 105, max: 126, midpoint: 115 },
+  "48V-38,4AH": { min: 120, max: 144, midpoint: 132 },
 
   // 52V Battery
-  "52V-4.8Ah": { min: 16, max: 20, midpoint: 18 },
-  "52V-9.6Ah": { min: 32, max: 40, midpoint: 36 },
-  "52V-14.4Ah": { min: 48, max: 60, midpoint: 54 },
-  "52V-19.2Ah": { min: 64, max: 80, midpoint: 72 },
-  "52V-24Ah": { min: 80, max: 100, midpoint: 90 },
-  "52V-28.8Ah": { min: 96, max: 120, midpoint: 108 },
-  "52V-33.6Ah": { min: 112, max: 140, midpoint: 126 },
-  "52V-38.4Ah": { min: 128, max: 160, midpoint: 144 },
+  "52V-4,8AH": { min: 16, max: 20, midpoint: 18 },
+  "52V-9,6AH": { min: 32, max: 40, midpoint: 36 },
+  "52V-14,4AH": { min: 48, max: 60, midpoint: 54 },
+  "52V-19,2AH": { min: 64, max: 80, midpoint: 72 },
+  "52V-24AH": { min: 80, max: 100, midpoint: 90 },
+  "52V-28,8AH": { min: 96, max: 120, midpoint: 108 },
+  "52V-33,6AH": { min: 112, max: 140, midpoint: 126 },
+  "52V-38,4AH": { min: 128, max: 160, midpoint: 144 },
 
   // 60V Battery
-  "60V-4.8Ah": { min: 19, max: 23, midpoint: 21 },
-  "60V-9.6Ah": { min: 38, max: 46, midpoint: 42 },
-  "60V-14.4Ah": { min: 57, max: 69, midpoint: 63 },
-  "60V-19.2Ah": { min: 76, max: 92, midpoint: 84 },
-  "60V-24Ah": { min: 95, max: 115, midpoint: 105 },
-  "60V-28.8Ah": { min: 115, max: 138, midpoint: 126 },
-  "60V-33.6Ah": { min: 134, max: 161, midpoint: 147 },
-  "60V-38.4Ah": { min: 153, max: 184, midpoint: 168 },
+  "60V-4,8AH": { min: 19, max: 23, midpoint: 21 },
+  "60V-9,6AH": { min: 38, max: 46, midpoint: 42 },
+  "60V-14,4AH": { min: 57, max: 69, midpoint: 63 },
+  "60V-19,2AH": { min: 76, max: 92, midpoint: 84 },
+  "60V-24AH": { min: 95, max: 115, midpoint: 105 },
+  "60V-28,8AH": { min: 115, max: 138, midpoint: 126 },
+  "60V-33,6AH": { min: 134, max: 161, midpoint: 147 },
+  "60V-38,4AH": { min: 153, max: 184, midpoint: 168 },
 };
 
 /**
@@ -65,6 +76,9 @@ const distanceLookupTable = {
  * Manages bidirectional updates between slider and voltage/amperage inputs
  */
 const sliderKmSync = {
+  // Flag to prevent infinite loops during synchronization
+  isUpdating: false,
+
   /**
    * Initialize the synchronization module
    * Sets up event listeners for voltage, amperage, and slider changes
@@ -113,32 +127,43 @@ const sliderKmSync = {
    * Updates slider to match the selected battery specification
    */
   onVoltageOrAmperageChange() {
-    const form = document.querySelector(".sabway-form");
-    const voltageSelected = form.querySelector('input[name="voltage"]:checked');
-    const amperageSelected = form.querySelector('input[name="amperage"]:checked');
-    const distanceSlider = form.querySelector("#sab-distance-range");
-
-    // Only update if both voltage and amperage are selected
-    if (!voltageSelected || !amperageSelected) {
+    // Prevent infinite loops during synchronization
+    if (this.isUpdating) {
       return;
     }
 
-    const voltage = voltageSelected.value;
-    const amperage = amperageSelected.value;
-    const key = `${voltage}-${amperage}`;
+    this.isUpdating = true;
 
-    // Look up the distance range for this combination
-    const distanceData = distanceLookupTable[key];
-    if (distanceData) {
-      // Set slider to the midpoint of the distance range
-      distanceSlider.value = distanceData.midpoint;
+    try {
+      const form = document.querySelector(".sabway-form");
+      const voltageSelected = form.querySelector('input[name="voltage"]:checked');
+      const amperageSelected = form.querySelector('input[name="amperage"]:checked');
+      const distanceSlider = form.querySelector("#sab-distance-range");
 
-      // Trigger input event to update summary
-      distanceSlider.dispatchEvent(new Event("input", { bubbles: true }));
+      // Only update if both voltage and amperage are selected
+      if (!voltageSelected || !amperageSelected) {
+        return;
+      }
 
-      console.log(
-        `Updated slider to ${distanceData.midpoint}km for ${key} (range: ${distanceData.min}-${distanceData.max}km)`
-      );
+      const voltage = voltageSelected.value;
+      const amperage = amperageSelected.value;
+      const key = `${voltage}-${amperage}`;
+
+      // Look up the distance range for this combination
+      const distanceData = distanceLookupTable[key];
+      if (distanceData) {
+        // Set slider to the midpoint of the distance range
+        distanceSlider.value = distanceData.midpoint;
+
+        // Trigger input event to update summary
+        distanceSlider.dispatchEvent(new Event("input", { bubbles: true }));
+
+        console.log(
+          `Updated slider to ${distanceData.midpoint}km for ${key} (range: ${distanceData.min}-${distanceData.max}km)`
+        );
+      }
+    } finally {
+      this.isUpdating = false;
     }
   },
 
@@ -147,37 +172,48 @@ const sliderKmSync = {
    * Finds the closest matching voltage/amperage combination and auto-selects it
    */
   onSliderChange() {
-    const form = document.querySelector(".sabway-form");
-    const distanceSlider = form.querySelector("#sab-distance-range");
-    const sliderValue = parseInt(distanceSlider.value);
+    // Prevent infinite loops during synchronization
+    if (this.isUpdating) {
+      return;
+    }
 
-    // Find the closest matching voltage/amperage combination
-    const closestMatch = this.findClosestMatch(sliderValue);
+    this.isUpdating = true;
 
-    if (closestMatch) {
-      const { voltage, amperage, distance } = closestMatch;
+    try {
+      const form = document.querySelector(".sabway-form");
+      const distanceSlider = form.querySelector("#sab-distance-range");
+      const sliderValue = parseInt(distanceSlider.value);
 
-      // Select the voltage radio button
-      const voltageInput = form.querySelector(
-        `input[name="voltage"][value="${voltage}"]`
-      );
-      if (voltageInput) {
-        voltageInput.checked = true;
-        voltageInput.dispatchEvent(new Event("change", { bubbles: true }));
+      // Find the closest matching voltage/amperage combination
+      const closestMatch = this.findClosestMatch(sliderValue);
+
+      if (closestMatch) {
+        const { voltage, amperage, distance } = closestMatch;
+
+        // Select the voltage radio button
+        const voltageInput = form.querySelector(
+          `input[name="voltage"][value="${voltage}"]`
+        );
+        if (voltageInput) {
+          voltageInput.checked = true;
+          voltageInput.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        // Select the amperage radio button
+        const amperageInput = form.querySelector(
+          `input[name="amperage"][value="${amperage}"]`
+        );
+        if (amperageInput) {
+          amperageInput.checked = true;
+          amperageInput.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+
+        console.log(
+          `Slider value ${sliderValue}km matched to ${voltage}-${amperage} (midpoint: ${distance}km)`
+        );
       }
-
-      // Select the amperage radio button
-      const amperageInput = form.querySelector(
-        `input[name="amperage"][value="${amperage}"]`
-      );
-      if (amperageInput) {
-        amperageInput.checked = true;
-        amperageInput.dispatchEvent(new Event("change", { bubbles: true }));
-      }
-
-      console.log(
-        `Slider value ${sliderValue}km matched to ${voltage}-${amperage} (midpoint: ${distance}km)`
-      );
+    } finally {
+      this.isUpdating = false;
     }
   },
 

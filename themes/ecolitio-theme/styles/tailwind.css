@@ -166,10 +166,10 @@
       @apply !mr-0 !w-full;
     }
   }
-  table td {
+  #product-2439 table td {
     @apply !bg-black-eco;
   }
-  table th {
+  #product-2439 table th {
     @apply !bg-[rgba(255,255,255,0.05)];
   }
   .language-selector,
