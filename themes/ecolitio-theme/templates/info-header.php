@@ -1,5 +1,5 @@
 <?php global $product; ?>
-<div class="eco-main-info-header !z-10 !sticky !py-4 top-[134px] !bg-black-eco border-b !border-blue-eco-dark">
+<div class="eco-main-info-header !sticky !py-4 top-[134px] !bg-black-eco border-b !border-blue-eco-dark">
     <?php
     if ($product->get_slug() !== 'bateria-sabway') {
         woocommerce_breadcrumb();

@@ -2,6 +2,7 @@ import "../styles/tailwind.css";
 import "iconify-icon";
 import { startNavigation } from "./navigation";
 import { formController } from "./formController";
+import { sliderKmSync } from "./slider-km";
 import Swiper from "swiper";
 import { Navigation, Pagination } from "swiper/modules";
 // import Swiper styles
@@ -81,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (document.querySelector("form.sabway-form")) {
     formController();
+    sliderKmSync.init();
     changeImagePatinete();
 
     // Add event listeners to update image when radio button selection changes
@@ -107,8 +109,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return; // Exit if required elements don't exist
     }
 
-    // Setup MutationObserver to detect changes in variation
-    const observer = new MutationObserver(() => {
+    // Function to handle price updates
+    const handlePriceUpdate = () => {
       const quantity = singleNodeAtributes.querySelector(
         'input[name="quantity"]'
       ).value
@@ -116,26 +118,27 @@ document.addEventListener("DOMContentLoaded", function () {
             singleNodeAtributes.querySelector('input[name="quantity"]').value
           )
         : 1;
-      const varDescription = singleNodeAtributes.querySelector(
-        ".woocommerce-variation-description"
-      );
-      const varPrice = singleNodeAtributes.querySelector(
-        ".woocommerce-variation-price"
-      );
-
-      // Update bigPrice with varPrice HTML content
-      if (varPrice && varPrice.innerHTML.trim()) {
+        
+        const varDescription = singleNodeAtributes.querySelector(
+          ".woocommerce-variation-description"
+        );
+        const varPrice = singleNodeAtributes.querySelector(
+          ".woocommerce-variation-price"
+        );
+        
+        // Update bigPrice with varPrice HTML content
+        if (varPrice && varPrice.innerHTML.trim()) {
+        console.log('quantity before' + quantity);
         bigPrice.innerHTML = varPrice.innerHTML;
-      }
-
-      const price = parseInt(
-        varPrice.querySelector("bdi").lastChild.textContent
-      );
-      if (quantity > 1) {
+        const price = parseInt(
+          varPrice.querySelector("bdi").lastChild.textContent
+        );
+        if (quantity === 1) { return }
         console.log("got:" + quantity);
         const priceNewValue = quantity * price;
         bigPrice.querySelector("bdi").lastChild.textContent = priceNewValue;
       }
+
 
       // Insert or replace varDescription before siblingDescription
       if (varDescription && varDescription.innerHTML.trim()) {
@@ -161,14 +164,26 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         }
       }
-    });
+    };
+
+    // Setup MutationObserver to detect changes in variation
+    const observer = new MutationObserver(handlePriceUpdate);
 
     // Observe changes in the variation container
     observer.observe(singleNodeAtributes, {
       childList: true,
       subtree: true,
       characterData: true,
+      attributes: true,
+      attributeFilter: ['value'],
     });
+
+    // Add direct event listener to quantity input to catch .value changes
+    const quantityInput = singleNodeAtributes.querySelector('input[name="quantity"]');
+    if (quantityInput) {
+      quantityInput.addEventListener('change', handlePriceUpdate);
+      quantityInput.addEventListener('input', handlePriceUpdate);
+    }
   };
 
   // Initialize price update for variable products
