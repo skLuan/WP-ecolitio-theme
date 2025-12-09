@@ -660,7 +660,7 @@ function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
     }
     return $item_data;
 }
-
+// ---------------logout custom
 add_action('rest_api_init', function() {
     register_rest_route('custom/v1', '/logout', array(
         'methods' => 'POST',
@@ -683,3 +683,7 @@ function custom_logout_handler($request) {
     wp_redirect(home_url());
     exit;
 }
+
+add_action('wp_head', function() {
+    echo '<meta name="wp-nonce" content="' . wp_create_nonce('logout_nonce') . '">';
+});
