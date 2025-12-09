@@ -680,7 +680,7 @@ add_action('wp_head', function() {
         if ($user->caps["taller_sabway"] && $user->caps["taller_sabway"] == 1) {
             echo '<style>ul.wc_payment_methods, .e-coupon-box { display: none !important; } li[data-selected="true"] {
                 background: var(--e-global-color-c1140c0) !important;
-            }</style>';
+            } button#place_order { background: var(--e-global-color-c1140c0) !important}</style>';
         }
     }
 });
