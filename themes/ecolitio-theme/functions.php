@@ -662,7 +662,28 @@ function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
 }
 // ---------------logout custom
 add_action('wp_head', function() {
-    $nonce = wp_create_nonce('wp-json');
-    echo '<meta name="wp-nonce" content="' . esc_attr($nonce) . '">';
+    wp_nonce_field('wp-json', '_wpnonce', false);
+});
+
+add_action('wp_head', function() {
+     // Create WooCommerce logout nonce with proper action
+    $logout_nonce = wp_create_nonce('log-out');
+    echo '<meta name="wc-logout-nonce" content="' . esc_attr($logout_nonce) . '">';
+    
+    // Also provide it as a JavaScript variable for easy access
+    echo '<script>
+        window.wcLogoutNonce = "' . esc_attr($logout_nonce) . '";
+    </script>';
+});
+
+// remove the payment methods and cupons if youre a sabwaytaller
+add_action('wp_head', function() {
+    if (is_user_logged_in()) {
+        $user = wp_get_current_user();
+        
+        if ($user->caps["taller_sabway"] && $user->caps["taller_sabway"] == 1) {
+            echo '<style>ul.wc_payment_methods, .e-coupon-box { display: none !important; }</style>';
+        }
+    }
 });
 
