@@ -665,13 +665,20 @@ add_action('rest_api_init', function() {
     register_rest_route('custom/v1', '/logout', array(
         'methods' => 'POST',
         'callback' => 'custom_logout_handler',
-        'permission_callback' => function() {
-            return is_user_logged_in();
-        }
+        'permission_callback' => '__return_true' // Permitir sin autenticación
     ));
 });
 
 function custom_logout_handler($request) {
+    // Verificar nonce
+    $nonce = $request->get_param('_wpnonce');
+    if (!wp_verify_nonce($nonce, 'logout_nonce')) {
+        return new WP_REST_Response(array(
+            'code' => 'invalid_nonce',
+            'message' => 'Nonce inválido'
+        ), 403);
+    }
+    
     wp_logout();
     wp_redirect(home_url());
     exit;
