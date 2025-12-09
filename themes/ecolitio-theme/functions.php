@@ -661,29 +661,8 @@ function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
     return $item_data;
 }
 // ---------------logout custom
-add_action('rest_api_init', function() {
-    register_rest_route('custom/v1', '/logout', array(
-        'methods' => 'POST',
-        'callback' => 'custom_logout_handler',
-        'permission_callback' => '__return_true' // Permitir sin autenticación
-    ));
-});
-
-function custom_logout_handler($request) {
-    // Verificar nonce
-    $nonce = $request->get_param('_wpnonce');
-    if (!wp_verify_nonce($nonce, 'logout_nonce')) {
-        return new WP_REST_Response(array(
-            'code' => 'invalid_nonce',
-            'message' => 'Nonce inválido'
-        ), 403);
-    }
-    
-    wp_logout();
-    wp_redirect(home_url());
-    exit;
-}
-
 add_action('wp_head', function() {
-    echo '<meta name="wp-nonce" content="' . wp_create_nonce('logout_nonce') . '">';
+    $nonce = wp_create_nonce('wp-json');
+    echo '<meta name="wp-nonce" content="' . esc_attr($nonce) . '">';
 });
+
