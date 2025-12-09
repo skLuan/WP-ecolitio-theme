@@ -608,3 +608,56 @@ function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values,
         }
     }
 }
+
+//-------------------------------- Reparacion_form
+
+add_action( 'elementor_pro/forms/new_record', 'ecolitio_reparacion_form_to_cart', 10, 2 );
+
+function ecolitio_reparacion_form_to_cart( $record, $handler ) {
+    // Asegúrate de que es el formulario correcto
+    $form_name = $record->get_form_settings( 'form_name' );
+    if ( 'Reparacion_form' !== $form_name ) {
+        return;
+    }
+
+    // Obtener campos del formulario
+    $fields = $record->get( 'fields' );
+    
+    // ID del textarea en tu form: #form_field_0
+    $nota = isset( $fields['form_field_0']['value'] ) ? sanitize_textarea_field( $fields['form_field_0']['value'] ) : '';
+
+    // ID del producto fijo (2845) y cantidad 1
+    $product_id = 2845;
+    $quantity   = 1;
+
+    // Nos aseguramos de que el carrito existe
+    if ( function_exists( 'WC' ) && WC()->cart ) {
+
+        // Añadir al carrito con meta personalizada
+        $cart_item_data = array();
+
+        if ( ! empty( $nota ) ) {
+            $cart_item_data['reparacion_nota'] = $nota;
+        }
+
+        WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
+    }
+
+    // Redirigir al carrito
+    $redirect_url = 'https://ecolitio.com/carrito/';
+    wp_safe_redirect( $redirect_url );
+    exit;
+}
+
+add_filter( 'woocommerce_get_item_data', 'ecolitio_show_reparacion_nota_in_cart', 10, 2 );
+
+function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
+    if ( isset( $cart_item['reparacion_nota'] ) && ! empty( $cart_item['reparacion_nota'] ) ) {
+        $item_data[] = array(
+            'key'   => __( 'Nota de reparación', 'ecolitio' ),
+            'value' => wp_kses_post( nl2br( $cart_item['reparacion_nota'] ) ),
+        );
+    }
+    return $item_data;
+}
+
