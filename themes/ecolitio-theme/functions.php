@@ -626,6 +626,35 @@ function ecolitio_register_reparacion_form_action( $form_actions_registrar ) {
 }
 add_action( 'elementor_pro/forms/actions/register', 'ecolitio_register_reparacion_form_action' );
 
+/**
+ * Handle Reparacion form redirect via JavaScript
+ * Elementor Pro sends redirect_url in response data
+ */
+add_action( 'wp_enqueue_scripts', 'ecolitio_enqueue_reparacion_redirect_handler', 999 );
+function ecolitio_enqueue_reparacion_redirect_handler() {
+	wp_add_inline_script( 'elementor-pro-forms', "
+		(function() {
+			// Listen for Elementor form submission response
+			document.addEventListener( 'elementor_pro/forms/submit/response', function( event ) {
+				if ( event.detail && event.detail.response && event.detail.response.redirect_url ) {
+					console.log( 'Reparacion form redirect to:', event.detail.response.redirect_url );
+					window.location.href = event.detail.response.redirect_url;
+				}
+			});
+			
+			// Also handle via jQuery if available
+			if ( typeof jQuery !== 'undefined' ) {
+				jQuery( document ).on( 'elementor_pro/forms/submit/response', function( event, response ) {
+					if ( response && response.redirect_url ) {
+						console.log( 'Reparacion form redirect (jQuery) to:', response.redirect_url );
+						window.location.href = response.redirect_url;
+					}
+				});
+			}
+		})();
+	", 'after' );
+}
+
 add_filter( 'woocommerce_get_item_data', 'ecolitio_show_reparacion_nota_in_cart', 10, 2 );
 
 function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {

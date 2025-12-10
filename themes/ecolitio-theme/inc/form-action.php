@@ -99,20 +99,27 @@ class ReparacionesAddtoCart extends \ElementorPro\Modules\Forms\Classes\Action_B
 
 		// Make sure that there is a product ID configured.
 		if ( empty( $settings['reparacion_product_id'] ) ) {
+			error_log( 'Reparacion form: Missing product ID configuration' );
 			return;
 		}
 
 		// Make sure that there is a repair notes field ID configured.
 		if ( empty( $settings['reparacion_notes_field_id'] ) ) {
+			error_log( 'Reparacion form: Missing repair notes field ID configuration' );
 			return;
 		}
 
 		// Get submitted form data.
 		$raw_fields = $record->get( 'fields' );
 
+		// Log available fields for debugging
+		error_log( 'Reparacion form - Available fields: ' . wp_json_encode( array_keys( $raw_fields ) ) );
+
 		// Get the repair notes from the configured field ID.
 		$notes_field_id = $settings['reparacion_notes_field_id'];
 		$repair_notes = isset( $raw_fields[ $notes_field_id ]['value'] ) ? sanitize_textarea_field( $raw_fields[ $notes_field_id ]['value'] ) : '';
+
+		error_log( 'Reparacion form - Looking for field: ' . $notes_field_id . ', Found: ' . ( isset( $raw_fields[ $notes_field_id ] ) ? 'yes' : 'no' ) );
 
 		// Get product ID and quantity from settings.
 		$product_id = intval( $settings['reparacion_product_id'] );
@@ -120,6 +127,7 @@ class ReparacionesAddtoCart extends \ElementorPro\Modules\Forms\Classes\Action_B
 
 		// Make sure WooCommerce is active and cart exists.
 		if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+			error_log( 'Reparacion form: WooCommerce not available' );
 			return;
 		}
 
@@ -133,10 +141,11 @@ class ReparacionesAddtoCart extends \ElementorPro\Modules\Forms\Classes\Action_B
 		// Add product to cart with custom metadata.
 		WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
 
-		// Redirect to cart.
-		$redirect_url = 'https://ecolitio.com/carrito/';
-		wp_safe_redirect( $redirect_url );
-		exit;
+		error_log( 'Reparacion form: Product added to cart. Product ID: ' . $product_id . ', Notes: ' . $repair_notes );
+
+		// Set redirect URL in AJAX handler instead of calling wp_safe_redirect directly
+		// This allows Elementor to handle the redirect properly
+		$ajax_handler->add_response_data( 'redirect_url', 'https://ecolitio.com/carrito/' );
 	}
 
 	/**
