@@ -302,6 +302,111 @@ function ecolitio_render_products_grid($args = array()): void
     wp_reset_postdata();
 }
 
+// =============================================================================
+// SABWAY BATTERY FORM SHORTCODE
+// =============================================================================
+
+/**
+ * Register Sabway Battery Form Shortcode
+ * 
+ * Usage: [sabway_battery_form] or [sabway_battery_form product_id="123"]
+ * 
+ * @param array $atts Shortcode attributes
+ * @return string Rendered form HTML
+ */
+add_shortcode('sabway_battery_form', 'ecolitio_sabway_battery_form_shortcode');
+function ecolitio_sabway_battery_form_shortcode($atts = array()) {
+	// Parse shortcode attributes
+	$atts = shortcode_atts(array(
+		'product_id' => 0,
+		'show_title' => 'yes',
+		'custom_class' => '',
+	), $atts, 'sabway_battery_form');
+
+	// Determine product ID
+	$product_id = intval($atts['product_id']);
+	
+	// If no product ID provided, try to get from current product (if on product page)
+	if (!$product_id) {
+		global $product;
+		if ($product && is_a($product, 'WC_Product')) {
+			$product_id = $product->get_id();
+		}
+	}
+
+	// Validate product exists and is published
+	if (!$product_id) {
+		return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' . 
+			esc_html__('Error: No product specified. Use [sabway_battery_form product_id="123"]', 'ecolitio-theme') . 
+			'</div>';
+	}
+
+	// Get product object
+	$product = wc_get_product($product_id);
+	if (!$product || !$product->is_visible()) {
+		return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' . 
+			esc_html__('Error: Product not found or not visible.', 'ecolitio-theme') . 
+			'</div>';
+	}
+
+	// Get product attributes
+	$getAttributes = $product->get_attributes();
+	
+	// Validate required attributes exist
+	if (empty($getAttributes['voltios']) || empty($getAttributes['amperios'])) {
+		return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' . 
+			esc_html__('Error: Product is missing required attributes (voltios, amperios).', 'ecolitio-theme') . 
+			'</div>';
+	}
+
+	// Set up form data
+	$icons = array(
+		"step1" => array(
+			"icon" => "ix:electrical-energy-filled",
+			"title" => "Parte eléctrica",
+		),
+		"step2" => array(
+			"icon" => "tabler:dimensions",
+			"title" => "Dimensiones",
+		),
+		"step3" => array(
+			"icon" => "material-symbols:cable",
+			"title" => "Conectores",
+		),
+		"step4" => array(
+			"icon" => "material-symbols:check-circle",
+			"title" => "Confirmación",
+		),
+	);
+
+	$distance = 30;
+	$sabway_form_nonce = wp_create_nonce('ecolitio_sabway_form_nonce');
+
+	// Start output buffering
+	ob_start();
+	
+	// Load the form template
+	set_query_var('product', $product);
+	set_query_var('icons', $icons);
+	set_query_var('getAttributes', $getAttributes);
+	set_query_var('distance', $distance);
+	set_query_var('sabway_form_nonce', $sabway_form_nonce);
+	
+	get_template_part('templates/sabway-battery-form');
+	
+	// Get buffered content
+	$form_html = ob_get_clean();
+
+	// Wrap with custom class if provided
+	if (!empty($atts['custom_class'])) {
+		$form_html = '<div class="' . esc_attr($atts['custom_class']) . '">' . $form_html . '</div>';
+	}
+
+	return $form_html;
+}
+
+
+
 
 // =============================================================================
 // HOOKS & FILTERS
