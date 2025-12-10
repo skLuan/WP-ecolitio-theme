@@ -616,6 +616,9 @@ add_action( 'elementor_pro/forms/new_record', 'ecolitio_reparacion_form_to_cart'
 function ecolitio_reparacion_form_to_cart( $record, $handler ) {
     // Asegúrate de que es el formulario correcto
     $form_name = $record->get_form_settings( 'form_name' );
+        echo "sisaaaaa";
+        echo print_r($form_name);
+
     if ( 'Reparacion_form' !== $form_name ) {
         return;
     }
