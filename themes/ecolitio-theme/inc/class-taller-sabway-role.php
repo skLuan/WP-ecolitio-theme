@@ -37,6 +37,7 @@ class Taller_Sabway_Role
     public function init()
     {
         $this->create_taller_sabway_role();
+        $this->register_rewrite_endpoints();
         $this->auto_register_consumer_keys();
     }
 
@@ -87,6 +88,14 @@ class Taller_Sabway_Role
                 'access_sabway_zone' => true,
             )
         );
+    }
+
+    /**
+     * Register rewrite endpoints for Sabway account pages
+     */
+    private function register_rewrite_endpoints()
+    {
+        add_rewrite_endpoint('mi-cuenta-sabway', EP_ROOT | EP_PAGES);
     }
 
     /**
