@@ -662,11 +662,7 @@ function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
 }
 // ---------------logout custom
 add_action('wp_head', function() {
-    wp_nonce_field('wp-json', '_wpnonce', false);
-});
-
-add_action('wp_head', function() {
-     // Create WooCommerce logout nonce with proper action
+    // Create WooCommerce logout nonce with proper action
     $logout_nonce = wp_create_nonce('log-out');
     echo '<meta name="wc-logout-nonce" content="' . esc_attr($logout_nonce) . '">';
     
@@ -682,7 +678,9 @@ add_action('wp_head', function() {
         $user = wp_get_current_user();
         
         if ($user->caps["taller_sabway"] && $user->caps["taller_sabway"] == 1) {
-            echo '<style>ul.wc_payment_methods, .e-coupon-box { display: none !important; }</style>';
+            echo '<style>ul.wc_payment_methods, .e-coupon-box { display: none !important; } li[data-selected="true"] {
+                background: var(--e-global-color-c1140c0) !important;
+            } button#place_order { background: var(--e-global-color-c1140c0) !important} button#place_order:hover { background: black !important; color: var(--e-global-color-c1140c0)}</style>';
         }
     }
 });
