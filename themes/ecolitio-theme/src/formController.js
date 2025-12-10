@@ -273,11 +273,20 @@ const orderConstructor = {
    * @returns {Object} Order object for WooCommerce
    */
   construct(formData) {
-    // Get product ID from the page
-    const productElement = document.querySelector('[id^="product-"]');
-    const productId = productElement
-      ? parseInt(productElement.id.replace("product-", ""))
-      : null;
+    // Get product ID from hidden input field (for shortcode compatibility)
+    let productId = null;
+    const productIdInput = document.querySelector('input[name="sabway_product_id"]');
+    if (productIdInput) {
+      productId = parseInt(productIdInput.value);
+    }
+    
+    // Fallback: Try to get product ID from the page DOM element (for product pages)
+    if (!productId) {
+      const productElement = document.querySelector('[id^="product-"]');
+      productId = productElement
+        ? parseInt(productElement.id.replace("product-", ""))
+        : null;
+    }
 
     // Get current user info (if logged in)
     const userEmail =
@@ -583,11 +592,20 @@ const ajaxSubmitter = {
 
       console.log("Adding to cart via AJAX");
 
-      // Get product ID from the page
-      const productElement = document.querySelector('[id^="product-"]');
-      const productId = productElement
-        ? parseInt(productElement.id.replace("product-", ""))
-        : null;
+      // Get product ID from hidden input field (for shortcode compatibility)
+      let productId = null;
+      const productIdInput = document.querySelector('input[name="sabway_product_id"]');
+      if (productIdInput) {
+        productId = parseInt(productIdInput.value);
+      }
+      
+      // Fallback: Try to get product ID from the page DOM element (for product pages)
+      if (!productId) {
+        const productElement = document.querySelector('[id^="product-"]');
+        productId = productElement
+          ? parseInt(productElement.id.replace("product-", ""))
+          : null;
+      }
 
       // Prepare FormData
       const formDataSubmit = new FormData();
