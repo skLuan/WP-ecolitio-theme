@@ -9,14 +9,12 @@ The "Taller Sabway" user role is a specialized WordPress/WooCommerce user role t
 ### Core Functionality
 - **Restricted Product Visibility**: Users with this role can only see products tagged with "sabway"
 - **Standard Client Capabilities**: Full WooCommerce customer functionality including checkout, order management, and account features
-- **Specialized Dashboard**: Custom dashboard with Sabway-specific statistics and actions
 - **Enhanced UI**: Branded styling specific to the Taller Sabway role
 
 ### User Capabilities
 - View only "sabway" tagged products
 - Standard shopping cart and checkout functionality
 - Order management through WooCommerce account
-- Access to specialized Taller Sabway dashboard
 - Product search and filtering within the Sabway catalog
 
 ## Installation & Setup
@@ -87,18 +85,7 @@ if (user_has_taller_sabway_role($user_id)) {
 - Search functionality respects the Sabway restriction
 - Notice displayed to inform users of the restriction
 
-#### Dashboard Features
-- **Welcome Message**: Personalized greeting with role-specific information
-- **Statistics**: 
-  - Available Sabway products count
-  - Total user orders
-  - Pending orders count
-- **Quick Actions**: Direct links to Sabway products and order management
 
-#### Navigation Enhancement
-- Special menu item in WooCommerce account: "Dashboard Taller Sabway"
-- Branded styling with Sabway colors
-- Restricted access messaging for unauthorized users
 
 ## Technical Implementation
 
@@ -122,32 +109,23 @@ public function filter_products_for_sabway_role($tax_query, $query = null) {
 }
 ```
 
-### Dashboard Endpoint
-Custom rewrite endpoint for the Sabway dashboard:
-- URL: `/my-account/taller-sabway-dashboard/`
-- Template: Handled by the role class
-- Access control: Automatic permission checking
-
 ### AJAX Functionality
-Two main AJAX handlers:
+Main AJAX handler:
 1. **Product Filtering**: Real-time search within Sabway products
-2. **Statistics**: Dynamic dashboard statistics updates
 
 ## Customization
 
 ### Styling
 Edit `css/taller-sabway.css` to customize:
-- Dashboard appearance
 - Color scheme (currently uses Sabway brand colors)
 - Layout and spacing
 - Responsive behavior
 
 ### JavaScript Functionality
 Edit `js/taller-sabway.js` to customize:
-- Dashboard interactions
+- Product filtering interactions
 - AJAX behavior
 - User interface enhancements
-- Statistics updates
 
 ### Role Capabilities
 Modify `class-taller-sabway-role.php` to add/remove capabilities:
@@ -160,7 +138,6 @@ Modify `class-taller-sabway-role.php` to add/remove capabilities:
 - [ ] Role creation on theme activation
 - [ ] Product visibility restriction (only "sabway" tagged products)
 - [ ] Standard WooCommerce functionality (cart, checkout, orders)
-- [ ] Dashboard access and functionality
 - [ ] Search and filtering within Sabway products
 - [ ] Role assignment/removal via admin
 - [ ] Responsive design on mobile devices
@@ -169,7 +146,6 @@ Modify `class-taller-sabway-role.php` to add/remove capabilities:
 The implementation includes a test file structure (though specific tests may need to be created):
 - Test role creation and capabilities
 - Test product filtering logic
-- Test dashboard functionality
 - Test AJAX handlers
 
 ## Troubleshooting
@@ -181,11 +157,6 @@ The implementation includes a test file structure (though specific tests may nee
 - Check user role assignment
 - Verify WooCommerce is active
 - Clear any caching plugins
-
-#### Dashboard Not Accessible
-- Check rewrite rules (visit **Settings > Permalinks** and save)
-- Ensure user has the "taller_sabway" role
-- Verify theme files are properly loaded
 
 #### Styling Issues
 - Check CSS file loading in browser developer tools

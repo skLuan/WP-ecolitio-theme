@@ -29,9 +29,6 @@ class Taller_Sabway_Role
         add_action('init', array($this, 'init'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_filter('woocommerce_product_query_tax_query', array($this, 'filter_products_for_sabway_role'), 10, 2);
-        add_action('woocommerce_account_dashboard', array($this, 'add_sabway_dashboard_notice'));
-        add_filter('woocommerce_account_menu_items', array($this, 'add_sabway_dashboard_menu_item'));
-        add_action('woocommerce_account_taller-sabway-dashboard_endpoint', array($this, 'taller_sabway_dashboard_content'));
     }
 
     /**
@@ -40,7 +37,6 @@ class Taller_Sabway_Role
     public function init()
     {
         $this->create_taller_sabway_role();
-        $this->register_rewrite_endpoints();
         $this->auto_register_consumer_keys();
     }
 
@@ -91,14 +87,6 @@ class Taller_Sabway_Role
                 'access_sabway_zone' => true,
             )
         );
-    }
-
-    /**
-     * Register rewrite endpoints for dashboard
-     */
-    private function register_rewrite_endpoints()
-    {
-        add_rewrite_endpoint('taller-sabway-dashboard', EP_ROOT | EP_PAGES);
     }
 
     /**
@@ -160,103 +148,6 @@ class Taller_Sabway_Role
         );
 
         return $tax_query;
-    }
-
-    /**
-     * Add notice to WooCommerce dashboard for Taller Sabway users
-     */
-    public function add_sabway_dashboard_notice()
-    {
-        if (current_user_can('taller_sabway')) {
-            echo '<div class="woocommerce-MyAccount-content">';
-            echo '<div class="taller-sabway-notice" style="background: #d02024; color: white; padding: 15px; border-radius: 5px; margin: 20px 0;">';
-            echo '<h3>' . __('Bienvenido a la Zona Taller Sabway', 'ecolitio-theme') . '</h3>';
-            echo '<p>' . __('Tienes acceso exclusivo a productos etiquetados como "sabway". Puedes realizar pedidos y gestionar tus órdenes normalmente.', 'ecolitio-theme') . '</p>';
-            echo '<p><a href="' . wc_get_page_permalink('shop') . '" style="color: white; text-decoration: underline;">' . __('Ver productos Sabway', 'ecolitio-theme') . '</a></p>';
-            echo '</div>';
-            echo '</div>';
-        }
-    }
-
-    /**
-     * Add Taller Sabway dashboard menu item to WooCommerce account menu
-     *
-     * @param array $items Current menu items
-     * @return array Modified menu items
-     */
-    public function add_sabway_dashboard_menu_item($items)
-    {
-        if (current_user_can('taller_sabway')) {
-            $items['taller-sabway-dashboard'] = __('Dashboard Taller Sabway', 'ecolitio-theme');
-        }
-        return $items;
-    }
-
-    /**
-     * Content for Taller Sabway dashboard endpoint
-     */
-    public function taller_sabway_dashboard_content()
-    {
-        if (!current_user_can('taller_sabway')) {
-            echo '<p>' . __('No tienes permisos para acceder a esta página.', 'ecolitio-theme') . '</p>';
-            return;
-        }
-
-        $user = wp_get_current_user();
-?>
-        <div class="taller-sabway-dashboard">
-            <h2><?php _e('Dashboard Taller Sabway', 'ecolitio-theme'); ?></h2>
-
-            <div class="taller-sabway-welcome">
-                <h3><?php _e('Bienvenido, ', 'ecolitio-theme') . esc_html($user->display_name); ?></h3>
-                <p><?php _e('Esta es tu área privada donde puedes acceder a productos exclusivos de Sabway.', 'ecolitio-theme'); ?></p>
-            </div>
-
-            <div class="taller-sabway-stats">
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <h4><?php _e('Productos Disponibles', 'ecolitio-theme'); ?></h4>
-                        <?php
-                        $sabway_products = wc_get_products(array(
-                            'status' => 'publish',
-                            'limit' => -1,
-                            'return' => 'ids',
-                            'tax_query' => array(
-                                array(
-                                    'taxonomy' => 'product_tag',
-                                    'field' => 'slug',
-                                    'terms' => 'sabway'
-                                )
-                            )
-                        ));
-                        echo '<span class="stat-number">' . count($sabway_products) . '</span>';
-                        ?>
-                    </div>
-
-                    <div class="stat-box">
-                        <h4><?php _e('Pedidos Totales', 'ecolitio-theme'); ?></h4>
-                        <?php
-                        $customer_orders = wc_get_orders(array(
-                            'customer' => get_current_user_id(),
-                            'limit' => -1,
-                            'return' => 'ids'
-                        ));
-                        echo '<span class="stat-number">' . count($customer_orders) . '</span>';
-                        ?>
-                    </div>
-                </div>
-            </div>
-
-            <div class="taller-sabway-actions">
-                <a href="<?php echo wc_get_page_permalink('shop'); ?>" class="button button-primary">
-                    <?php _e('Ver Productos Sabway', 'ecolitio-theme'); ?>
-                </a>
-                <a href="<?php echo wc_get_account_endpoint_url('orders'); ?>" class="button">
-                    <?php _e('Mis Pedidos', 'ecolitio-theme'); ?>
-                </a>
-            </div>
-        </div>
-<?php
     }
 
     /**
