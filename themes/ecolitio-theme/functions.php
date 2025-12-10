@@ -610,45 +610,21 @@ function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values,
 }
 
 //-------------------------------- Reparacion_form
+// Refactored to use Elementor Pro Action_Base class
+// See: themes/ecolitio-theme/inc/form-action.php
 
-add_action( 'elementor_pro/forms/new_record', 'ecolitio_reparacion_form_to_cart', 10, 2 );
-
-function ecolitio_reparacion_form_to_cart( $record, $handler ) {
-    // Asegúrate de que es el formulario correcto
-    $form_name = $record->get_form_settings( 'form_name' );
-    echo print_r($form_name);
-    if ( 'Reparacion_form' !== $form_name ) {
-        return;
-    }
-
-    // Obtener campos del formulario
-    $fields = $record->get( 'fields' );
-    
-    // ID del textarea en tu form: #form_field_0
-    $nota = isset( $fields['form_field_0']['value'] ) ? sanitize_textarea_field( $fields['form_field_0']['value'] ) : '';
-
-    // ID del producto fijo (2845) y cantidad 1
-    $product_id = 2845;
-    $quantity   = 1;
-
-    // Nos aseguramos de que el carrito existe
-    if ( function_exists( 'WC' ) && WC()->cart ) {
-
-        // Añadir al carrito con meta personalizada
-        $cart_item_data = array();
-
-        if ( ! empty( $nota ) ) {
-            $cart_item_data['reparacion_nota'] = $nota;
-        }
-
-        WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
-    }
-
-    // Redirigir al carrito
-    $redirect_url = 'https://ecolitio.com/carrito/';
-    wp_safe_redirect( $redirect_url );
-    exit;
+/**
+ * Register Reparacion form action with Elementor Pro
+ *
+ * @since 1.0.0
+ * @param ElementorPro\Modules\Forms\Registrars\Form_Actions_Registrar $form_actions_registrar
+ * @return void
+ */
+function ecolitio_register_reparacion_form_action( $form_actions_registrar ) {
+	include_once( get_stylesheet_directory() . '/inc/form-action.php' );
+	$form_actions_registrar->register( new ReparacionesAddtoCart() );
 }
+add_action( 'elementor_pro/forms/actions/register', 'ecolitio_register_reparacion_form_action' );
 
 add_filter( 'woocommerce_get_item_data', 'ecolitio_show_reparacion_nota_in_cart', 10, 2 );
 
