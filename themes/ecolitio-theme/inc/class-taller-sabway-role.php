@@ -99,6 +99,10 @@ class Taller_Sabway_Role
     private function register_rewrite_endpoints()
     {
         add_rewrite_endpoint('taller-sabway-dashboard', EP_ROOT | EP_PAGES);
+        add_rewrite_endpoint('mi-cuenta-sabway', EP_ROOT | EP_PAGES);
+        
+        // Flush rewrite rules to ensure endpoints are recognized
+        flush_rewrite_rules();
     }
 
     /**
