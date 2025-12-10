@@ -677,7 +677,7 @@ add_action('wp_head', function() {
     if (is_user_logged_in()) {
         $user = wp_get_current_user();
         
-        if ($user->caps["taller_sabway"] && $user->caps["taller_sabway"] == 1) {
+        if (current_user_can('taller_sabway')) {
             echo '<style>ul.wc_payment_methods, .e-coupon-box { display: none !important; } li[data-selected="true"] {
                 background: var(--e-global-color-c1140c0) !important;
             } button#place_order { background: var(--e-global-color-c1140c0) !important} button#place_order:hover { background: black !important; color: var(--e-global-color-c1140c0)}</style>';

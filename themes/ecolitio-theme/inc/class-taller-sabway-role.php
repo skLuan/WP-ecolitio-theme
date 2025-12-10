@@ -29,9 +29,9 @@ class Taller_Sabway_Role
         add_action('init', array($this, 'init'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_filter('woocommerce_product_query_tax_query', array($this, 'filter_products_for_sabway_role'), 10, 2);
-        add_action('woocommerce_account_dashboard', array($this, 'add_sabway_dashboard_notice'));
-        add_filter('woocommerce_account_menu_items', array($this, 'add_sabway_dashboard_menu_item'));
-        add_action('woocommerce_account_taller-sabway-dashboard_endpoint', array($this, 'taller_sabway_dashboard_content'));
+        //add_action('woocommerce_account_dashboard', array($this, 'add_sabway_dashboard_notice'));
+        //add_filter('woocommerce_account_menu_items', array($this, 'add_sabway_dashboard_menu_item'));
+        //add_action('woocommerce_account_taller-sabway-dashboard_endpoint', array($this, 'taller_sabway_dashboard_content'));
     }
 
     /**
@@ -99,10 +99,10 @@ class Taller_Sabway_Role
     private function register_rewrite_endpoints()
     {
         add_rewrite_endpoint('taller-sabway-dashboard', EP_ROOT | EP_PAGES);
-        add_rewrite_endpoint('mi-cuenta-sabway', EP_ROOT | EP_PAGES);
+        //add_rewrite_endpoint('mi-cuenta-sabway', EP_ROOT | EP_PAGES);
         
         // Flush rewrite rules to ensure endpoints are recognized
-        flush_rewrite_rules();
+       // flush_rewrite_rules();
     }
 
     /**
