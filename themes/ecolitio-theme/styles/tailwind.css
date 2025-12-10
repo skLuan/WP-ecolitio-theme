@@ -84,30 +84,57 @@
       @apply appearance-none w-full h-2 rounded-lg bg-gray-700;
     }
 
+    /* Webkit browsers (Chrome, Safari, Edge) */
     label .custom-range::-webkit-slider-thumb {
-      @apply appearance-none h-6 w-6 rounded-full bg-blue-eco-clarisimo transition;
+      @apply appearance-none h-6 w-6 rounded-full bg-red-sabway transition;
+      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6), 0 0 12px rgba(208, 32, 36, 0.4);
     }
     label .custom-range:focus::-webkit-slider-thumb {
-      @apply ring-2 ring-blue-eco;
+      @apply ring-2;
+      ring-color: var(--color-red-sabway);
+      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8), 0 0 16px rgba(208, 32, 36, 0.5);
+    }
+    label .custom-range:active::-webkit-slider-thumb {
+      box-shadow: 0 0 16px rgba(208, 32, 36, 1), 0 0 20px rgba(208, 32, 36, 0.6);
     }
 
     label .custom-range::-webkit-slider-runnable-track {
-      @apply h-2 rounded-lg bg-green-eco-dark;
+      @apply h-2 rounded-lg bg-red-sabway;
     }
 
-    /* For Firefox */                        /* For IE */
-    label .custom-range::-moz-range-thumb, label .custom-range::-ms-thumb {
-      @apply h-6 w-6 rounded-full bg-blue-eco-clarisimo transition;
+    /* Firefox */
+    label .custom-range::-moz-range-thumb {
+      @apply h-6 w-6 rounded-full bg-red-sabway transition border-0;
+      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6), 0 0 12px rgba(208, 32, 36, 0.4);
     }
-    label .custom-range:focus::-moz-range-thumb, label .custom-range:focus::-ms-thumb {
-      @apply ring-2 ring-blue-eco;
+    label .custom-range:focus::-moz-range-thumb {
+      @apply ring-2;
+      ring-color: var(--color-red-sabway);
+      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8), 0 0 16px rgba(208, 32, 36, 0.5);
+    }
+    label .custom-range:active::-moz-range-thumb {
+      box-shadow: 0 0 16px rgba(208, 32, 36, 1), 0 0 20px rgba(208, 32, 36, 0.6);
     }
     label .custom-range::-moz-range-track {
-      @apply h-2 rounded-lg bg-green-eco-dark;
+      @apply h-2 rounded-lg bg-red-sabway border-0;
+    }
+    label .custom-range::-moz-range-progress {
+      @apply bg-red-sabway rounded-lg;
+    }
+
+    /* IE/Edge */
+    label .custom-range::-ms-thumb {
+      @apply h-6 w-6 rounded-full bg-red-sabway transition;
+      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6), 0 0 12px rgba(208, 32, 36, 0.4);
+    }
+    label .custom-range:focus::-ms-thumb {
+      @apply ring-2;
+      ring-color: var(--color-red-sabway);
+      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8), 0 0 16px rgba(208, 32, 36, 0.5);
     }
 
     label .custom-range::-ms-fill-lower {
-      @apply bg-green-eco-dark rounded-lg;
+      @apply bg-red-sabway rounded-lg;
     }
     label .custom-range::-ms-fill-upper {
       @apply bg-gray-700 rounded-lg;
