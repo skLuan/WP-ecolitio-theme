@@ -115,17 +115,7 @@ $distance = 30;
 								?>
 								<?php get_template_part('templates/progress-bar'); // -------- Progress bar 
 								?>
-								<div class="flex flex-col">
-									<p class="mb-3">Cuantos kilometros extra quieres recorrer?</p>
-									<p><strong>Autonomia: </strong><span class="eco-distance-for-slider"><?= esc_attr($distance) ?>Km</span></p>
-									<input type="range" id="sab-distance-range" class="custom-range" name="sab-distance-range" min="10" max="100" value="<?= intval($distance) ?>" step="1" class="w-full">
-									<div class="flex flex-row w-full">
-										<span id="progress-minval" class="">8 km</span>
-										<span id="progress-maxval" class="ml-auto">184 km</span>
-									</div>
-								</div>
 								<div id="sab-form-energy-advanced">
-									<h4 class="!text-white-eco !font-bold !flex flex-row items-center gap-2 !mb-0">Opciones Avanzadas <iconify-icon icon="material-symbols:arrow-drop-down" class="!text-white-eco !cursor-pointer" width="24" height="24"></iconify-icon></h4>
 									<p>Cambiar estas propiedades cambia directamente la Autonomía <br>
 										Aprende a como funciona esta tabla leyendo <a href="#" class="!text-green-eco">nuestra guía</a>
 									</p>
@@ -155,6 +145,16 @@ $distance = 30;
 												</label>
 											<?php endforeach; ?>
 										</div>
+									</div>
+									<div class="flex flex-col eco-slider-pack">
+										<p class="mb-1">Cuantos kilometros extra quieres recorrer?</p>
+										<input type="range" id="sab-distance-range" class="custom-range" name="sab-distance-range" min="10" max="100" value="<?= intval($distance) ?>" step="1" class="w-full">
+										<div class="flex flex-row w-full">
+											<span id="progress-minval" class="">8 km</span>
+											<span id="progress-maxval" class="ml-auto">184 km</span>
+										</div>
+										<p class="mb-0"><strong>Autonomia: </strong><span class="eco-distance-for-slider text-xl"><?= esc_attr($distance) ?>Km</span></p>
+
 									</div>
 								</div>
 							</div>
