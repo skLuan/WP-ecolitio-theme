@@ -34,6 +34,7 @@ $values = ['s', 'o', 'w'];
 	// Generate nonce for form submission
 	?>
 	<input type="hidden" name="ecolitio_sabway_nonce" value="<?php echo esc_attr($sabway_form_nonce); ?>" data-sabway-nonce="<?php echo esc_attr($sabway_form_nonce); ?>">
+    <input type="hidden" name="sabway_product_id" id="sabway_product_id" value="<?php echo esc_attr($product->get_id()); ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
 
 
 	<!-- Slider main container -->
