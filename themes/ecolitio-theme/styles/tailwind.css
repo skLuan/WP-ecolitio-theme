@@ -35,6 +35,17 @@
   input:focus {
     @apply !outline-green-eco;
   }
+
+  a[href]:focus,
+  area[href]:focus,
+  button:focus,
+  input:not([type="hidden"]):focus,
+  select:focus,
+  textarea:focus,
+  [tabindex]:not([tabindex="-1"]):focus,
+  [contenteditable="true"]:focus {
+    outline-color: var(--color-green-eco) !important;
+  }
 }
 
 /* ==========================================================================
@@ -58,7 +69,7 @@
   .eco-main-info-header .variations_form {
     .value {
       @apply !bg-black !rounded-md !border !border-blue-eco-clarisimo w-fit;
-      
+
       select {
         @apply !text-green-eco bg-black;
       }
@@ -69,7 +80,7 @@
       @apply cursor-pointer border-green-eco;
     }
 
-    .progress-step{
+    .progress-step {
       @apply transition-all duration-300 ease-in-out;
     }
 
@@ -87,12 +98,14 @@
     /* Webkit browsers (Chrome, Safari, Edge) */
     label .custom-range::-webkit-slider-thumb {
       @apply appearance-none h-6 w-6 rounded-full bg-red-sabway transition;
-      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6), 0 0 12px rgba(208, 32, 36, 0.4);
+      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6),
+        0 0 12px rgba(208, 32, 36, 0.4);
     }
     label .custom-range:focus::-webkit-slider-thumb {
       @apply ring-2;
       ring-color: var(--color-red-sabway);
-      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8), 0 0 16px rgba(208, 32, 36, 0.5);
+      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8),
+        0 0 16px rgba(208, 32, 36, 0.5);
     }
     label .custom-range:active::-webkit-slider-thumb {
       box-shadow: 0 0 16px rgba(208, 32, 36, 1), 0 0 20px rgba(208, 32, 36, 0.6);
@@ -105,12 +118,14 @@
     /* Firefox */
     label .custom-range::-moz-range-thumb {
       @apply h-6 w-6 rounded-full bg-red-sabway transition border-0;
-      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6), 0 0 12px rgba(208, 32, 36, 0.4);
+      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6),
+        0 0 12px rgba(208, 32, 36, 0.4);
     }
     label .custom-range:focus::-moz-range-thumb {
       @apply ring-2;
       ring-color: var(--color-red-sabway);
-      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8), 0 0 16px rgba(208, 32, 36, 0.5);
+      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8),
+        0 0 16px rgba(208, 32, 36, 0.5);
     }
     label .custom-range:active::-moz-range-thumb {
       box-shadow: 0 0 16px rgba(208, 32, 36, 1), 0 0 20px rgba(208, 32, 36, 0.6);
@@ -125,12 +140,14 @@
     /* IE/Edge */
     label .custom-range::-ms-thumb {
       @apply h-6 w-6 rounded-full bg-red-sabway transition;
-      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6), 0 0 12px rgba(208, 32, 36, 0.4);
+      box-shadow: 0 0 8px rgba(208, 32, 36, 0.6),
+        0 0 12px rgba(208, 32, 36, 0.4);
     }
     label .custom-range:focus::-ms-thumb {
       @apply ring-2;
       ring-color: var(--color-red-sabway);
-      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8), 0 0 16px rgba(208, 32, 36, 0.5);
+      box-shadow: 0 0 12px rgba(208, 32, 36, 0.8),
+        0 0 16px rgba(208, 32, 36, 0.5);
     }
 
     label .custom-range::-ms-fill-lower {
