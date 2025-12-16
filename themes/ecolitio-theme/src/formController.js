@@ -262,308 +262,12 @@ const uiManager = {
   },
 };
 
-/**
- * Order Construction Module
- * Handles creating order objects for submission
- */
-const orderConstructor = {
-  /**
-   * Constructs comprehensive order object for WooCommerce
-   * @param {Object} formData - Collected form data
-   * @returns {Object} Order object for WooCommerce
-   */
-  construct(formData) {
-    // Get product ID from hidden input field (for shortcode compatibility)
-    let productId = null;
-    const productIdInput = document.querySelector('input[name="sabway_product_id"]');
-    if (productIdInput) {
-      productId = parseInt(productIdInput.value);
-    }
-    
-    // Fallback: Try to get product ID from the page DOM element (for product pages)
-    if (!productId) {
-      const productElement = document.querySelector('[id^="product-"]');
-      productId = productElement
-        ? parseInt(productElement.id.replace("product-", ""))
-        : null;
-    }
-
-    // Get current user info (if logged in)
-    const userEmail =
-      document.querySelector('input[name="billing_email"]')?.value ||
-      "sabway@company.com";
-    const userName =
-      document.querySelector('input[name="billing_first_name"]')?.value ||
-      "Sabway Company";
-    const userLastName =
-      document.querySelector('input[name="billing_last_name"]')?.value ||
-      "Company";
-    const userCompany =
-      document.querySelector('input[name="billing_company"]')?.value ||
-      "Sabway";
-    const userPhone =
-      document.querySelector('input[name="billing_phone"]')?.value || "";
-    const userAddress1 =
-      document.querySelector('input[name="billing_address_1"]')?.value || "";
-    const userAddress2 =
-      document.querySelector('input[name="billing_address_2"]')?.value || "";
-    const userCity =
-      document.querySelector('input[name="billing_city"]')?.value || "";
-    const userState =
-      document.querySelector('input[name="billing_state"]')?.value || "";
-    const userPostcode =
-      document.querySelector('input[name="billing_postcode"]')?.value || "";
-    const userCountry =
-      document.querySelector('input[name="billing_country"]')?.value || "";
-
-    // Construct order meta data with all specifications
-    const orderMeta = {
-      electrical_specifications: formData.electrical_specifications,
-      physical_dimensions: formData.physical_dimensions,
-      scooter_model: formData.scooter_model,
-      battery_location: formData.battery_location,
-      connector_type: formData.connector_type,
-      order_type: "sabway_battery_customization",
-      company_order: true,
-    };
-
-    // Construct order note with form resume for internal staff
-    const orderNote =
-      `SABWAY BATTERY CUSTOMIZATION ORDER RESUME\n\n` +
-      `ELECTRICAL SPECIFICATIONS:\n` +
-      `- Voltage: ${formData.electrical_specifications.voltage}\n` +
-      `- Amperage: ${formData.electrical_specifications.amperage}\n` +
-      `- Distance Range: ${formData.electrical_specifications.distance_range_km}km\n\n` +
-      `PHYSICAL DIMENSIONS:\n` +
-      `- Height: ${formData.physical_dimensions.height_cm}cm\n` +
-      `- Width: ${formData.physical_dimensions.width_cm}cm\n` +
-      `- Length: ${formData.physical_dimensions.length_cm}cm\n\n` +
-      `SCOOTER SPECIFICATIONS:\n` +
-      `- Model: ${formData.scooter_model}\n` +
-      `- Battery Location: ${formData.battery_location}\n` +
-      `- Connector Type: ${formData.connector_type}\n\n` +
-      `ORDER SOURCE: Sabway Space (sabway-space)`;
-
-    // Construct the order object
-    const orderObject = {
-      payment_method: "bacs", // Bank transfer (BACS) as default
-      payment_method_title: "Direct Bank Transfer",
-      set_paid: false, // Sabway will handle payment consolidation
-      status: "pending", // Order starts as pending
-      customer_note: `Sabway Battery Customization Order\n\nElectrical Specifications:\n- Voltage: ${formData.electrical_specifications.voltage}\n- Amperage: ${formData.electrical_specifications.amperage}\n- Distance Range: ${formData.electrical_specifications.distance_range_km}km\n\nPhysical Dimensions:\n- Height: ${formData.physical_dimensions.height_cm}cm\n- Width: ${formData.physical_dimensions.width_cm}cm\n- Length: ${formData.physical_dimensions.length_cm}cm\n\nScooter Model: ${formData.scooter_model}\nBattery Location: ${formData.battery_location}\nConnector Type: ${formData.connector_type}`,
-      order_note: orderNote,
-      line_items: [
-        {
-          product_id: productId,
-          quantity: 1,
-          meta_data: [
-            {
-              key: "battery_specifications",
-              value: JSON.stringify(orderMeta),
-            },
-          ],
-        },
-      ],
-      meta_data: [
-        {
-          key: "_sabway_battery_specs",
-          value: JSON.stringify(orderMeta),
-        },
-        {
-          key: "_company_order",
-          value: "true",
-        },
-        {
-          key: "_wc_order_origin",
-          value: "sabway-space",
-        },
-      ],
-      billing: {
-        first_name: userName,
-        last_name: userLastName,
-        company: userCompany,
-        email: userEmail,
-        phone: userPhone,
-        address_1: userAddress1,
-        address_2: userAddress2,
-        city: userCity,
-        state: userState,
-        postcode: userPostcode,
-        country: userCountry,
-      },
-      shipping: {
-        first_name: userName,
-        last_name: userLastName,
-        company: userCompany,
-        address_1: userAddress1,
-        address_2: userAddress2,
-        city: userCity,
-        state: userState,
-        postcode: userPostcode,
-        country: userCountry,
-      },
-    };
-
-    return orderObject;
-  },
-};
 
 /**
  * AJAX Submission Module
- * Handles order submission to WordPress AJAX endpoint
+ * Handles adding products to cart via WordPress AJAX endpoint
  */
 const ajaxSubmitter = {
-  /**
-   * Submits order to WordPress AJAX endpoint with enhanced security
-   * @param {Object} formData - Form data object
-   * @param {Object} orderObject - Order object to submit
-   * @returns {Promise} API response
-   */
-  async submit(formData, orderObject) {
-    try {
-      // Get AJAX configuration from localized script
-      const ajaxConfig =
-        window.taller_sabway_ajax || window.ecolitio_ajax || {};
-      const ajaxUrl =
-        ajaxConfig.ajax_url ||
-        `${window.location.origin}/wp-admin/admin-ajax.php`;
-      
-      // Try to get nonce from multiple sources
-      let nonce = ajaxConfig.sabway_form_nonce || ajaxConfig.nonce || "";
-      
-      // Fallback: Try to get nonce from DOM input if not in global object
-      if (!nonce) {
-        const nonceInput = document.querySelector('input[name="ecolitio_sabway_nonce"]');
-        if (nonceInput) {
-          nonce = nonceInput.value;
-          console.log("Nonce retrieved from DOM input");
-        }
-      }
-
-      console.log("Using WordPress AJAX submission");
-      console.log("AJAX URL:", ajaxUrl);
-      console.log("Nonce:", nonce ? "Present" : "Missing");
-      console.log("AJAX Config:", ajaxConfig);
-
-      // Get product ID from order object
-      const productId = orderObject.line_items[0]?.product_id || null;
-
-      // Prepare FormData for WordPress AJAX submission
-      const formDataSubmit = new FormData();
-      formDataSubmit.append("action", "sabway_submit_form");
-      formDataSubmit.append("nonce", nonce);
-
-      // Add form fields according to AJAX handler expectations
-      formDataSubmit.append(
-        "voltage",
-        formData.electrical_specifications.voltage || ""
-      );
-      formDataSubmit.append(
-        "amperage",
-        formData.electrical_specifications.amperage || ""
-      );
-      formDataSubmit.append(
-        "distance_range_km",
-        formData.electrical_specifications.distance_range_km || 0
-      );
-      formDataSubmit.append(
-        "height_cm",
-        formData.physical_dimensions.height_cm || 0
-      );
-      formDataSubmit.append(
-        "width_cm",
-        formData.physical_dimensions.width_cm || 0
-      );
-      formDataSubmit.append(
-        "length_cm",
-        formData.physical_dimensions.length_cm || 0
-      );
-      formDataSubmit.append("scooter_model", formData.scooter_model || "");
-      formDataSubmit.append(
-        "battery_location",
-        formData.battery_location || ""
-      );
-      formDataSubmit.append("connector_type", formData.connector_type || "");
-      formDataSubmit.append("product_id", productId || 0);
-
-      console.log(
-        "Form data prepared for submission:",
-        Object.fromEntries(formDataSubmit)
-      );
-
-      // Submit to WordPress AJAX endpoint
-      const response = await fetch(ajaxUrl, {
-        method: "POST",
-        credentials: "include", // Include cookies for authentication
-        body: formDataSubmit,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("AJAX Error Response:", {
-          status: response.status,
-          statusText: response.statusText,
-          body: errorText,
-        });
-        throw new Error(`Network Error: ${response.status} - ${errorText}`);
-      }
-
-      const result = await response.json();
-      console.log("AJAX Response:", result);
-
-      if (!result.success) {
-        // Handle different types of errors from the AJAX handler
-        const errorData = result.data || {};
-        const errorMessage = errorData.message || "Error desconocido";
-        const errorCode = errorData.code || "unknown_error";
-
-        console.error("AJAX Submission Error:", {
-          code: errorCode,
-          message: errorMessage,
-          details: errorData,
-        });
-
-        // Provide user-friendly error messages based on error code
-        if (errorCode === "nonce_failed") {
-          throw new Error(
-            "Verificación de seguridad fallida. Por favor, recarga la página e intenta de nuevo."
-          );
-        } else if (errorCode === "session_failed") {
-          throw new Error(
-            "Sesión inválida o expirada. Por favor, inicia sesión nuevamente."
-          );
-        } else if (errorCode === "permission_failed") {
-          throw new Error("No tienes permisos para realizar esta acción.");
-        } else if (errorCode === "validation_failed") {
-          const validationErrors = errorData.errors || [];
-          throw new Error(
-            `Datos del formulario inválidos:\n${validationErrors.join("\n")}`
-          );
-        } else if (errorCode === "product_unavailable") {
-          throw new Error("El producto seleccionado no está disponible.");
-        } else {
-          throw new Error(errorMessage);
-        }
-      }
-      nextSlide();
-      // Success response from AJAX handler
-      const successData = result.data || {};
-      console.log("Order created successfully via AJAX:", successData);
-
-      return {
-        id: successData.order_id,
-        order_key: successData.order_key,
-        redirect_url:
-          successData.redirect_url ||
-          `${window.location.origin}/checkout/order-received/${successData.order_id}/?key=${successData.order_key}`,
-        message: successData.message || "Pedido realizado con éxito",
-      };
-    } catch (error) {
-      console.error("AJAX Submission Error:", error);
-      throw error;
-    }
-  },
-
   /**
    * Adds product to cart via AJAX
    * @param {Object} formData - Form data object
@@ -685,22 +389,6 @@ export const formController = () => {
   }
 
   /**
-   * Populates confirmation step with order details
-   * @param {Object} formData - Form data
-   * @param {number} orderId - Created order ID
-   */
-  const populateConfirmation = (formData, orderId) => {
-    // Add order ID to confirmation
-    const orderIdElement = document.createElement("li");
-    orderIdElement.className = "grid grid-cols-2 gap-2";
-    orderIdElement.innerHTML = `<strong>Order ID:</strong><p>${orderId}</p>`;
-    const confirmationList = document.querySelector("#sab-step-5 ul");
-    if (confirmationList) {
-      confirmationList.appendChild(orderIdElement);
-    }
-  };
-
-  /**
    * Main form submission handler
    * @param {Event} e - Form submit event
    */
@@ -726,64 +414,21 @@ export const formController = () => {
       const formData = dataCollector.collect();
       console.log("Form Data Collected:", formData);
 
-      // Check user role
-      const ajaxConfig =
-        window.taller_sabway_ajax || window.ecolitio_ajax || {};
-      const isTallerSabway =
-        ajaxConfig.user_capabilities &&
-        ajaxConfig.user_capabilities.taller_sabway;
+      // Step 4: Add to Cart for all users
+      const result = await ajaxSubmitter.addToCart(formData);
+      console.log("Added to Cart Successfully:", result);
 
-      if (isTallerSabway || document.URL.includes("sabway")) {
-        // Step 4: Construct order object
-        const orderObject = orderConstructor.construct(formData);
-        console.log("Order Object Constructed:", orderObject);
+      uiManager.showFeedback(
+        "¡Producto añadido al carrito! Redirigiendo...",
+        "success",
+        form
+      );
 
-        // Step 5: Submit via AJAX
-        const result = await ajaxSubmitter.submit(formData, orderObject);
-        console.log("Order Created Successfully:", result);
-
-        // Step 6: Show success feedback
-        uiManager.showFeedback(
-          `¡Pedido realizado con éxito! ID del Pedido: ${result.id}`,
-          "success",
-          form
-        );
-
-        // Step 7: Navigate to confirmation step (step 5)
-        const step5 = document.getElementById("sab-step-5");
-        if (step5) {
-          // Hide all steps
-          document.querySelectorAll(".step").forEach((step) => {
-            step.style.display = "none";
-          });
-          // Show success step
-          step5.style.display = "flex";
-
-          // Populate final confirmation with order details
-          populateConfirmation(formData, result.id);
-        }
-
-        // Step 8: Reset form after successful submission
+      // Step 5: Redirect to cart
+      if (result.cart_url) {
         setTimeout(() => {
-          form.reset();
-        }, 2000);
-      } else {
-        // General Customer Flow: Add to Cart
-        const result = await ajaxSubmitter.addToCart(formData);
-        console.log("Added to Cart Successfully:", result);
-
-        uiManager.showFeedback(
-          "¡Producto añadido al carrito! Redirigiendo...",
-          "success",
-          form
-        );
-
-        // Redirect to cart
-        if (result.cart_url) {
-          setTimeout(() => {
-            window.location.href = result.cart_url;
-          }, 1500);
-        }
+          window.location.href = result.cart_url;
+        }, 1500);
       }
     } catch (error) {
       console.error("Form Submission Error:", error);

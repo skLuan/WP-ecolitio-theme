@@ -10,16 +10,6 @@
  * Note: Amperage values use commas (4,8AH) and uppercase (AH) as per WooCommerce attributes
  */
 const distanceLookupTable = {
-  // 12V Battery
-  "12V-4,8AH": { min: 6, max: 8, midpoint: 7 },
-  "12V-9,6AH": { min: 12, max: 16, midpoint: 14 },
-  "12V-14,4AH": { min: 18, max: 24, midpoint: 21 },
-  "12V-19,2AH": { min: 24, max: 32, midpoint: 28 },
-  "12V-24AH": { min: 30, max: 40, midpoint: 35 },
-  "12V-28,8AH": { min: 36, max: 48, midpoint: 42 },
-  "12V-33,6AH": { min: 42, max: 56, midpoint: 49 },
-  "12V-38,4AH": { min: 48, max: 64, midpoint: 56 },
-
   // 24V Battery
   "24V-4,8AH": { min: 8, max: 10, midpoint: 9 },
   "24V-9,6AH": { min: 16, max: 20, midpoint: 18 },
