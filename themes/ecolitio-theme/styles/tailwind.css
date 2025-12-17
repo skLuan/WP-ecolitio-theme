@@ -63,7 +63,7 @@
   }
   form.sabway-form {
     label span {
-      @apply cursor-pointer border-green-eco;
+      @apply cursor-pointer;
     }
 
     .progress-step {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Ecolitio Theme Functions
  *
@@ -49,7 +50,8 @@ use Idleberg\WordPress\ViteAssets\Assets;
  * Theme setup and configuration
  */
 add_action('after_setup_theme', 'ecolitio_theme_setup');
-function ecolitio_theme_setup() {
+function ecolitio_theme_setup()
+{
     // Add theme support for various features
     add_theme_support('post-thumbnails');
     add_theme_support('title-tag');
@@ -71,7 +73,8 @@ function ecolitio_theme_setup() {
  * Ensures proper loading order and prevents duplication
  */
 add_action('wp_enqueue_scripts', 'ecolitio_enqueue_styles', 5); // Load earlier to prevent conflicts
-function ecolitio_enqueue_styles() {
+function ecolitio_enqueue_styles()
+{
     // Check if parent style is already enqueued to prevent duplication
     if (!wp_style_is('storefront-style', 'enqueued') && !wp_style_is('parent-style', 'enqueued')) {
         // Enqueue parent theme stylesheet first
@@ -99,18 +102,19 @@ function ecolitio_enqueue_styles() {
  * Handles both development (HMR) and production builds
  */
 add_action('wp_enqueue_scripts', 'ecolitio_enqueue_scripts', 15); // Load after styles to ensure proper dependency order
-function ecolitio_enqueue_scripts() {
+function ecolitio_enqueue_scripts()
+{
     // Separate Vite JS and CSS enqueuing for better control
     ecolitio_enqueue_vite_js();
     ecolitio_enqueue_vite_css();
-    
+
     // Generate and localize WooCommerce REST API nonce and consumer keys for taller_sabway role
     if (ecolitio_is_woocommerce_active() && current_user_can('taller_sabway')) {
         $wc_rest_nonce = wp_create_nonce('wp_rest');
-        
+
         // Generate or retrieve consumer keys for REST API authentication
         $consumer_keys = generate_taller_sabway_consumer_keys();
-        
+
         wp_localize_script('ecolitio-main-js', 'ecolitioWcApi', array(
             'restUrl' => rest_url('wc/v3/'),
             'restNonce' => $wc_rest_nonce,
@@ -130,7 +134,8 @@ function ecolitio_enqueue_scripts() {
 /**
  * Enqueue Vite JavaScript assets for development and production
  */
-function ecolitio_enqueue_vite_js() {
+function ecolitio_enqueue_vite_js()
+{
     $manifest_path = get_stylesheet_directory() . '/dist/.vite/manifest.json';
 
     // Check if manifest exists (production build)
@@ -163,7 +168,8 @@ function ecolitio_enqueue_vite_js() {
  * Enqueue Vite CSS assets for development and production
  * Ensures CSS loads after Elementor styles
  */
-function ecolitio_enqueue_vite_css() {
+function ecolitio_enqueue_vite_css()
+{
     $manifest_path = get_stylesheet_directory() . '/dist/.vite/manifest.json';
 
     // Build dependency array - include Elementor if active
@@ -200,7 +206,8 @@ function ecolitio_enqueue_vite_css() {
  * This runs at a high priority to override any conflicting enqueues
  */
 add_action('wp_enqueue_scripts', 'ecolitio_ensure_css_priority', 1000);
-function ecolitio_ensure_css_priority() {
+function ecolitio_ensure_css_priority()
+{
     // Prevent duplicate Storefront styles
     if (wp_style_is('storefront-style', 'enqueued')) {
         wp_dequeue_style('storefront-style');
@@ -244,7 +251,8 @@ function ecolitio_ensure_css_priority() {
 /**
  * Check if WooCommerce is active and properly configured
  */
-function ecolitio_is_woocommerce_active() {
+function ecolitio_is_woocommerce_active()
+{
     return class_exists('WooCommerce');
 }
 
@@ -315,94 +323,95 @@ function ecolitio_render_products_grid($args = array()): void
  * @return string Rendered form HTML
  */
 add_shortcode('sabway_battery_form', 'ecolitio_sabway_battery_form_shortcode');
-function ecolitio_sabway_battery_form_shortcode($atts = array()) {
-	// Parse shortcode attributes
-	$atts = shortcode_atts(array(
-		'product_id' => 0,
-		'show_title' => 'yes',
-		'custom_class' => '',
-	), $atts, 'sabway_battery_form');
+function ecolitio_sabway_battery_form_shortcode($atts = array())
+{
+    // Parse shortcode attributes
+    $atts = shortcode_atts(array(
+        'product_id' => 0,
+        'show_title' => 'yes',
+        'custom_class' => '',
+    ), $atts, 'sabway_battery_form');
 
-	// Determine product ID
-	$product_id = intval($atts['product_id']);
-	
-	// If no product ID provided, try to get from current product (if on product page)
-	if (!$product_id) {
-		global $product;
-		if ($product && is_a($product, 'WC_Product')) {
-			$product_id = $product->get_id();
-		}
-	}
+    // Determine product ID
+    $product_id = intval($atts['product_id']);
 
-	// Validate product exists and is published
-	if (!$product_id) {
-		return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' . 
-			esc_html__('Error: No product specified. Use [sabway_battery_form product_id="123"]', 'ecolitio-theme') . 
-			'</div>';
-	}
+    // If no product ID provided, try to get from current product (if on product page)
+    if (!$product_id) {
+        global $product;
+        if ($product && is_a($product, 'WC_Product')) {
+            $product_id = $product->get_id();
+        }
+    }
 
-	// Get product object
-	$product = wc_get_product($product_id);
-	if (!$product || !$product->is_visible()) {
-		return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' . 
-			esc_html__('Error: Product not found or not visible.', 'ecolitio-theme') . 
-			'</div>';
-	}
+    // Validate product exists and is published
+    if (!$product_id) {
+        return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' .
+            esc_html__('Error: No product specified. Use [sabway_battery_form product_id="123"]', 'ecolitio-theme') .
+            '</div>';
+    }
 
-	// Get product attributes
-	$getAttributes = $product->get_attributes();
-	
-	// Validate required attributes exist
-	if (empty($getAttributes['voltios']) || empty($getAttributes['amperios'])) {
-		return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' . 
-			esc_html__('Error: Product is missing required attributes (voltios, amperios).', 'ecolitio-theme') . 
-			'</div>';
-	}
+    // Get product object
+    $product = wc_get_product($product_id);
+    if (!$product || !$product->is_visible()) {
+        return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' .
+            esc_html__('Error: Product not found or not visible.', 'ecolitio-theme') .
+            '</div>';
+    }
 
-	// Set up form data
-	$icons = array(
-		"step1" => array(
-			"icon" => "ix:electrical-energy-filled",
-			"title" => "Parte eléctrica",
-		),
-		"step2" => array(
-			"icon" => "tabler:dimensions",
-			"title" => "Dimensiones",
-		),
-		"step3" => array(
-			"icon" => "material-symbols:cable",
-			"title" => "Conectores",
-		),
-		"step4" => array(
-			"icon" => "material-symbols:check-circle",
-			"title" => "Confirmación",
-		),
-	);
+    // Get product attributes
+    $getAttributes = $product->get_attributes();
 
-	$distance = 30;
-	$sabway_form_nonce = wp_create_nonce('ecolitio_sabway_form_nonce');
+    // Validate required attributes exist
+    if (empty($getAttributes['voltios']) || empty($getAttributes['amperios'])) {
+        return '<div class="sabway-form-error !p-4 !rounded-lg !bg-red-500 !text-white-eco">' .
+            esc_html__('Error: Product is missing required attributes (voltios, amperios).', 'ecolitio-theme') .
+            '</div>';
+    }
 
-	// Start output buffering
-	ob_start();
-	
-	// Load the form template
-	set_query_var('product', $product);
-	set_query_var('icons', $icons);
-	set_query_var('getAttributes', $getAttributes);
-	set_query_var('distance', $distance);
-	set_query_var('sabway_form_nonce', $sabway_form_nonce);
-	
-	get_template_part('templates/sabway-battery-form');
-	
-	// Get buffered content
-	$form_html = ob_get_clean();
+    // Set up form data
+    $icons = array(
+        "step1" => array(
+            "icon" => "ix:electrical-energy-filled",
+            "title" => "Parte eléctrica",
+        ),
+        "step2" => array(
+            "icon" => "tabler:dimensions",
+            "title" => "Dimensiones",
+        ),
+        "step3" => array(
+            "icon" => "material-symbols:cable",
+            "title" => "Conectores",
+        ),
+        "step4" => array(
+            "icon" => "material-symbols:check-circle",
+            "title" => "Confirmación",
+        ),
+    );
 
-	// Wrap with custom class if provided
-	if (!empty($atts['custom_class'])) {
-		$form_html = '<div class="' . esc_attr($atts['custom_class']) . '">' . $form_html . '</div>';
-	}
+    $distance = 30;
+    $sabway_form_nonce = wp_create_nonce('ecolitio_sabway_form_nonce');
 
-	return $form_html;
+    // Start output buffering
+    ob_start();
+
+    // Load the form template
+    set_query_var('product', $product);
+    set_query_var('icons', $icons);
+    set_query_var('getAttributes', $getAttributes);
+    set_query_var('distance', $distance);
+    set_query_var('sabway_form_nonce', $sabway_form_nonce);
+
+    get_template_part('templates/sabway-battery-form');
+
+    // Get buffered content
+    $form_html = ob_get_clean();
+
+    // Wrap with custom class if provided
+    if (!empty($atts['custom_class'])) {
+        $form_html = '<div class="' . esc_attr($atts['custom_class']) . '">' . $form_html . '</div>';
+    }
+
+    return $form_html;
 }
 
 
@@ -416,7 +425,8 @@ function ecolitio_sabway_battery_form_shortcode($atts = array()) {
  * Add custom body classes for theme-specific styling
  */
 add_filter('body_class', 'ecolitio_body_classes');
-function ecolitio_body_classes($classes) {
+function ecolitio_body_classes($classes)
+{
     $classes[] = 'ecolitio-theme';
     return $classes;
 }
@@ -425,13 +435,14 @@ function ecolitio_body_classes($classes) {
  * Filter to modify products per page
  */
 add_filter('ecolitio_products_per_page', 'ecolitio_modify_products_per_page');
-function ecolitio_modify_products_per_page($per_page) {
+function ecolitio_modify_products_per_page($per_page)
+{
     // Allow child themes or plugins to modify this value
     return apply_filters('ecolitio_products_per_page_override', $per_page);
 }
 
-if ( has_action( 'storefront_sidebar' ) ) {
-	remove_action( 'storefront_sidebar' );
+if (has_action('storefront_sidebar')) {
+    remove_action('storefront_sidebar');
 }
 
 // =============================================================================
@@ -443,7 +454,8 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
      * Add development helper functions
      */
     add_action('wp_footer', 'ecolitio_development_info');
-    function ecolitio_development_info() {
+    function ecolitio_development_info()
+    {
         if (current_user_can('administrator')) {
             echo '<!-- Ecolitio Theme Development Mode Active -->';
         }
@@ -458,12 +470,13 @@ if (defined('WP_DEBUG') && WP_DEBUG) {
  * Generate WooCommerce Consumer Keys for REST API authentication
  * This provides an alternative to role-based permissions
  */
-function generate_taller_sabway_consumer_keys() {
+function generate_taller_sabway_consumer_keys()
+{
     // In production, you would store these in a secure location
     // For development/testing, we generate them dynamically
     $consumer_key = 'ck_' . wp_generate_password(64, false);
     $consumer_secret = 'cs_' . wp_generate_password(64, false);
-    
+
     // You could store these in database or environment variables
     // For now, we'll use environment variables or generate them
     if (defined('TALLER_SABWAY_CONSUMER_KEY') && defined('TALLER_SABWAY_CONSUMER_SECRET')) {
@@ -472,7 +485,7 @@ function generate_taller_sabway_consumer_keys() {
             'secret' => TALLER_SABWAY_CONSUMER_SECRET
         );
     }
-    
+
     return array(
         'key' => $consumer_key,
         'secret' => $consumer_secret
@@ -482,9 +495,10 @@ function generate_taller_sabway_consumer_keys() {
 /**
  * Get WooCommerce REST API authentication credentials
  */
-function get_taller_sabway_wc_auth_credentials() {
+function get_taller_sabway_wc_auth_credentials()
+{
     $credentials = array();
-    
+
     // Method 1: Check if we have environment variables set
     if (defined('TALLER_SABWAY_CONSUMER_KEY') && defined('TALLER_SABWAY_CONSUMER_SECRET')) {
         $credentials['key'] = TALLER_SABWAY_CONSUMER_KEY;
@@ -497,94 +511,99 @@ function get_taller_sabway_wc_auth_credentials() {
         $credentials['secret'] = 'cs_test_987654321';
         $credentials['method'] = 'consumer_key_dev';
     }
-    
+
     return $credentials;
-/**
- * Enhanced Sabway Form Security System
- * Provides comprehensive security for form submissions
- */
-class Sabway_Form_Security {
-    
     /**
-     * Create and manage form nonces
+     * Enhanced Sabway Form Security System
+     * Provides comprehensive security for form submissions
      */
-    public static function create_form_nonce() {
-        return wp_create_nonce('ecolitio_sabway_form_nonce');
-    }
-    
-    /**
-     * Verify form nonce
-     */
-    public static function verify_form_nonce($nonce) {
-        return wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce');
-    }
-    
-    /**
-     * Get enhanced AJAX configuration for frontend
-     */
-    public static function get_ajax_config() {
-        $ajax_config = array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => self::create_form_nonce(),
-            'sabway_form_nonce' => self::create_form_nonce(),
-            'user_logged_in' => is_user_logged_in(),
-            'current_user_id' => get_current_user_id(),
-            'user_capabilities' => array(
-                'taller_sabway' => current_user_can('taller_sabway'),
-                'edit_shop_orders' => current_user_can('edit_shop_orders'),
-                'create_shop_orders' => current_user_can('create_shop_orders'),
-            ),
-            'strings' => array(
-                'loading' => __('Cargando...', 'ecolitio-theme'),
-                'error' => __('Error al enviar el pedido', 'ecolitio-theme'),
-                'validation_failed' => __('Datos del formulario inválidos', 'ecolitio-theme'),
-                'permission_denied' => __('No tienes permisos para realizar esta acción', 'ecolitio-theme'),
-                'session_expired' => __('Sesión expirada. Por favor, recarga la página', 'ecolitio-theme'),
-                'nonce_failed' => __('Verificación de seguridad fallida', 'ecolitio-theme'),
-            ),
-            'validation_rules' => array(
-                'voltage' => array('required' => true),
-                'amperage' => array('required' => true),
-                'distance_range_km' => array('required' => true, 'min' => 10, 'max' => 100),
-                'height_cm' => array('required' => true, 'min' => 0.1),
-                'width_cm' => array('required' => true, 'min' => 0.1),
-                'length_cm' => array('required' => true, 'min' => 0.1),
-                'scooter_model' => array('required' => true),
-                'battery_location' => array('required' => true),
-                'connector_type' => array('required' => true),
-            )
-        );
-        
-        return apply_filters('sabway_ajax_config', $ajax_config);
-    }
-}
+    class Sabway_Form_Security
+    {
 
-/**
- * Enhanced script enqueue with security measures for Sabway forms
- */
-add_action('wp_enqueue_scripts', 'ecolitio_enqueue_sabway_form_security', 25);
-function ecolitio_enqueue_sabway_form_security() {
-    // Check if current page/post has the Sabway form
-    // Removed strict content check as the form might be in a template
-    global $post;
-    if (!$post) {
-        return;
+        /**
+         * Create and manage form nonces
+         */
+        public static function create_form_nonce()
+        {
+            return wp_create_nonce('ecolitio_sabway_form_nonce');
+        }
+
+        /**
+         * Verify form nonce
+         */
+        public static function verify_form_nonce($nonce)
+        {
+            return wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce');
+        }
+
+        /**
+         * Get enhanced AJAX configuration for frontend
+         */
+        public static function get_ajax_config()
+        {
+            $ajax_config = array(
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce' => self::create_form_nonce(),
+                'sabway_form_nonce' => self::create_form_nonce(),
+                'user_logged_in' => is_user_logged_in(),
+                'current_user_id' => get_current_user_id(),
+                'user_capabilities' => array(
+                    'taller_sabway' => current_user_can('taller_sabway'),
+                    'edit_shop_orders' => current_user_can('edit_shop_orders'),
+                    'create_shop_orders' => current_user_can('create_shop_orders'),
+                ),
+                'strings' => array(
+                    'loading' => __('Cargando...', 'ecolitio-theme'),
+                    'error' => __('Error al enviar el pedido', 'ecolitio-theme'),
+                    'validation_failed' => __('Datos del formulario inválidos', 'ecolitio-theme'),
+                    'permission_denied' => __('No tienes permisos para realizar esta acción', 'ecolitio-theme'),
+                    'session_expired' => __('Sesión expirada. Por favor, recarga la página', 'ecolitio-theme'),
+                    'nonce_failed' => __('Verificación de seguridad fallida', 'ecolitio-theme'),
+                ),
+                'validation_rules' => array(
+                    'voltage' => array('required' => true),
+                    'amperage' => array('required' => true),
+                    'distance_range_km' => array('required' => true, 'min' => 10, 'max' => 100),
+                    'height_cm' => array('required' => true, 'min' => 0.1),
+                    'width_cm' => array('required' => true, 'min' => 0.1),
+                    'length_cm' => array('required' => true, 'min' => 0.1),
+                    'scooter_model' => array('required' => true),
+                    'battery_location' => array('required' => true),
+                    'connector_type' => array('required' => true),
+                )
+            );
+
+            return apply_filters('sabway_ajax_config', $ajax_config);
+        }
     }
 
-    // Get script handle from main enqueue function
-    $main_script_handle = 'ecolitio-main-js';
-    if (!wp_script_is($main_script_handle, 'enqueued')) {
-        return;
-    }
+    /**
+     * Enhanced script enqueue with security measures for Sabway forms
+     */
+    add_action('wp_enqueue_scripts', 'ecolitio_enqueue_sabway_form_security', 25);
+    function ecolitio_enqueue_sabway_form_security()
+    {
+        // Check if current page/post has the Sabway form
+        // Removed strict content check as the form might be in a template
+        global $post;
+        if (!$post) {
+            return;
+        }
 
-    // Localize script with enhanced AJAX data and security
-    wp_localize_script($main_script_handle, 'taller_sabway_ajax', Sabway_Form_Security::get_ajax_config());
-    
-    // Also provide legacy support for old scripts
-    wp_localize_script($main_script_handle, 'ecolitio_ajax', Sabway_Form_Security::get_ajax_config());
-    
-    // Add additional security headers via JavaScript
-    wp_add_inline_script($main_script_handle, '
+        // Get script handle from main enqueue function
+        $main_script_handle = 'ecolitio-main-js';
+        if (!wp_script_is($main_script_handle, 'enqueued')) {
+            return;
+        }
+
+        // Localize script with enhanced AJAX data and security
+        wp_localize_script($main_script_handle, 'taller_sabway_ajax', Sabway_Form_Security::get_ajax_config());
+
+        // Also provide legacy support for old scripts
+        wp_localize_script($main_script_handle, 'ecolitio_ajax', Sabway_Form_Security::get_ajax_config());
+
+        // Add additional security headers via JavaScript
+        wp_add_inline_script($main_script_handle, '
         // Security headers for AJAX requests
         (function() {
             // Add security headers for WordPress AJAX
@@ -601,14 +620,15 @@ function ecolitio_enqueue_sabway_form_security() {
             };
         })();
     ');
-}
+    }
 }
 
 /**
  * Display custom battery data in cart
  */
 add_filter('woocommerce_get_item_data', 'ecolitio_display_custom_battery_data_cart', 10, 2);
-function ecolitio_display_custom_battery_data_cart($item_data, $cart_item) {
+function ecolitio_display_custom_battery_data_cart($item_data, $cart_item)
+{
     if (isset($cart_item['_sabway_custom_order'])) {
         // Electrical Specs
         if (isset($cart_item['_sabway_electrical_specs'])) {
@@ -685,10 +705,11 @@ function ecolitio_display_custom_battery_data_cart($item_data, $cart_item) {
  * Save custom battery data to order items
  */
 add_action('woocommerce_checkout_create_order_line_item', 'ecolitio_save_custom_battery_data_order', 10, 4);
-function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values, $order) {
+function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values, $order)
+{
     if (isset($values['_sabway_custom_order'])) {
         $item->add_meta_data('_sabway_custom_order', true);
-        
+
         if (isset($values['_sabway_electrical_specs'])) {
             $item->add_meta_data('_sabway_electrical_specs', $values['_sabway_electrical_specs']);
             // Add visible meta for customer
@@ -697,13 +718,13 @@ function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values,
             $item->add_meta_data(__('Amperaje', 'ecolitio-theme'), $specs['amperage']);
             $item->add_meta_data(__('Autonomía', 'ecolitio-theme'), $specs['distance_range_km'] . ' km');
         }
-        
+
         if (isset($values['_sabway_physical_dimensions'])) {
             $item->add_meta_data('_sabway_physical_dimensions', $values['_sabway_physical_dimensions']);
             $dims = $values['_sabway_physical_dimensions'];
             $item->add_meta_data(__('Dimensiones', 'ecolitio-theme'), sprintf('%s x %s x %s cm', $dims['height_cm'], $dims['width_cm'], $dims['length_cm']));
         }
-        
+
         if (isset($values['_sabway_specifications'])) {
             $item->add_meta_data('_sabway_specifications', $values['_sabway_specifications']);
             $other = $values['_sabway_specifications'];
@@ -725,19 +746,21 @@ function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values,
  * @param ElementorPro\Modules\Forms\Registrars\Form_Actions_Registrar $form_actions_registrar
  * @return void
  */
-function ecolitio_register_reparacion_form_action( $form_actions_registrar ) {
-	include_once( get_stylesheet_directory() . '/inc/form-action.php' );
-	$form_actions_registrar->register( new ReparacionesAddtoCart() );
+function ecolitio_register_reparacion_form_action($form_actions_registrar)
+{
+    include_once(get_stylesheet_directory() . '/inc/form-action.php');
+    $form_actions_registrar->register(new ReparacionesAddtoCart());
 }
-add_action( 'elementor_pro/forms/actions/register', 'ecolitio_register_reparacion_form_action' );
+add_action('elementor_pro/forms/actions/register', 'ecolitio_register_reparacion_form_action');
 
 /**
  * Handle Reparacion form redirect via JavaScript
  * Elementor Pro sends redirect_url in response data
  */
-add_action( 'wp_enqueue_scripts', 'ecolitio_enqueue_reparacion_redirect_handler', 999 );
-function ecolitio_enqueue_reparacion_redirect_handler() {
-	wp_add_inline_script( 'elementor-pro-forms', "
+add_action('wp_enqueue_scripts', 'ecolitio_enqueue_reparacion_redirect_handler', 999);
+function ecolitio_enqueue_reparacion_redirect_handler()
+{
+    wp_add_inline_script('elementor-pro-forms', "
 		(function() {
 			// Listen for Elementor form submission response
 			document.addEventListener( 'elementor_pro/forms/submit/response', function( event ) {
@@ -757,26 +780,27 @@ function ecolitio_enqueue_reparacion_redirect_handler() {
 				});
 			}
 		})();
-	", 'after' );
+	", 'after');
 }
 
-add_filter( 'woocommerce_get_item_data', 'ecolitio_show_reparacion_nota_in_cart', 10, 2 );
+add_filter('woocommerce_get_item_data', 'ecolitio_show_reparacion_nota_in_cart', 10, 2);
 
-function ecolitio_show_reparacion_nota_in_cart( $item_data, $cart_item ) {
-    if ( isset( $cart_item['reparacion_nota'] ) && ! empty( $cart_item['reparacion_nota'] ) ) {
+function ecolitio_show_reparacion_nota_in_cart($item_data, $cart_item)
+{
+    if (isset($cart_item['reparacion_nota']) && ! empty($cart_item['reparacion_nota'])) {
         $item_data[] = array(
-            'key'   => __( 'Nota de reparación', 'ecolitio' ),
-            'value' => wp_kses_post( nl2br( $cart_item['reparacion_nota'] ) ),
+            'key'   => __('Nota de reparación', 'ecolitio'),
+            'value' => wp_kses_post(nl2br($cart_item['reparacion_nota'])),
         );
     }
     return $item_data;
 }
 // ---------------logout custom
-add_action('wp_head', function() {
+add_action('wp_head', function () {
     // Create WooCommerce logout nonce with proper action
     $logout_nonce = wp_create_nonce('log-out');
     echo '<meta name="wc-logout-nonce" content="' . esc_attr($logout_nonce) . '">';
-    
+
     // Also provide it as a JavaScript variable for easy access
     echo '<script>
         window.wcLogoutNonce = "' . esc_attr($logout_nonce) . '";
@@ -784,10 +808,10 @@ add_action('wp_head', function() {
 });
 
 // remove the payment methods and cupons if youre a sabwaytaller
-add_action('wp_head', function() {
+add_action('wp_head', function () {
     if (is_user_logged_in()) {
         $user = wp_get_current_user();
-        
+
         if (current_user_can('taller_sabway')) {
             echo '<style> .e-coupon-box { display: none !important; } li[data-selected="true"] {
                 background: var(--e-global-color-c1140c0) !important;
@@ -800,4 +824,3 @@ add_action('wp_head', function() {
         }
     }
 });
-
