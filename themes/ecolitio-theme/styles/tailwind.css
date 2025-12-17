@@ -32,20 +32,6 @@
   section {
     @apply min-h-56;
   }
-  input:focus {
-    @apply !outline-green-eco;
-  }
-
-  a[href]:focus,
-  area[href]:focus,
-  button:focus,
-  input:not([type="hidden"]):focus,
-  select:focus,
-  textarea:focus,
-  [tabindex]:not([tabindex="-1"]):focus,
-  [contenteditable="true"]:focus {
-    outline-color: var(--color-green-eco) !important;
-  }
 }
 
 /* ==========================================================================

@@ -791,7 +791,12 @@ add_action('wp_head', function() {
         if (current_user_can('taller_sabway')) {
             echo '<style> .e-coupon-box { display: none !important; } li[data-selected="true"] {
                 background: var(--e-global-color-c1140c0) !important;
-            } button#place_order { background: var(--e-global-color-c1140c0) !important} button#place_order:hover { background: black !important; color: var(--e-global-color-c1140c0)}</style>';
+            } button#place_order { background: var(--e-global-color-c1140c0) !important} button#place_order:hover { background: black !important; color: var(--e-global-color-c1140c0)}
+            a[href]:focus, area[href]:focus, button:focus, input:not([type="hidden"]):focus, select:focus, textarea:focus, [tabindex]:not([tabindex="-1"]):focus, [contenteditable="true"]:focus { outline-color: var(--color-red-sabway) !important; 
+            </style>';
+        } else {
+            echo '<style>
+             a[href]:focus, area[href]:focus, button:focus, input:not([type="hidden"]):focus, select:focus, textarea:focus, [tabindex]:not([tabindex="-1"]):focus, [contenteditable="true"]:focus { outline-color: var(--color-green-eco) !important; } </style>';
         }
     }
 });

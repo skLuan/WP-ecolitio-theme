@@ -83,7 +83,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-white-eco !px-9 !py-2 bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway hover:border !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-white-eco !px-9 !py-2 border bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -96,7 +96,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-red-sabway hover:!border !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-white-eco !px-9 !py-2 border bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -142,7 +142,7 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-								<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-red-sabway hover:!border !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+								<span class="!text-white-eco !px-9 !py-2 border bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
