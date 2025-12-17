@@ -72,7 +72,7 @@ $values = ['s', 'o', 'w'];
 					?>
 					<div id="sab-form-energy-advanced">
 						<p>Cambiar estas propiedades cambia directamente la Autonomía <br>
-							Aprende a como funciona esta tabla leyendo <a href="#" class="!text-green-eco">nuestra guía</a>
+							Aprende a como funciona esta tabla leyendo <a href="#" class="!text-red-sabway">nuestra guía</a>
 						</p>
 						<div class="mb-8 voltage">
 							<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['voltios']['name'], 'text-domain'); ?>:</h5>
@@ -83,7 +83,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-green-eco hover:!border !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-white-eco !px-9 !py-2 bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway hover:border !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -96,7 +96,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-green-eco hover:!border !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-red-sabway hover:!border !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -142,7 +142,7 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-								<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-green-eco hover:!border !rounded-full peer-checked:!bg-green-eco peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+								<span class="!text-white-eco !px-9 !py-2 bg-blue-eco hover:bg-black hover:text-red-sabway hover:!border !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
@@ -185,12 +185,12 @@ $values = ['s', 'o', 'w'];
 							foreach ($connector_values as $option) : ?>
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-									<figure class="cursor-pointer peer-checked:!border peer-checked:border-green-eco rounded-lg overflow-hidden">
+									<figure class="cursor-pointer peer-checked:!border peer-checked:border-red-sabway rounded-lg overflow-hidden">
 										<picture>
 											<img class="" width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
 									</figure>
-									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-green-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-red-sabway peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
@@ -221,7 +221,7 @@ $values = ['s', 'o', 'w'];
 							<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
 							Atrás
 						</div>
-						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-green-eco !border-green-eco !text-black-eco !rounded-full !px-14 !py-3">Finalizar Pedido</button>
+						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-red-sabway !border-red-sabway !text-black-eco !rounded-full !px-14 !py-3">Finalizar Pedido</button>
 					</div>
 				</div>
 			</div>
