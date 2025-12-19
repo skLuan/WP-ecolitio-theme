@@ -1,6 +1,6 @@
 /**
  * Battery Distance Range Synchronization Module
- * Handles bidirectional synchronization between distance slider and voltage/amperage inputs
+ * Handles synchronization where voltage is selected via buttons, and slider controls amperage selection
  * Maps battery specifications (voltage + amperage) to distance ranges
  */
 
@@ -90,6 +90,16 @@ const sliderKmSync = {
       return;
     }
 
+    // Set slider limits based on the lookup table
+    const maxKm = Math.max(
+      ...Object.values(distanceLookupTable).map((d) => d.max)
+    );
+    const minKm = Math.min(
+      ...Object.values(distanceLookupTable).map((d) => d.min)
+    );
+    distanceSlider.min = minKm;
+    distanceSlider.max = maxKm;
+
     // Add event listeners for voltage changes
     voltageInputs.forEach((input) => {
       input.addEventListener("change", () => {
@@ -126,8 +136,12 @@ const sliderKmSync = {
 
     try {
       const form = document.querySelector(".sabway-form");
-      const voltageSelected = form.querySelector('input[name="voltage"]:checked');
-      const amperageSelected = form.querySelector('input[name="amperage"]:checked');
+      const voltageSelected = form.querySelector(
+        'input[name="voltage"]:checked'
+      );
+      const amperageSelected = form.querySelector(
+        'input[name="amperage"]:checked'
+      );
       const distanceSlider = form.querySelector("#sab-distance-range");
 
       // Only update if both voltage and amperage are selected
@@ -162,7 +176,7 @@ const sliderKmSync = {
 
   /**
    * Handle slider change
-   * Finds the closest matching voltage/amperage combination and auto-selects it
+   * Finds the closest matching amperage for the selected voltage and auto-selects it
    */
   onSliderChange() {
     // Prevent infinite loops during synchronization
@@ -175,22 +189,23 @@ const sliderKmSync = {
     try {
       const form = document.querySelector(".sabway-form");
       const distanceSlider = form.querySelector("#sab-distance-range");
-      const sliderValue = parseInt(distanceSlider.value);
+      let sliderValue = parseInt(distanceSlider.value);
 
-      // Find the closest matching voltage/amperage combination
-      const closestMatch = this.findClosestMatch(sliderValue);
+      // Get the selected voltage
+      const voltageSelected = form.querySelector(
+        'input[name="voltage"]:checked'
+      );
+      if (!voltageSelected) {
+        return; // No voltage selected, do nothing
+      }
+
+      const voltage = voltageSelected.value;
+
+      // Find the closest matching amperage for the selected voltage
+      const closestMatch = this.findClosestMatch(sliderValue, voltage);
 
       if (closestMatch) {
-        const { voltage, amperage, distance, range } = closestMatch;
-
-        // Select the voltage radio button
-        const voltageInput = form.querySelector(
-          `input[name="voltage"][value="${voltage}"]`
-        );
-        if (voltageInput) {
-          voltageInput.checked = true;
-          voltageInput.dispatchEvent(new Event("change", { bubbles: true }));
-        }
+        const { amperage, distance, range } = closestMatch;
 
         // Select the amperage radio button
         const amperageInput = form.querySelector(
@@ -202,8 +217,22 @@ const sliderKmSync = {
         }
 
         // Update the distance range display
-        this.updateDistanceRangeDisplay({ min: parseInt(range.split('–')[0]), max: parseInt(range.split('–')[1]), midpoint: distance });
+        this.updateDistanceRangeDisplay({
+          min: parseInt(range.split("–")[0]),
+          max: parseInt(range.split("–")[1]),
+          midpoint: distance,
+        });
 
+        // Clamp the slider value to the allowed range
+        const minKm = parseInt(distanceSlider.min);
+        const maxKm = parseInt(range.split("–")[1]);
+        if (sliderValue < minKm) {
+          distanceSlider.value = minKm;
+          sliderValue = minKm;
+        } else if (amperage === "38,4AH" && sliderValue > maxKm) {
+          distanceSlider.value = maxKm;
+          sliderValue = maxKm;
+        }
         console.log(
           `Slider value ${sliderValue}km matched to ${voltage}-${amperage} (midpoint: ${distance}km)`
         );
@@ -214,25 +243,29 @@ const sliderKmSync = {
   },
 
   /**
-   * Find the closest matching voltage/amperage combination for a given distance
+   * Find the closest matching amperage for a given voltage and distance
    * @param {number} sliderValue - The current slider value in km
-   * @returns {Object|null} Object with voltage, amperage, and distance, or null if no match found
+   * @param {string} voltage - The selected voltage
+   * @returns {Object|null} Object with amperage, and distance, or null if no match found
    */
-  findClosestMatch(sliderValue) {
+  findClosestMatch(sliderValue, voltage) {
     let closestMatch = null;
     let closestDistance = Infinity;
 
-    // Iterate through all combinations in the lookup table
+    // Iterate through combinations for the selected voltage
     for (const [key, data] of Object.entries(distanceLookupTable)) {
+      if (!key.startsWith(voltage)) {
+        continue;
+      }
+
       // Calculate distance from slider value to this combination's midpoint
       const distance = Math.abs(sliderValue - data.midpoint);
 
       // Update closest match if this is closer
       if (distance < closestDistance) {
         closestDistance = distance;
-        const [voltage, amperage] = key.split("-");
+        const [, amperage] = key.split("-");
         closestMatch = {
-          voltage,
           amperage,
           distance: data.midpoint,
           range: `${data.min}–${data.max}`,
