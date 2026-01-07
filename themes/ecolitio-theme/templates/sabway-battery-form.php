@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Sabway Battery Customization Form Template
  * 
@@ -34,7 +35,7 @@ $values = ['s', 'o', 'w'];
 	// Generate nonce for form submission
 	?>
 	<input type="hidden" name="ecolitio_sabway_nonce" value="<?php echo esc_attr($sabway_form_nonce); ?>" data-sabway-nonce="<?php echo esc_attr($sabway_form_nonce); ?>">
-    <input type="hidden" name="sabway_product_id" id="sabway_product_id" value="<?php echo esc_attr($product->get_id()); ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+	<input type="hidden" name="sabway_product_id" id="sabway_product_id" value="<?php echo esc_attr($product->get_id()); ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
 
 
 	<!-- Slider main container -->
@@ -51,7 +52,7 @@ $values = ['s', 'o', 'w'];
 					<div class="ec-icons !flex !flex-row !w-full !justify-around">
 						<?php foreach ($icons as $icon) : ?>
 							<div class="ec-icon-container flex !flex-col !items-center justify-center !gap-1">
-								<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-blue-eco-dark bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
+								<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-red-sabway bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
 								<h4 class="!text-white-eco"><?= esc_html($icon['title']); ?></h4>
 							</div>
 						<?php endforeach; ?>
@@ -83,7 +84,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-white-eco !px-9 !py-2 border bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -96,7 +97,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-white-eco !px-9 !py-2 border bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -142,28 +143,31 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-								<span class="!text-white-eco !px-9 !py-2 border bg-blue-eco border-blue-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-black-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+								<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco  peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
 					</div>
 					<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
+						<p class="col-span-full">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.
+						<br>	
+						Para baterías externas, indica las medidas del bolso o funda donde llevarás la batería, no las de la batería en sí.</p>
 						<label for="alto-bateria">
-							<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Alto(cm):</span>
-							<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: 10">
+							<span class="!font-semibold !text-white-eco pb-2">Alto(cm):</span>
+							<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 10">
 						</label>
 						<label for="ancho-bateria">
-							<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Ancho(cm):</span>
-							<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: 25">
+							<span class="!font-semibold !text-white-eco pb-2">Ancho(cm):</span>
+							<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 25">
 						</label>
 						<label for="largo-bateria">
-							<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Largo(cm):</span>
-							<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: 40">
+							<span class="!font-semibold !text-white-eco pb-2">Largo(cm):</span>
+							<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 40">
 						</label>
 					</div>
 					<label for="modelo-patinete">
-						<span class="!font-semibold !text-blue-eco-clarisimo pb-2">Modelo de patinete:</span>
-						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-blue-eco !text-white-eco" placeholder="Ej: Ninebot KickScooter Serie E E20">
+						<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete:</span>
+						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: Ninebot KickScooter Serie E E20">
 					</label>
 				</div>
 				<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
@@ -187,11 +191,18 @@ $values = ['s', 'o', 'w'];
 									<input type="radio" class="peer" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
 									<figure class="cursor-pointer peer-checked:!border peer-checked:border-red-sabway rounded-lg overflow-hidden">
 										<picture>
-											<img class="" width="150px" height="150px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
+											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
 									</figure>
 									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-red-sabway peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 								</label>
+				
+							<?php if($option === 'OTROS') : ?>
+								<label for="text-input-conector">
+									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-red-sabway peer-checked:!font-bold">Nombre del contector</span>
+									<input placeholder="Conector tipo especial" type="text" name="text-input-conector" id="text-input-conector" class="" />
+								</label>
+							<?php endif; ?>
 							<?php endforeach; ?>
 						</div>
 					</div>
