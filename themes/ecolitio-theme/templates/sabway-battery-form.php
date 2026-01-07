@@ -186,24 +186,27 @@ $values = ['s', 'o', 'w'];
 						<div class="label-container grid grid-cols-2 gap-2 grid-rows-2 justify-evenly">
 							<?php
 							$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
-							foreach ($connector_values as $option) : ?>
+							foreach ($connector_values as $option) :
+								?>
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
-									<input type="radio" class="peer" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+									<input type="radio" class="peer connector-radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" data-connector-type="<?= esc_attr($option); ?>">
+									<?php if($option !== 'OTROS') : ?>
 									<figure class="cursor-pointer peer-checked:!border peer-checked:border-red-sabway rounded-lg overflow-hidden">
 										<picture>
 											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
 									</figure>
+									<?php endif; ?>
 									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-red-sabway peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 								</label>
-				
-							<?php if($option === 'OTROS') : ?>
-								<label for="text-input-conector">
-									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-red-sabway peer-checked:!font-bold">Nombre del contector</span>
-									<input placeholder="Conector tipo especial" type="text" name="text-input-conector" id="text-input-conector" class="" />
-								</label>
-							<?php endif; ?>
 							<?php endforeach; ?>
+						</div>
+						<!-- Custom connector input field - shown only when OTROS is selected -->
+						<div id="custom-connector-container" class="inline invisible mt-4">
+							<label for="text-input-conector" class="block">
+								<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
+								<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
+							</label>
 						</div>
 					</div>
 				</div>

@@ -87,6 +87,14 @@ const formValidator = {
     if (!connectorSelected) {
       errors.push("El tipo de conector es requerido");
     }
+    
+    // If OTROS is selected, validate that custom connector text is provided
+    if (connectorSelected && connectorSelected.value === 'OTROS') {
+      const customConnectorInput = document.getElementById("text-input-conector");
+      if (!customConnectorInput || !customConnectorInput.value.trim()) {
+        errors.push("Por favor, especifica el nombre del conector personalizado");
+      }
+    }
 
     return {
       isValid: errors.length === 0,
@@ -122,6 +130,14 @@ const dataCollector = {
     const connectorSelected = document.querySelector(
       'input[name="tipo-de-conector"]:checked'
     );
+    
+    // Get connector type value - if OTROS, use custom text input value
+    let connectorType = connectorSelected ? connectorSelected.value : null;
+    if (connectorType === 'OTROS') {
+      const customConnectorInput = document.getElementById("text-input-conector");
+      const customValue = customConnectorInput ? customConnectorInput.value.trim() : '';
+      connectorType = customValue || 'OTROS';
+    }
 
     return {
       electrical_specifications: {
@@ -136,7 +152,7 @@ const dataCollector = {
       },
       scooter_model: scooterModel ? scooterModel.value.trim() : null,
       battery_location: locationSelected ? locationSelected.value : null,
-      connector_type: connectorSelected ? connectorSelected.value : null,
+      connector_type: connectorType,
     };
   },
 };
@@ -198,6 +214,16 @@ const uiManager = {
   },
   updatesumary() {
     // Collect current form data
+    const connectorRadio = document.querySelector('input[name="tipo-de-conector"]:checked');
+    let connectorType = connectorRadio?.value || "No seleccionado";
+    
+    // If OTROS is selected, get the custom connector text value
+    if (connectorType === 'OTROS') {
+      const customConnectorInput = document.getElementById("text-input-conector");
+      const customValue = customConnectorInput?.value.trim() || '';
+      connectorType = customValue || 'OTROS';
+    }
+    
     const formData = {
       voltage:
         document.querySelector('input[name="voltage"]:checked')?.value ||
@@ -215,9 +241,7 @@ const uiManager = {
       batteryLocation:
         document.querySelector('input[name="ubicacion-de-bateria"]:checked')
           ?.value || "No seleccionado",
-      connectorType:
-        document.querySelector('input[name="tipo-de-conector"]:checked')
-          ?.value || "No seleccionado",
+      connectorType: connectorType,
     };
 
     // Update confirmation fields with current values
@@ -445,6 +469,38 @@ export const formController = () => {
   // Step 9: Attach event listeners
   submitButton.addEventListener("click", handleSubmit);
   form.addEventListener("submit", handleSubmit);
+
+  // Step 9.5: Handle custom connector field visibility
+  const handleConnectorChange = () => {
+    const connectorRadios = document.querySelectorAll('input[name="tipo-de-conector"]');
+    const customConnectorContainer = document.getElementById("custom-connector-container");
+    
+    if (customConnectorContainer) {
+      connectorRadios.forEach((radio) => {
+        radio.addEventListener("change", () => {
+          if (radio.value === 'OTROS') {
+            customConnectorContainer.classList.remove("invisible");
+            // Focus on the input field for better UX
+            const customInput = document.getElementById("text-input-conector");
+            if (customInput) {
+              setTimeout(() => customInput.focus(), 100);
+            }
+          } else {
+            customConnectorContainer.classList.add("invisible");
+            // Clear the custom input when switching away from OTROS
+            const customInput = document.getElementById("text-input-conector");
+            if (customInput) {
+              customInput.value = '';
+            }
+          }
+          // Update summary when connector changes
+          uiManager.updatesumary();
+        });
+      });
+    }
+  };
+  
+  handleConnectorChange();
 
   // Step 10: Add real-time form summary updates
   const addSummaryListeners = () => {
