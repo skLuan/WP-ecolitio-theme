@@ -535,6 +535,7 @@ function ecolitio_custom_batery_add_to_cart() {
         $form_data['height_cm'] = floatval($_POST['height_cm'] ?? 0);
         $form_data['width_cm'] = floatval($_POST['width_cm'] ?? 0);
         $form_data['length_cm'] = floatval($_POST['length_cm'] ?? 0);
+        $form_data['liters'] = floatval($_POST['liters'] ?? 0);
         
         // Other specifications
         $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
@@ -577,6 +578,7 @@ function ecolitio_custom_batery_add_to_cart() {
                 'height_cm' => $form_data['height_cm'],
                 'width_cm' => $form_data['width_cm'],
                 'length_cm' => $form_data['length_cm'],
+                'liters' => $form_data['liters'],
             ),
             '_sabway_specifications' => array(
                 'scooter_model' => $form_data['scooter_model'],
@@ -708,53 +710,65 @@ function validate_user_session() {
  * Validate Sabway form data
  */
 function validate_sabway_form_data($data) {
-    $errors = array();
-    
-    // Required field validations
-    $required_fields = array(
-        'voltage' => __('Voltaje', 'ecolitio-theme'),
-        'amperage' => __('Amperaje', 'ecolitio-theme'),
-        'distance_range_km' => __('Rango de distancia', 'ecolitio-theme'),
-        'height_cm' => __('Altura', 'ecolitio-theme'),
-        'width_cm' => __('Ancho', 'ecolitio-theme'),
-        'length_cm' => __('Largo', 'ecolitio-theme'),
-        'scooter_model' => __('Modelo de patinete', 'ecolitio-theme'),
-        'battery_location' => __('Ubicación de batería', 'ecolitio-theme'),
-        'connector_type' => __('Tipo de conector', 'ecolitio-theme'),
-        'product_id' => __('ID de producto', 'ecolitio-theme'),
-    );
-    
-    foreach ($required_fields as $field => $label) {
-        if (empty($data[$field])) {
-            $errors[] = sprintf(__('%s es requerido', 'ecolitio-theme'), $label);
-        }
-    }
-    
-    // Numeric validations
-    if ($data['distance_range_km'] < 10 || $data['distance_range_km'] > 100) {
-        $errors[] = __('Rango de distancia debe estar entre 10 y 100 km', 'ecolitio-theme');
-    }
-    
-    if ($data['height_cm'] <= 0 || $data['width_cm'] <= 0 || $data['length_cm'] <= 0) {
-        $errors[] = __('Las dimensiones deben ser valores positivos', 'ecolitio-theme');
-    }
-    
-    // Product validation
-    $product = wc_get_product($data['product_id']);
-    if (!$product || !$product->exists()) {
-        $errors[] = __('Producto inválido', 'ecolitio-theme');
-    }
-    
-    // Validate product has sabway tag for Taller Sabway users
-    if (current_user_can('taller_sabway')) {
-        $product_tags = wp_get_post_terms($data['product_id'], 'product_tag', array('fields' => 'slugs'));
-        if (!in_array('sabway', $product_tags)) {
-            $errors[] = __('Este producto no está disponible para Taller Sabway', 'ecolitio-theme');
-        }
-    }
-    
-    return $errors;
-}
+     $errors = array();
+     
+     // Required field validations (common to all battery types)
+     $required_fields = array(
+         'voltage' => __('Voltaje', 'ecolitio-theme'),
+         'amperage' => __('Amperaje', 'ecolitio-theme'),
+         'distance_range_km' => __('Rango de distancia', 'ecolitio-theme'),
+         'scooter_model' => __('Modelo de patinete', 'ecolitio-theme'),
+         'battery_location' => __('Ubicación de batería', 'ecolitio-theme'),
+         'connector_type' => __('Tipo de conector', 'ecolitio-theme'),
+         'product_id' => __('ID de producto', 'ecolitio-theme'),
+     );
+     
+     foreach ($required_fields as $field => $label) {
+         if (empty($data[$field])) {
+             $errors[] = sprintf(__('%s es requerido', 'ecolitio-theme'), $label);
+         }
+     }
+     
+     // Numeric validations
+     if ($data['distance_range_km'] < 10 || $data['distance_range_km'] > 100) {
+         $errors[] = __('Rango de distancia debe estar entre 10 y 100 km', 'ecolitio-theme');
+     }
+     
+     // Validate dimensions or liters based on battery location
+     $is_external_battery = isset($data['battery_location']) && $data['battery_location'] === 'Externa';
+     
+     if ($is_external_battery) {
+         // For external batteries, validate liters
+         if (!isset($data['liters']) || empty($data['liters']) || floatval($data['liters']) <= 0) {
+             $errors[] = __('Se requiere una capacidad válida en litros', 'ecolitio-theme');
+         }
+     } else {
+         // For internal batteries, validate dimensions
+         if (empty($data['height_cm']) || empty($data['width_cm']) || empty($data['length_cm'])) {
+             $errors[] = __('Se requieren las dimensiones (alto, ancho, largo)', 'ecolitio-theme');
+         }
+         
+         if ($data['height_cm'] <= 0 || $data['width_cm'] <= 0 || $data['length_cm'] <= 0) {
+             $errors[] = __('Las dimensiones deben ser valores positivos', 'ecolitio-theme');
+         }
+     }
+     
+     // Product validation
+     $product = wc_get_product($data['product_id']);
+     if (!$product || !$product->exists()) {
+         $errors[] = __('Producto inválido', 'ecolitio-theme');
+     }
+     
+     // Validate product has sabway tag for Taller Sabway users
+     if (current_user_can('taller_sabway')) {
+         $product_tags = wp_get_post_terms($data['product_id'], 'product_tag', array('fields' => 'slugs'));
+         if (!in_array('sabway', $product_tags)) {
+             $errors[] = __('Este producto no está disponible para Taller Sabway', 'ecolitio-theme');
+         }
+     }
+     
+     return $errors;
+ }
 
 /**
  * Send order confirmation emails for Sabway form submissions

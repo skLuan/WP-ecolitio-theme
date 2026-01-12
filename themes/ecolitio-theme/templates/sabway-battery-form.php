@@ -142,28 +142,40 @@ $values = ['s', 'o', 'w'];
 					<div class="flex flex-row gap-4">
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
-								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
+								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" <?php echo ($option === 'Externa') ? 'checked' : ''; ?>>
 								<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco  peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
 					</div>
 					<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
-						<p class="col-span-full">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.
-						<br>	
+						<p class="col-span-full battery-dimensions-text">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.
+						<br>
 						Para baterías externas, indica las medidas del bolso o funda donde llevarás la batería, no las de la batería en sí.</p>
-						<label for="alto-bateria">
-							<span class="!font-semibold !text-white-eco pb-2">Alto(cm):</span>
-							<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 10">
-						</label>
-						<label for="ancho-bateria">
-							<span class="!font-semibold !text-white-eco pb-2">Ancho(cm):</span>
-							<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 25">
-						</label>
-						<label for="largo-bateria">
-							<span class="!font-semibold !text-white-eco pb-2">Largo(cm):</span>
-							<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 40">
-						</label>
+						
+						<!-- Dimensions container - shown for internal batteries -->
+						<div id="dimensions-container" class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6">
+							<label for="alto-bateria">
+								<span class="!font-semibold !text-white-eco pb-2">Alto(cm):</span>
+								<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 10">
+							</label>
+							<label for="ancho-bateria">
+								<span class="!font-semibold !text-white-eco pb-2">Ancho(cm):</span>
+								<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 25">
+							</label>
+							<label for="largo-bateria">
+								<span class="!font-semibold !text-white-eco pb-2">Largo(cm):</span>
+								<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 40">
+							</label>
+						</div>
+						
+						<!-- Liters container - shown for external batteries -->
+						<div id="liters-container" class="col-span-full hidden">
+							<label for="litros-bateria">
+								<span class="!font-semibold !text-white-eco pb-2">Capacidad del bolso/funda (litros):</span>
+								<input type="number" name="litros-bateria" id="litros-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 20" step="0.1" min="0">
+							</label>
+						</div>
 					</div>
 					<label for="modelo-patinete">
 						<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete:</span>
