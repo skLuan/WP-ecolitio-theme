@@ -271,19 +271,31 @@ const uiManager = {
     this.updateConfirmationField("amperios", formData.amperage);
     this.updateConfirmationField("autonomia", `${formData.distanceRange}km`);
     
-    // Update dimension fields based on battery type
+    // Update dimension fields based on battery type and hide/show confirmation rows
     if (isExternalBattery) {
       // For external batteries, show liters and hide dimension fields
       this.updateConfirmationField("altocm", "");
       this.updateConfirmationField("anchocm", "");
       this.updateConfirmationField("largocm", "");
       this.updateConfirmationField("litros", formData.liters ? `${formData.liters}L` : "No especificado");
+      
+      // Hide dimension rows in confirmation step
+      this.toggleConfirmationRow("altocm", false);
+      this.toggleConfirmationRow("anchocm", false);
+      this.toggleConfirmationRow("largocm", false);
+      this.toggleConfirmationRow("litros", true);
     } else {
       // For internal batteries, show dimensions and hide liters
       this.updateConfirmationField("altocm", formData.height ? `${formData.height}cm` : "0cm");
       this.updateConfirmationField("anchocm", formData.width ? `${formData.width}cm` : "0cm");
       this.updateConfirmationField("largocm", formData.length ? `${formData.length}cm` : "0cm");
       this.updateConfirmationField("litros", "");
+      
+      // Show dimension rows and hide liters row
+      this.toggleConfirmationRow("altocm", true);
+      this.toggleConfirmationRow("anchocm", true);
+      this.toggleConfirmationRow("largocm", true);
+      this.toggleConfirmationRow("litros", false);
     }
     
     this.updateConfirmationField(
@@ -318,6 +330,24 @@ const uiManager = {
         valueElement.textContent = value;
       }
     }
+  },
+  
+  /**
+   * Toggles visibility of a confirmation row
+   * @param {string} fieldName - The field name to toggle
+   * @param {boolean} show - Whether to show or hide the row
+   */
+  toggleConfirmationRow(fieldName, show) {
+    const confirmationElements = document.querySelectorAll(
+      `.final-check-${fieldName}`
+    );
+    confirmationElements.forEach((element) => {
+      if (show) {
+        element.style.display = '';
+      } else {
+        element.style.display = 'none';
+      }
+    });
   },
 };
 
