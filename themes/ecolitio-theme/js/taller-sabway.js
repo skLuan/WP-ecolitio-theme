@@ -193,32 +193,6 @@
         },
 
         /**
-         * Show messages to user
-         */
-        showMessage: function(message, type) {
-            const messageClass = 'taller-sabway-message ' + (type || 'info');
-            const messageHtml = `
-                <div class="${messageClass}">
-                    ${message}
-                    <button class="close" style="float: right; background: none; border: none; cursor: pointer;">&times;</button>
-                </div>
-            `;
-
-            // Remove existing messages
-            $('.taller-sabway-message').remove();
-
-            // Add new message
-            $('.taller-sabway-dashboard').prepend(messageHtml);
-
-            // Auto-hide after 5 seconds for success messages
-            if (type === 'success') {
-                setTimeout(function() {
-                    $('.taller-sabway-message').fadeOut();
-                }, 5000);
-            }
-        },
-
-        /**
          * Refresh statistics
          */
         refreshStatistics: function() {

@@ -22,9 +22,19 @@ require_once get_stylesheet_directory() . '/inc/custom-post-taxonomies.php';
 require_once get_stylesheet_directory() . '/inc/ajax.php';
 
 /**
+ * Include generic Taller role functionality
+ */
+require_once get_stylesheet_directory() . '/inc/class-taller-role.php';
+
+/**
  * Include Taller Sabway user role functionality
  */
 require_once get_stylesheet_directory() . '/inc/class-taller-sabway-role.php';
+
+/**
+ * Include Taller Del Patinete user role functionality
+ */
+require_once get_stylesheet_directory() . '/inc/class-taller-del-patinete-role.php';
 
 // =============================================================================
 // DEPENDENCIES & AUTOLOADING

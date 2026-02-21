@@ -1,20 +1,5 @@
 /* Taller Sabway Role Specific Styles */
 
-/* Dashboard styling */
-.taller-sabway-dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.taller-sabway-dashboard h2 {
-    color: #d02024;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 3px solid #d02024;
-    padding-bottom: 0.5rem;
-}
-
 .taller-sabway-welcome {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 2rem;
@@ -142,18 +127,6 @@
     color: #ffd700 !important;
 }
 
-/* Navigation menu styling */
-.woocommerce-MyAccount-navigation ul li a[href*="taller-sabway-dashboard"] {
-    color: #d02024 !important;
-    font-weight: 600;
-    position: relative;
-}
-
-.woocommerce-MyAccount-navigation ul li a[href*="taller-sabway-dashboard"]:before {
-    content: "🔧";
-    margin-right: 8px;
-}
-
 /* Product filtering notice */
 .sabway-filter-notice {
     background: #fff3cd;
@@ -178,9 +151,6 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .taller-sabway-dashboard {
-        padding: 10px;
-    }
     
     .stats-grid {
         grid-template-columns: 1fr;
