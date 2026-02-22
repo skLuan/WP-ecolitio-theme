@@ -400,6 +400,13 @@ const ajaxSubmitter = {
           : null;
       }
 
+      // Get battery type from form data attribute
+      let batteryType = 'sabway'; // default
+      const batteryTypeInput = document.querySelector('input[name="battery_type"]');
+      if (batteryTypeInput) {
+        batteryType = batteryTypeInput.value;
+      }
+
       // Prepare FormData
       const formDataSubmit = new FormData();
       formDataSubmit.append("action", "custom_batery_add_to_cart");
@@ -441,6 +448,7 @@ const ajaxSubmitter = {
       );
       formDataSubmit.append("connector_type", formData.connector_type || "");
       formDataSubmit.append("product_id", productId || 0);
+      formDataSubmit.append("battery_type", batteryType);
 
       // Submit to WordPress AJAX endpoint
       const response = await fetch(ajaxUrl, {
