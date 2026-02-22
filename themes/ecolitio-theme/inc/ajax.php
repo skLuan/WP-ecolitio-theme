@@ -513,35 +513,36 @@ function ecolitio_sabway_submit_form() {
 add_action('wp_ajax_custom_batery_add_to_cart', 'ecolitio_custom_batery_add_to_cart');
 add_action('wp_ajax_nopriv_custom_batery_add_to_cart', 'ecolitio_custom_batery_add_to_cart');
 function ecolitio_custom_batery_add_to_cart() {
-    // 1. Verify Nonce
-    $nonce = $_POST['nonce'] ?? '';
-    if (!wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce')) {
-        wp_send_json_error(array(
-            'message' => __('Verificación de seguridad fallida (Nonce)', 'ecolitio-theme'),
-            'code' => 'nonce_failed'
-        ));
-        return;
-    }
+     // 1. Verify Nonce
+     $nonce = $_POST['nonce'] ?? '';
+     if (!wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce')) {
+         wp_send_json_error(array(
+             'message' => __('Verificación de seguridad fallida (Nonce)', 'ecolitio-theme'),
+             'code' => 'nonce_failed'
+         ));
+         return;
+     }
 
-    // 2. Sanitize and Validate Form Data
-    $form_data = array();
-    try {
-        // Electrical specifications
-        $form_data['voltage'] = sanitize_text_field($_POST['voltage'] ?? '');
-        $form_data['amperage'] = sanitize_text_field($_POST['amperage'] ?? '');
-        $form_data['distance_range_km'] = intval($_POST['distance_range_km'] ?? 0);
-        
-        // Physical dimensions
-        $form_data['height_cm'] = floatval($_POST['height_cm'] ?? 0);
-        $form_data['width_cm'] = floatval($_POST['width_cm'] ?? 0);
-        $form_data['length_cm'] = floatval($_POST['length_cm'] ?? 0);
-        $form_data['liters'] = floatval($_POST['liters'] ?? 0);
-        
-        // Other specifications
-        $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
-        $form_data['battery_location'] = sanitize_text_field($_POST['battery_location'] ?? '');
-        $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
-        $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
+     // 2. Sanitize and Validate Form Data
+     $form_data = array();
+     try {
+         // Electrical specifications
+         $form_data['voltage'] = sanitize_text_field($_POST['voltage'] ?? '');
+         $form_data['amperage'] = sanitize_text_field($_POST['amperage'] ?? '');
+         $form_data['distance_range_km'] = intval($_POST['distance_range_km'] ?? 0);
+         
+         // Physical dimensions
+         $form_data['height_cm'] = floatval($_POST['height_cm'] ?? 0);
+         $form_data['width_cm'] = floatval($_POST['width_cm'] ?? 0);
+         $form_data['length_cm'] = floatval($_POST['length_cm'] ?? 0);
+         $form_data['liters'] = floatval($_POST['liters'] ?? 0);
+         
+         // Other specifications
+         $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
+         $form_data['battery_location'] = sanitize_text_field($_POST['battery_location'] ?? '');
+         $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
+         $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
+         $form_data['battery_type'] = sanitize_text_field($_POST['battery_type'] ?? 'sabway');
         
         // Validate required fields
         $validation_errors = validate_sabway_form_data($form_data);
@@ -759,11 +760,19 @@ function validate_sabway_form_data($data) {
          $errors[] = __('Producto inválido', 'ecolitio-theme');
      }
      
-     // Validate product has sabway tag for Taller Sabway users
-     if (current_user_can('taller_sabway')) {
+     // Validate product has correct tag based on battery type
+     $battery_type = isset($data['battery_type']) ? $data['battery_type'] : 'sabway';
+     $battery_types_config = ecolitio_get_battery_types_config();
+     
+     if (isset($battery_types_config[$battery_type])) {
+         $required_tag = $battery_types_config[$battery_type]['tag'];
          $product_tags = wp_get_post_terms($data['product_id'], 'product_tag', array('fields' => 'slugs'));
-         if (!in_array('sabway', $product_tags)) {
-             $errors[] = __('Este producto no está disponible para Taller Sabway', 'ecolitio-theme');
+         
+         if (!in_array($required_tag, $product_tags)) {
+             $errors[] = sprintf(
+                 __('Este producto no está disponible para %s', 'ecolitio-theme'),
+                 $battery_types_config[$battery_type]['title']
+             );
          }
      }
      

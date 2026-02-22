@@ -325,10 +325,63 @@ function ecolitio_render_products_grid($args = array()): void
 // =============================================================================
 
 /**
- * Register Sabway Battery Form Shortcode
- * 
- * Usage: [sabway_battery_form] or [sabway_battery_form product_id="123"]
- * 
+ * Battery Type Configuration
+ * Defines colors, tags, and titles for each battery type
+ */
+function ecolitio_get_battery_types_config() {
+    return array(
+        'sabway' => array(
+            'tag' => 'sabway',
+            'color_class' => 'red-sabway',
+            'color_hex' => '#d02024',
+            'title' => 'Tu batería Sabway',
+            'icon_color' => 'red-sabway'
+        ),
+        'medida' => array(
+            'tag' => 'bateria-medida',
+            'color_class' => 'blue-eco',
+            'color_hex' => '#0066cc',
+            'title' => 'Tu batería a medida',
+            'icon_color' => 'blue-eco-dark'
+        ),
+        'patinete' => array(
+            'tag' => 'taller-del-patinete',
+            'color_class' => 'green-eco',
+            'color_hex' => '#93E12D',
+            'title' => 'Tu batería Taller Del Patinete',
+            'icon_color' => 'green-eco'
+        )
+    );
+}
+
+/**
+ * Detect battery type from product tags
+ *
+ * @param WC_Product $product Product object
+ * @return string Battery type slug (sabway, medida, patinete)
+ */
+function ecolitio_detect_battery_type_from_product($product) {
+    if (!$product) {
+        return 'sabway'; // Default fallback
+    }
+    
+    $product_tags = wp_get_post_terms($product->get_id(), 'product_tag', array('fields' => 'slugs'));
+    $battery_types = ecolitio_get_battery_types_config();
+    
+    foreach ($battery_types as $type_slug => $config) {
+        if (in_array($config['tag'], $product_tags)) {
+            return $type_slug;
+        }
+    }
+    
+    return 'sabway'; // Default fallback
+}
+
+/**
+ * Register Battery Customization Form Shortcode
+ *
+ * Usage: [sabway_battery_form] or [sabway_battery_form product_id="123" battery_type="sabway"]
+ *
  * @param array $atts Shortcode attributes
  * @return string Rendered form HTML
  */
@@ -338,6 +391,7 @@ function ecolitio_sabway_battery_form_shortcode($atts = array())
     // Parse shortcode attributes
     $atts = shortcode_atts(array(
         'product_id' => 0,
+        'battery_type' => '', // Can be explicitly set or auto-detected
         'show_title' => 'yes',
         'custom_class' => '',
     ), $atts, 'sabway_battery_form');
@@ -378,6 +432,17 @@ function ecolitio_sabway_battery_form_shortcode($atts = array())
             '</div>';
     }
 
+    // Detect or use provided battery type
+    $battery_type = !empty($atts['battery_type']) ? sanitize_text_field($atts['battery_type']) : ecolitio_detect_battery_type_from_product($product);
+    $battery_types_config = ecolitio_get_battery_types_config();
+    
+    // Validate battery type exists
+    if (!isset($battery_types_config[$battery_type])) {
+        $battery_type = 'sabway'; // Fallback to sabway
+    }
+    
+    $battery_config = $battery_types_config[$battery_type];
+
     // Set up form data
     $icons = array(
         "step1" => array(
@@ -410,6 +475,8 @@ function ecolitio_sabway_battery_form_shortcode($atts = array())
     set_query_var('getAttributes', $getAttributes);
     set_query_var('distance', $distance);
     set_query_var('sabway_form_nonce', $sabway_form_nonce);
+    set_query_var('battery_type', $battery_type);
+    set_query_var('battery_config', $battery_config);
 
     get_template_part('templates/sabway-battery-form');
 

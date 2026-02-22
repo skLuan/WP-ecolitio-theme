@@ -1,20 +1,23 @@
 <?php
 
 /**
- * Sabway Battery Customization Form Template
- * 
+ * Generic Battery Customization Form Template
+ *
  * This template renders the multi-step battery customization form
+ * Supports multiple battery types: sabway, medida, patinete
  * Can be used in product pages or via shortcode
- * 
+ *
  * @package Ecolitio
- * @version 1.0.0
- * 
+ * @version 2.0.0
+ *
  * Variables passed to this template:
  * @var WC_Product $product - WooCommerce product object
  * @var array $icons - Icon configuration for form steps
  * @var array $getAttributes - Product attributes
  * @var int $distance - Default distance value
  * @var string $sabway_form_nonce - Security nonce
+ * @var string $battery_type - Battery type (sabway, medida, patinete)
+ * @var array $battery_config - Battery type configuration with colors and titles
  */
 
 defined('ABSPATH') || exit;
@@ -27,15 +30,30 @@ if (!isset($product) || !isset($icons) || !isset($getAttributes) || !isset($dist
 	return;
 }
 
+// Set defaults for battery type and config if not provided
+if (!isset($battery_type)) {
+	$battery_type = 'sabway';
+}
+
+if (!isset($battery_config)) {
+	$battery_config = array(
+		'color_class' => 'red-sabway',
+		'color_hex' => '#d02024',
+		'title' => 'Tu batería Sabway',
+		'icon_color' => 'red-sabway'
+	);
+}
+
 $values = ['s', 'o', 'w'];
 ?>
 
-<form action="submit" method="post" class="sabway-form !bg-black !rounded-lg !px-4 !py-6">
+<form action="submit" method="post" class="sabway-form !bg-black !rounded-lg !px-4 !py-6" data-battery-type="<?php echo esc_attr($battery_type); ?>">
 	<?php
 	// Generate nonce for form submission
 	?>
 	<input type="hidden" name="ecolitio_sabway_nonce" value="<?php echo esc_attr($sabway_form_nonce); ?>" data-sabway-nonce="<?php echo esc_attr($sabway_form_nonce); ?>">
 	<input type="hidden" name="sabway_product_id" id="sabway_product_id" value="<?php echo esc_attr($product->get_id()); ?>" data-product-id="<?php echo esc_attr($product->get_id()); ?>">
+	<input type="hidden" name="battery_type" value="<?php echo esc_attr($battery_type); ?>" data-battery-type="<?php echo esc_attr($battery_type); ?>">
 
 
 	<!-- Slider main container -->
@@ -46,7 +64,7 @@ $values = ['s', 'o', 'w'];
 			<div class="swiper-slide">
 				<div id="sab-step-0" class="step !flex !flex-col !gap-y-6">
 					<div class="!flex !flex-row !gap-4"><iconify-icon icon="" class="!hidden"></iconify-icon>
-						<h2 class="!text-white-eco">Tu bateria a media</h2>
+						<h2 class="!text-white-eco"><?php echo esc_html($battery_config['title']); ?></h2>
 					</div>
 					<p class="!text-white-eco">El formulario consiste de 4 pasos, no toma más de 2 minutos!</p>
 					<div class="ec-icons !flex !flex-row !w-full !justify-around">
@@ -84,7 +102,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-<?php echo esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -97,7 +115,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-<?php echo esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -143,7 +161,7 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" <?php echo ($option === 'Externa') ? 'checked' : ''; ?>>
-								<span class="!text-red-sabway !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-red-sabway hover:bg-black hover:text-red-sabway  !rounded-full peer-checked:!bg-red-sabway peer-checked:!text-white-eco  peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+								<span class="!text-<?php echo esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco  peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
@@ -209,7 +227,7 @@ $values = ['s', 'o', 'w'];
 										</picture>
 									</figure>
 									<?php endif; ?>
-									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-red-sabway peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
@@ -247,7 +265,7 @@ $values = ['s', 'o', 'w'];
 							<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
 							Atrás
 						</div>
-						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-red-sabway !border-red-sabway !text-black-eco !rounded-full !px-14 !py-3">Finalizar Pedido</button>
+						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-<?php echo esc_attr($battery_config['color_class']); ?> !border-<?php echo esc_attr($battery_config['color_class']); ?> !text-black-eco !rounded-full !px-14 !py-3" style="background-color: <?php echo esc_attr($battery_config['color_hex']); ?>; border-color: <?php echo esc_attr($battery_config['color_hex']); ?>;">Finalizar Pedido</button>
 					</div>
 				</div>
 			</div>
