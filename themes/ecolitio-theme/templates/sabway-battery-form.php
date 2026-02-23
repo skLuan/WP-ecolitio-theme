@@ -64,13 +64,13 @@ $values = ['s', 'o', 'w'];
 			<div class="swiper-slide">
 				<div id="sab-step-0" class="step !flex !flex-col !gap-y-6">
 					<div class="!flex !flex-row !gap-4"><iconify-icon icon="" class="!hidden"></iconify-icon>
-						<h2 class="!text-white-eco"><?php echo esc_html($battery_config['title']); ?></h2>
+						<h3 class="!text-white-eco"><?php echo esc_html($battery_config['title']); ?></h3>
 					</div>
 					<p class="!text-white-eco">El formulario consiste de 4 pasos, no toma más de 2 minutos!</p>
 					<div class="ec-icons !flex !flex-row !w-full !justify-around">
 						<?php foreach ($icons as $icon) : ?>
 							<div class="ec-icon-container flex !flex-col !items-center justify-center !gap-1">
-								<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-red-sabway bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
+								<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-<?= esc_attr($battery_config['color_class']); ?> bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
 								<h4 class="!text-white-eco"><?= esc_html($icon['title']); ?></h4>
 							</div>
 						<?php endforeach; ?>
@@ -102,7 +102,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-<?php echo esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!text-<?= esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
