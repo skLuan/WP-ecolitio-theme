@@ -102,7 +102,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)';" onmouseout="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)';"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; }"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -115,7 +115,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)';" onmouseout="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)';"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; }"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -161,7 +161,7 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" <?php echo ($option === 'Externa') ? 'checked' : ''; ?>>
-								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)';" onmouseout="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)';"><?= esc_attr($option); ?></span>
+								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; }"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
