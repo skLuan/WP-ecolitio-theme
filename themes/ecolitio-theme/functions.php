@@ -403,21 +403,21 @@ function ecolitio_get_battery_types_config() {
             'tag' => 'sabway',
             'color_class' => 'red-sabway',
             'color_hex' => '#d02024',
-            'title' => 'Tu batería Sabway',
+            'title' => 'Batería a medida',
             'icon_color' => 'red-sabway'
         ),
         'medida' => array(
             'tag' => 'bateria-a-medida',
             'color_class' => 'blue-eco',
             'color_hex' => '#0066cc',
-            'title' => 'Tu batería a medida',
+            'title' => 'Batería a medida',
             'icon_color' => 'blue-eco-dark'
         ),
         'patinete' => array(
             'tag' => 'taller-del-patinete',
-            'color_class' => 'green-eco',
+            'color_class' => 'green-eco-taller',
             'color_hex' => '#93E12D',
-            'title' => 'Tu batería Taller Del Patinete',
+            'title' => 'Batería a medida',
             'icon_color' => 'green-eco'
         )
     );
