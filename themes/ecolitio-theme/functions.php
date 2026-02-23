@@ -266,6 +266,75 @@ function ecolitio_is_woocommerce_active()
     return class_exists('WooCommerce');
 }
 
+/**
+ * Get all restricted product tags for taller roles
+ * 
+ * This function returns an array of product tags that should be restricted
+ * from normal users. These tags are reserved for specific taller roles.
+ * 
+ * @return array Array of restricted product tag slugs
+ */
+function ecolitio_get_restricted_product_tags()
+{
+    $restricted_tags = array(
+        'sabway',
+        'taller-del-patinete'
+    );
+    
+    /**
+     * Filter to allow plugins/themes to add more restricted tags
+     * Useful when adding new taller roles in the future
+     * 
+     * @param array $restricted_tags Array of restricted product tag slugs
+     * @return array Modified array of restricted tags
+     */
+    return apply_filters('ecolitio_restricted_product_tags', $restricted_tags);
+}
+
+/**
+ * Filter products to exclude restricted tags for normal users
+ * 
+ * This filter applies to all product queries (shop, related products, etc.)
+ * and excludes products with restricted tags for users who don't have
+ * a specific taller role.
+ * 
+ * @param array $tax_query Current tax query array
+ * @param WP_Query $query Current product query object
+ * @return array Modified tax query array
+ */
+add_filter('woocommerce_product_query_tax_query', 'ecolitio_filter_restricted_products_for_normal_users', 5, 2);
+function ecolitio_filter_restricted_products_for_normal_users($tax_query, $query = null)
+{
+    // Only apply filter on front-end
+    if (is_admin() && !wp_doing_ajax()) {
+        return $tax_query;
+    }
+    
+    // Check if user has any taller role
+    $user_id = get_current_user_id();
+    $user = $user_id ? get_userdata($user_id) : null;
+    
+    // If user has a taller role, don't filter (let their role-specific filter handle it)
+    if ($user && (in_array('taller_sabway', $user->roles) || in_array('taller_del_patinete', $user->roles))) {
+        return $tax_query;
+    }
+    
+    // For normal users (not logged in or without taller role), exclude restricted tags
+    $restricted_tags = ecolitio_get_restricted_product_tags();
+    
+    if (!empty($restricted_tags)) {
+        // Add NOT IN query to exclude restricted tags
+        $tax_query[] = array(
+            'taxonomy' => 'product_tag',
+            'field' => 'slug',
+            'terms' => $restricted_tags,
+            'operator' => 'NOT IN'
+        );
+    }
+    
+    return $tax_query;
+}
+
 
 // =============================================================================
 // TEMPLATE FUNCTIONS

@@ -51,7 +51,7 @@ $battery_types = array(
         'title' => 'Tu batería Sabway'
     ),
     'medida' => array(
-        'tag' => 'bateria-medida',
+        'tag' => 'bateria-a-medida',
         'color' => 'blue-eco',
         'color_hex' => '#0066cc',
         'title' => 'Tu batería a medida'
