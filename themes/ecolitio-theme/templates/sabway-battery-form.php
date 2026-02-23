@@ -221,7 +221,7 @@ $values = ['s', 'o', 'w'];
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer connector-radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" data-connector-type="<?= esc_attr($option); ?>">
 									<?php if($option !== 'OTROS') : ?>
-									<figure class="cursor-pointer border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; }">
+									<figure class="cursor-pointer border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
 										<picture>
 											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
