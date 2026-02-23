@@ -338,7 +338,7 @@ function ecolitio_get_battery_types_config() {
             'icon_color' => 'red-sabway'
         ),
         'medida' => array(
-            'tag' => 'bateria-medida',
+            'tag' => 'bateria-a-medida',
             'color_class' => 'blue-eco',
             'color_hex' => '#0066cc',
             'title' => 'Tu batería a medida',
