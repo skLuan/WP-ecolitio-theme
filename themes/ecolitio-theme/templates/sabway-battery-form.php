@@ -91,7 +91,7 @@ $values = ['s', 'o', 'w'];
 					?>
 					<div id="sab-form-energy-advanced">
 						<p>Cambiar estas propiedades cambia directamente la Autonomía <br>
-							Aprende a como funciona esta tabla leyendo <a href="#" class="!text-red-sabway">nuestra guía</a>
+							Aprende a como funciona esta tabla leyendo <a href="#" style="color: var(--battery-color);">nuestra guía</a>
 						</p>
 						<div class="mb-8 voltage">
 							<h5 class="!text-white-eco !font-bold !mb-2"><?php esc_html_e($getAttributes['voltios']['name'], 'text-domain'); ?>:</h5>
@@ -102,7 +102,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color=''; }"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor=''; s.style.borderColor=''; s.style.color=''; } }); }"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -115,7 +115,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color=''; }"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor=''; s.style.borderColor=''; s.style.color=''; } }); }"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -161,7 +161,7 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" <?php echo ($option === 'Externa') ? 'checked' : ''; ?>>
-								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color=''; }"><?= esc_attr($option); ?></span>
+								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor=''; s.style.borderColor=''; s.style.color=''; } }); }"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
@@ -175,15 +175,15 @@ $values = ['s', 'o', 'w'];
 						<div id="dimensions-container" class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6">
 							<label for="alto-bateria">
 								<span class="!font-semibold !text-white-eco pb-2">Alto(cm):</span>
-								<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 10">
+								<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 10">
 							</label>
 							<label for="ancho-bateria">
 								<span class="!font-semibold !text-white-eco pb-2">Ancho(cm):</span>
-								<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 25">
+								<input type="number" name="ancho-bateria" id="ancho-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 25">
 							</label>
 							<label for="largo-bateria">
 								<span class="!font-semibold !text-white-eco pb-2">Largo(cm):</span>
-								<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 40">
+								<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 40">
 							</label>
 						</div>
 						
@@ -191,13 +191,13 @@ $values = ['s', 'o', 'w'];
 						<div id="liters-container" class="col-span-full hidden">
 							<label for="litros-bateria">
 								<span class="!font-semibold !text-white-eco pb-2">Capacidad del bolso/funda (litros):</span>
-								<input type="number" name="litros-bateria" id="litros-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: 20" step="0.1" min="0">
+								<input type="number" name="litros-bateria" id="litros-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 20" step="0.1" min="0">
 							</label>
 						</div>
 					</div>
 					<label for="modelo-patinete">
 						<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete:</span>
-						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" placeholder="Ej: Ninebot KickScooter Serie E E20">
+						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
 					</label>
 				</div>
 				<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
@@ -221,7 +221,7 @@ $values = ['s', 'o', 'w'];
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer connector-radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" data-connector-type="<?= esc_attr($option); ?>">
 									<?php if($option !== 'OTROS') : ?>
-									<figure class="cursor-pointer peer-checked:!border peer-checked:border-red-sabway rounded-lg overflow-hidden">
+									<figure class="cursor-pointer border-white-eco peer-checked:!border rounded-lg overflow-hidden" style="border-color: var(--battery-color); border-width: 2px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; } else { this.style.borderColor='var(--battery-color)'; }">
 										<picture>
 											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
@@ -253,7 +253,7 @@ $values = ['s', 'o', 'w'];
 							// Sanitize value for HTML ID by removing spaces and special characters
 							$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
 						?>
-							<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 !border-b last:!border-b-0 border-blue-eco-clarisimo justify-center p-4">
+							<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 !border-b last:!border-b-0 justify-center p-4" style="border-color: var(--battery-color);">
 								<strong><?= esc_html($value); ?></strong>
 								<p id="" class="!m-0">
 								</p>

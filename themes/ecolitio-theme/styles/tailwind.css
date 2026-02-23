@@ -500,18 +500,21 @@
   [data-battery-type="sabway"] {
     --battery-color: #d02024;
     --battery-color-rgb: 208, 32, 36;
+    --battery-text-color: white;
   }
 
   /* Medida battery type - Blue */
   [data-battery-type="medida"] {
     --battery-color: #0066cc;
     --battery-color-rgb: 0, 102, 204;
+    --battery-text-color: white;
   }
 
   /* Patinete battery type - Green */
   [data-battery-type="patinete"] {
     --battery-color: #93E12D;
     --battery-color-rgb: 147, 225, 45;
+    --battery-text-color: black;
   }
 
   /* Apply battery color to text elements */
