@@ -490,3 +490,52 @@
     @apply !font-semibold !text-lg !mb-1 !text-white underline;
   }
 }
+
+/* ==========================================================================
+   Battery Type Color Variables - Safe Space for Dynamic Colors
+   ========================================================================== */
+
+@layer components {
+  /* Sabway battery type - Red */
+  [data-battery-type="sabway"] {
+    --battery-color: #d02024;
+    --battery-color-rgb: 208, 32, 36;
+  }
+
+  /* Medida battery type - Blue */
+  [data-battery-type="medida"] {
+    --battery-color: #0066cc;
+    --battery-color-rgb: 0, 102, 204;
+  }
+
+  /* Patinete battery type - Green */
+  [data-battery-type="patinete"] {
+    --battery-color: #93E12D;
+    --battery-color-rgb: 147, 225, 45;
+  }
+
+  /* Apply battery color to text elements */
+  [data-battery-type] .battery-color-text {
+    @apply !text-[color:var(--battery-color)];
+  }
+
+  /* Apply battery color to background elements */
+  [data-battery-type] .battery-color-bg {
+    @apply !bg-[color:var(--battery-color)];
+  }
+
+  /* Apply battery color to border elements */
+  [data-battery-type] .battery-color-border {
+    @apply !border-[color:var(--battery-color)];
+  }
+
+  /* Apply battery color to hover border */
+  [data-battery-type] .battery-color-hover-border:hover {
+    @apply !border-[color:var(--battery-color)];
+  }
+
+  /* Apply battery color to peer-checked background */
+  [data-battery-type] .battery-color-peer-checked:checked ~ .battery-color-peer-bg {
+    @apply !bg-[color:var(--battery-color)];
+  }
+}

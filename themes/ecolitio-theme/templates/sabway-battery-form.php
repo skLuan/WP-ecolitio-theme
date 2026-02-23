@@ -70,7 +70,7 @@ $values = ['s', 'o', 'w'];
 					<div class="ec-icons !flex !flex-row !w-full !justify-around">
 						<?php foreach ($icons as $icon) : ?>
 							<div class="ec-icon-container flex !flex-col !items-center justify-center !gap-1">
-								<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 !text-<?= esc_attr($battery_config['color_class']); ?> bg-white-eco rounded-full p-2" width="36" height="36"></iconify-icon>
+								<iconify-icon icon="<?= esc_attr($icon['icon']); ?>" class="ec-icon min-h-12 bg-white-eco rounded-full p-2" style="color: var(--battery-color);" width="36" height="36"></iconify-icon>
 								<h4 class="!text-white-eco"><?= esc_html($icon['title']); ?></h4>
 							</div>
 						<?php endforeach; ?>
@@ -102,7 +102,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-voltage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="voltage" id="input-voltage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-<?= esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)';" onmouseout="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)';"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -115,7 +115,7 @@ $values = ['s', 'o', 'w'];
 								foreach ($values as $option) : ?>
 									<label for="input-amperage-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer" name="amperage" id="input-amperage-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>">
-										<span class="!text-<?php echo esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)';" onmouseout="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)';"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endforeach; ?>
 							</div>
@@ -161,7 +161,7 @@ $values = ['s', 'o', 'w'];
 						<?php foreach ($ubication_values as $option) : ?>
 							<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 								<input type="radio" class="peer" name="ubicacion-de-bateria" id="input-ubication-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" <?php echo ($option === 'Externa') ? 'checked' : ''; ?>>
-								<span class="!text-<?php echo esc_attr($battery_config['color_class']); ?> !px-9 !py-2 border bg-white-eco border-white-eco hover:!border-<?php echo esc_attr($battery_config['color_class']); ?> hover:bg-black hover:text-<?php echo esc_attr($battery_config['color_class']); ?>  !rounded-full peer-checked:!bg-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!text-white-eco  peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)';" onmouseout="this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)';"><?= esc_attr($option); ?></span>
 							</label>
 						<?php endforeach; ?>
 
@@ -227,7 +227,7 @@ $values = ['s', 'o', 'w'];
 										</picture>
 									</figure>
 									<?php endif; ?>
-									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!text-<?php echo esc_attr($battery_config['color_class']); ?> peer-checked:!font-bold"><?= esc_attr($option); ?></span>
+									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
@@ -265,7 +265,7 @@ $values = ['s', 'o', 'w'];
 							<iconify-icon icon="material-symbols:arrow-back-ios-new" class="!align-middle !mr-2" width="16" height="16"></iconify-icon>
 							Atrás
 						</div>
-						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !bg-<?php echo esc_attr($battery_config['color_class']); ?> !border-<?php echo esc_attr($battery_config['color_class']); ?> !text-black-eco !rounded-full !px-14 !py-3" style="background-color: <?php echo esc_attr($battery_config['color_hex']); ?>; border-color: <?php echo esc_attr($battery_config['color_hex']); ?>;">Finalizar Pedido</button>
+						<button type="button" id="sab-submit-button" class="sab-button-next !w-fit !text-black-eco !rounded-full !px-14 !py-3" style="background-color: var(--battery-color); border-color: var(--battery-color); border: 2px solid var(--battery-color);">Finalizar Pedido</button>
 					</div>
 				</div>
 			</div>
