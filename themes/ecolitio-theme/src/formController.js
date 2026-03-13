@@ -196,23 +196,24 @@ const uiManager = {
     const priceElement = document.getElementById('dynamic-price-display');
     if (!priceElement) return;
     
-    // Get pricing matrix from window object (set by form template)
+    // Get pricing matrix from window object (populated by AJAX)
     const pricingMatrix = window.batteryPricingMatrix || {};
-    const basePrice = pricingMatrix.base_price || 100;
-    const voltageMultipliers = pricingMatrix.voltage_multipliers || {};
-    const amperageMultipliers = pricingMatrix.amperage_multipliers || {};
     
-    const voltageMultiplier = voltageMultipliers[voltage] || 1.0;
-    const amperageMultiplier = amperageMultipliers[amperage] || 1.0;
+    // Look up price directly from matrix: matrix[voltage][amperage]
+    const finalPrice = pricingMatrix[voltage]?.[amperage];
     
-    const finalPrice = basePrice * voltageMultiplier * amperageMultiplier;
+    if (!finalPrice) {
+      priceElement.textContent = 'Precio no disponible';
+      priceElement.dataset.price = 0;
+      return;
+    }
     
-    // Format price with currency
+    // Format price with currency (EUR for Spain)
     const formattedPrice = new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: '€',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      currency: 'EUR',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(finalPrice);
     
     priceElement.textContent = formattedPrice;
@@ -708,7 +709,40 @@ export const formController = () => {
   // Initialize summary updates
   addSummaryListeners();
 
-  // NEW: Step 10.5: Handle voltage and amperage changes for dynamic pricing
+  // NEW: Step 10.5: Initialize pricing matrix from AJAX
+  const initializePricingMatrix = async () => {
+    try {
+      // Get AJAX configuration
+      const ajaxConfig = window.taller_sabway_ajax || window.ecolitio_ajax || {};
+      const ajaxUrl = ajaxConfig.ajax_url || `${window.location.origin}/wp-admin/admin-ajax.php`;
+      
+      const response = await fetch(ajaxUrl, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          action: 'get_battery_pricing_matrix',
+        }),
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        window.batteryPricingMatrix = result.data;
+        console.log('Pricing matrix loaded:', window.batteryPricingMatrix);
+      } else {
+        console.error('Error loading pricing matrix:', result.data);
+      }
+    } catch (error) {
+      console.error('Error loading pricing matrix:', error);
+    }
+  };
+  
+  // Call on form initialization
+  initializePricingMatrix();
+
+  // NEW: Step 10.6: Handle voltage and amperage changes for dynamic pricing
   const handleVoltageAmperageChangeForPricing = () => {
     const voltageRadios = document.querySelectorAll('input[name="voltage"]');
     const amperageRadios = document.querySelectorAll('input[name="amperage"]');
