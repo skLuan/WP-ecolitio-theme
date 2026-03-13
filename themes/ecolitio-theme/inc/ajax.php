@@ -543,6 +543,9 @@ function ecolitio_custom_batery_add_to_cart() {
          $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
          $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
          $form_data['battery_type'] = sanitize_text_field($_POST['battery_type'] ?? 'sabway');
+         
+         // NEW: Get variation ID from form
+         $form_data['variation_id'] = intval($_POST['variation_id'] ?? 0);
         
         // Validate required fields
         $validation_errors = validate_sabway_form_data($form_data);
@@ -566,7 +569,26 @@ function ecolitio_custom_batery_add_to_cart() {
     // 3. Add to Cart
     try {
         $product_id = $form_data['product_id'];
+        $variation_id = $form_data['variation_id'];
         $quantity = 1;
+        
+        // NEW: If no variation ID provided, look it up by voltage and amperage
+        if (!$variation_id) {
+            $variation_id = ecolitio_get_variation_id_for_specs(
+                $product_id,
+                $form_data['voltage'],
+                $form_data['amperage']
+            );
+        }
+        
+        // Validate variation exists
+        if (!$variation_id) {
+            wp_send_json_error(array(
+                'message' => __('Variación de producto no encontrada', 'ecolitio-theme'),
+                'code' => 'variation_not_found'
+            ));
+            return;
+        }
         
         // Prepare custom data to be stored in cart item
         $cart_item_data = array(
@@ -589,8 +611,8 @@ function ecolitio_custom_batery_add_to_cart() {
             '_sabway_custom_order' => true
         );
 
-        // Add to cart
-        $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity, 0, array(), $cart_item_data);
+        // NEW: Add variation to cart instead of simple product
+        $cart_item_key = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, array(), $cart_item_data);
 
         if ($cart_item_key) {
             wp_send_json_success(array(
