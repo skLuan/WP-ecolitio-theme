@@ -158,7 +158,12 @@ const dataCollector = {
       connectorType = customValue || 'OTROS';
     }
 
+    // NEW: Get variation ID from hidden field
+    const variationIdField = document.getElementById('variation-id');
+    const variationId = variationIdField ? parseInt(variationIdField.value) : 0;
+
     return {
+      variation_id: variationId, // NEW: Include variation ID
       electrical_specifications: {
         voltage: voltageSelected ? voltageSelected.value : null,
         amperage: amperageSelected ? amperageSelected.value : null,
@@ -182,6 +187,55 @@ const dataCollector = {
  * Handles all UI interactions and feedback
  */
 const uiManager = {
+  /**
+   * NEW: Display dynamic price based on voltage and amperage selections
+   * @param {string} voltage - Selected voltage (e.g., "24V")
+   * @param {string} amperage - Selected amperage (e.g., "4,8AH")
+   */
+  displayDynamicPrice(voltage, amperage) {
+    const priceElement = document.getElementById('dynamic-price-display');
+    if (!priceElement) return;
+    
+    // Get pricing matrix from window object (set by form template)
+    const pricingMatrix = window.batteryPricingMatrix || {};
+    const basePrice = pricingMatrix.base_price || 100;
+    const voltageMultipliers = pricingMatrix.voltage_multipliers || {};
+    const amperageMultipliers = pricingMatrix.amperage_multipliers || {};
+    
+    const voltageMultiplier = voltageMultipliers[voltage] || 1.0;
+    const amperageMultiplier = amperageMultipliers[amperage] || 1.0;
+    
+    const finalPrice = basePrice * voltageMultiplier * amperageMultiplier;
+    
+    // Format price with currency
+    const formattedPrice = new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: '€',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(finalPrice);
+    
+    priceElement.textContent = formattedPrice;
+    priceElement.dataset.price = finalPrice;
+  },
+
+  /**
+   * NEW: Update variation ID when voltage/amperage selections change
+   * @param {string} voltage - Selected voltage
+   * @param {string} amperage - Selected amperage
+   */
+  updateVariationId(voltage, amperage) {
+    const variationField = document.getElementById('variation-id');
+    if (!variationField) return;
+    
+    // Store voltage and amperage for server-side lookup
+    variationField.dataset.voltage = voltage;
+    variationField.dataset.amperage = amperage;
+    
+    // Optionally, you could make an AJAX call here to get the variation ID
+    // For now, we'll let the server handle it during form submission
+  },
+
   /**
    * Shows user feedback message
    * @param {string} message - Message to display
@@ -653,6 +707,27 @@ export const formController = () => {
 
   // Initialize summary updates
   addSummaryListeners();
+
+  // NEW: Step 10.5: Handle voltage and amperage changes for dynamic pricing
+  const handleVoltageAmperageChangeForPricing = () => {
+    const voltageRadios = document.querySelectorAll('input[name="voltage"]');
+    const amperageRadios = document.querySelectorAll('input[name="amperage"]');
+    
+    const updatePrice = () => {
+      const voltage = document.querySelector('input[name="voltage"]:checked')?.value;
+      const amperage = document.querySelector('input[name="amperage"]:checked')?.value;
+      
+      if (voltage && amperage) {
+        uiManager.displayDynamicPrice(voltage, amperage);
+        uiManager.updateVariationId(voltage, amperage);
+      }
+    };
+    
+    voltageRadios.forEach(radio => radio.addEventListener('change', updatePrice));
+    amperageRadios.forEach(radio => radio.addEventListener('change', updatePrice));
+  };
+  
+  handleVoltageAmperageChangeForPricing();
 
   const resetButton = document.getElementById("reset-form-button");
   if (resetButton) {

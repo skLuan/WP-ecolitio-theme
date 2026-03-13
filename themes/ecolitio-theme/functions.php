@@ -22,6 +22,11 @@ require_once get_stylesheet_directory() . '/inc/custom-post-taxonomies.php';
 require_once get_stylesheet_directory() . '/inc/ajax.php';
 
 /**
+ * Include battery variation helper functions
+ */
+require_once get_stylesheet_directory() . '/inc/battery-variation-helpers.php';
+
+/**
  * Include generic Taller role functionality
  */
 require_once get_stylesheet_directory() . '/inc/class-taller-role.php';

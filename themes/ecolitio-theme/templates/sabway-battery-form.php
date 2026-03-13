@@ -87,8 +87,22 @@ $values = ['s', 'o', 'w'];
 					$props = array('icon' => esc_attr($icons["step1"]['icon']), 'title' => 'Paso 1: Especificaciones Eléctricas');
 					get_template_part('templates/icon-title', null, $props);
 					?>
-					<?php get_template_part('templates/progress-bar'); // -------- Progress bar 
+					<?php get_template_part('templates/progress-bar'); // -------- Progress bar
 					?>
+					<!-- NEW: Dynamic Price Display -->
+					<div class="price-display-section !mb-6 !p-4 !rounded-lg" style="background-color: rgba(var(--battery-color-rgb), 0.1); border: 2px solid var(--battery-color);">
+						<h5 class="!text-white-eco !font-bold !mb-2">Precio Estimado:</h5>
+						<div id="dynamic-price-display" class="!text-3xl !font-bold" style="color: var(--battery-color);">
+							$0
+						</div>
+						<p class="!text-sm !text-white-eco !mt-2 !mb-0">
+							El precio se actualiza según voltaje y amperaje seleccionados
+						</p>
+					</div>
+					
+					<!-- NEW: Hidden variation ID field -->
+					<input type="hidden" id="variation-id" name="variation_id" value="">
+					
 					<div id="sab-form-energy-advanced">
 						<p>Cambiar estas propiedades cambia directamente la Autonomía <br>
 							Aprende a como funciona esta tabla leyendo <a href="#" style="color: var(--battery-color);">nuestra guía</a>
