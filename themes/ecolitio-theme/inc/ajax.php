@@ -635,6 +635,110 @@ function ecolitio_custom_batery_add_to_cart() {
 }
 
 /**
+ * NEW: AJAX handler for getting battery pricing matrix from variable products
+ * Queries all variable products and builds a pricing matrix based on voltage/amperage
+ */
+add_action('wp_ajax_get_battery_pricing_matrix', 'ecolitio_get_battery_pricing_matrix_ajax');
+add_action('wp_ajax_nopriv_get_battery_pricing_matrix', 'ecolitio_get_battery_pricing_matrix_ajax');
+function ecolitio_get_battery_pricing_matrix_ajax() {
+    // Optional: Verify nonce if you want to restrict access
+    // $nonce = $_POST['nonce'] ?? '';
+    // if (!wp_verify_nonce($nonce, 'ecolitio_sabway_form_nonce')) {
+    //     wp_send_json_error(array('message' => 'Nonce verification failed'));
+    //     return;
+    // }
+
+    try {
+        // Query all variable products with 'sabway' tag
+        $args = array(
+            'type' => 'variable',
+            'status' => 'publish',
+            'limit' => -1,
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'product_tag',
+                    'field' => 'slug',
+                    'terms' => array('sabway', 'taller-del-patinete', 'bateria-a-medida', 'custom-battery-system'),
+                    'operator' => 'IN'
+                )
+            )
+        );
+
+        $variable_products = wc_get_products($args);
+
+        if (empty($variable_products)) {
+            wp_send_json_error(array(
+                'message' => __('No variable products found', 'ecolitio-theme'),
+                'code' => 'no_products'
+            ));
+            return;
+        }
+
+        // Build pricing matrix from variations
+        $pricing_matrix = array();
+
+        foreach ($variable_products as $product) {
+            // Get product variations
+            $variations = $product->get_children();
+
+            if (empty($variations)) {
+                continue;
+            }
+
+            foreach ($variations as $variation_id) {
+                $variation = wc_get_product($variation_id);
+
+                if (!$variation || !$variation->is_purchasable()) {
+                    continue;
+                }
+
+                // Get voltage and amperage attributes
+                $voltage = $variation->get_attribute('pa_voltios') ?: $variation->get_attribute('voltios');
+                $amperage = $variation->get_attribute('pa_amperios') ?: $variation->get_attribute('amperios');
+
+                if (!$voltage || !$amperage) {
+                    continue;
+                }
+
+                // Get variation price
+                $price = floatval($variation->get_price());
+
+                // Build nested matrix: voltage -> amperage -> price
+                if (!isset($pricing_matrix[$voltage])) {
+                    $pricing_matrix[$voltage] = array();
+                }
+
+                $pricing_matrix[$voltage][$amperage] = $price;
+            }
+        }
+
+        if (empty($pricing_matrix)) {
+            wp_send_json_error(array(
+                'message' => __('No pricing data found in variations', 'ecolitio-theme'),
+                'code' => 'no_pricing_data'
+            ));
+            return;
+        }
+
+        // Sort matrix for consistency
+        ksort($pricing_matrix);
+        foreach ($pricing_matrix as &$voltage_data) {
+            ksort($voltage_data);
+        }
+
+        wp_send_json_success($pricing_matrix);
+
+    } catch (Exception $e) {
+        error_log('Ecolitio: Error building pricing matrix - ' . $e->getMessage());
+        wp_send_json_error(array(
+            'message' => __('Error building pricing matrix', 'ecolitio-theme'),
+            'code' => 'matrix_error',
+            'error' => $e->getMessage()
+        ));
+    }
+}
+
+/**
  * Validate user session and cookies
  * FIXED: Removed private method call to WC_Session_Handler::init_session()
  * Enhanced session validation to prevent cookie check failures
