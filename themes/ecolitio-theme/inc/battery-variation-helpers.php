@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 /**
  * Get variation ID by SKU
  * 
- * Uses SKU format: eco-bame-{voltage}-{amperage}
+ * Uses SKU format: {parent-product-sku}-{voltage}-{amperage}
  * Example: eco-bame-24v-4,8ah
  * 
  * @param string $sku The variation SKU
@@ -36,17 +36,38 @@ function ecolitio_get_variation_id_by_sku($sku) {
 /**
  * Build SKU from voltage and amperage
  * 
- * @param string $voltage Voltage value (e.g., "24V")
+ * @param string $voltage  Voltage value (e.g., "24V")
  * @param string $amperage Amperage value (e.g., "4,8AH")
+ * @param string $prefix   SKU prefix (defaults to "eco-bame" for backward compatibility)
  * @return string The constructed SKU
  */
-function ecolitio_build_variation_sku($voltage, $amperage) {
+function ecolitio_build_variation_sku($voltage, $amperage, $prefix = 'eco-bame') {
     // Normalize values
-    $voltage = strtolower(str_replace(' ', '', $voltage));
+    $voltage  = strtolower(str_replace(' ', '', $voltage));
     $amperage = strtolower(str_replace(' ', '', $amperage));
-    
-    // Build SKU: eco-bame-24v-4,8ah
-    return 'eco-bame-' . $voltage . '-' . $amperage;
+
+    return $prefix . '-' . $voltage . '-' . $amperage;
+}
+
+/**
+ * Build variation SKU using the parent product's own SKU as the prefix
+ *
+ * SKU format: {parent-product-sku}-{voltage}-{amperage}
+ * Example: eco-tapa-36v-9,6ah
+ *
+ * @param int    $product_id Parent product ID
+ * @param string $voltage    Voltage value (e.g., "24V")
+ * @param string $amperage   Amperage value (e.g., "4,8AH")
+ * @return string The constructed SKU
+ */
+function ecolitio_build_variation_sku_for_product($product_id, $voltage, $amperage) {
+    $parent = wc_get_product($product_id);
+    $prefix = $parent ? $parent->get_sku() : 'eco-battery';
+
+    $voltage  = strtolower(str_replace(' ', '', $voltage));
+    $amperage = strtolower(str_replace(' ', '', $amperage));
+
+    return $prefix . '-' . $voltage . '-' . $amperage;
 }
 
 /**
@@ -58,8 +79,8 @@ function ecolitio_build_variation_sku($voltage, $amperage) {
  * @return int|null Variation ID or null if not found
  */
 function ecolitio_get_variation_id_for_specs($product_id, $voltage, $amperage) {
-    // Build SKU and look it up
-    $sku = ecolitio_build_variation_sku($voltage, $amperage);
+    // Build SKU using parent product's SKU as prefix and look it up
+    $sku = ecolitio_build_variation_sku_for_product($product_id, $voltage, $amperage);
     return ecolitio_get_variation_id_by_sku($sku);
 }
 

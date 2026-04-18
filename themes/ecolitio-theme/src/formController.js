@@ -439,6 +439,7 @@ const ajaxSubmitter = {
       }
 
       console.log("Adding to cart via AJAX");
+      console.log("DEBUG nonce:", nonce ? `present (${nonce.substring(0,6)}...)` : "MISSING");
 
       // Get product ID from hidden input field (for shortcode compatibility)
       let productId = null;
@@ -505,6 +506,17 @@ const ajaxSubmitter = {
       formDataSubmit.append("product_id", productId || 0);
       formDataSubmit.append("battery_type", batteryType);
 
+      // DEBUG: log what we're sending so we can diagnose variation lookup failures
+      console.log("DEBUG AJAX payload:", {
+        action: "custom_batery_add_to_cart",
+        product_id: productId,
+        battery_type: batteryType,
+        voltage: formData.electrical_specifications.voltage,
+        amperage: formData.electrical_specifications.amperage,
+        variation_id: formData.variation_id,
+        nonce_present: !!nonce,
+      });
+
       // Submit to WordPress AJAX endpoint
       const response = await fetch(ajaxUrl, {
         method: "POST",
@@ -520,6 +532,7 @@ const ajaxSubmitter = {
       console.log("AJAX Response:", result);
 
       if (!result.success) {
+        console.error("AJAX Error response data:", result.data);
         throw new Error(result.data?.message || "Error al añadir al carrito");
       }
 

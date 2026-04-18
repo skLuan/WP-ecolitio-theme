@@ -580,12 +580,56 @@ function ecolitio_custom_batery_add_to_cart() {
                 $form_data['amperage']
             );
         }
-        
+
+        // DIAGNOSTIC: Log SKU lookup details to help debug variation_not_found
+        $built_sku = function_exists('ecolitio_build_variation_sku_for_product')
+            ? ecolitio_build_variation_sku_for_product($product_id, $form_data['voltage'], $form_data['amperage'])
+            : 'helper_not_loaded';
+        error_log(sprintf(
+            'Ecolitio add_to_cart DEBUG: product_id=%d, voltage="%s", amperage="%s", built_sku="%s", resolved_variation_id=%s',
+            $product_id,
+            $form_data['voltage'],
+            $form_data['amperage'],
+            $built_sku,
+            $variation_id ? $variation_id : 'NOT_FOUND'
+        ));
+
+        // Fallback: try attribute-based lookup if SKU lookup failed
+        if (!$variation_id) {
+            $parent_product = wc_get_product($product_id);
+            if ($parent_product && $parent_product->is_type('variable')) {
+                foreach ($parent_product->get_children() as $child_id) {
+                    $child = wc_get_product($child_id);
+                    if (!$child) continue;
+                    $child_voltage  = $child->get_attribute('pa_voltios') ?: $child->get_attribute('voltios');
+                    $child_amperage = $child->get_attribute('pa_amperios') ?: $child->get_attribute('amperios');
+                    error_log(sprintf(
+                        'Ecolitio add_to_cart DEBUG: child variation_id=%d, child_voltage="%s", child_amperage="%s", sku="%s"',
+                        $child_id, $child_voltage, $child_amperage, $child->get_sku()
+                    ));
+                    if (
+                        strtolower(trim($child_voltage))  === strtolower(trim($form_data['voltage'])) &&
+                        strtolower(trim($child_amperage)) === strtolower(trim($form_data['amperage']))
+                    ) {
+                        $variation_id = $child_id;
+                        error_log('Ecolitio add_to_cart DEBUG: Found variation via attribute fallback: ' . $variation_id);
+                        break;
+                    }
+                }
+            }
+        }
+
         // Validate variation exists
         if (!$variation_id) {
             wp_send_json_error(array(
                 'message' => __('Variación de producto no encontrada', 'ecolitio-theme'),
-                'code' => 'variation_not_found'
+                'code' => 'variation_not_found',
+                'debug' => array(
+                    'product_id'  => $product_id,
+                    'voltage'     => $form_data['voltage'],
+                    'amperage'    => $form_data['amperage'],
+                    'looked_up_sku' => $built_sku,
+                ),
             ));
             return;
         }
