@@ -201,12 +201,20 @@ $values = ['s', 'o', 'w'];
 							</label>
 						</div>
 						
-						<!-- Liters container - shown for external batteries -->
-						<div id="liters-container" class="col-span-full hidden">
-							<label for="litros-bateria">
-								<span class="!font-semibold !text-white-eco pb-2">Capacidad del bolso/funda (litros):</span>
-								<input type="number" name="litros-bateria" id="litros-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 20" step="0.1" min="0">
+					</div>
+					<div class="flex flex-col gap-2">
+						<span class="!font-semibold !text-white-eco pb-2">Cantidad de motores</span>
+						<div class="flex flex-row gap-4">
+							<label for="input-cantidad-motores-1" class="">
+								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-1" value="1">
+								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor=''; s.style.borderColor=''; s.style.color='var(--battery-color)'; } }); }">1</span>
 							</label>
+							<label for="input-cantidad-motores-2" class="">
+								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-2" value="2">
+								<span class="!px-9 !py-2 border bg-white-eco border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='black'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; this.style.backgroundColor='white'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.borderColor=''; this.style.color='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor=''; s.style.borderColor=''; s.style.color='var(--battery-color)'; } }); }">2</span>
+							</label>
+						</div>
+					</div>
 						</div>
 					</div>
 					<label for="modelo-patinete">
@@ -239,18 +247,19 @@ $values = ['s', 'o', 'w'];
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer connector-radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" data-connector-type="<?= esc_attr($option); ?>">
 									<?php if($option !== 'OTROS') : ?>
-									<figure class="cursor-pointer border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
+									<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
 										<picture>
 											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
 									</figure>
-									<?php endif; ?>
 									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+									<?php endif; ?>
+									<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
-						<!-- Custom connector input field - shown only when OTROS is selected -->
-						<div id="custom-connector-container" class="inline invisible mt-4">
+						<!-- Custom connector input field - always visible -->
+						<div id="custom-connector-container" class="inline mt-4">
 							<label for="text-input-conector" class="block">
 								<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
 								<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
