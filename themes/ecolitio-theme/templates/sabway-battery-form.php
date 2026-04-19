@@ -215,12 +215,6 @@ $values = ['s', 'o', 'w'];
 							</label>
 						</div>
 					</div>
-						</div>
-					</div>
-					<label for="modelo-patinete">
-						<span class="!font-semibold !text-white-eco pb-2">Cantidad de motores</span>
-						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
-					</label>
 					<label for="modelo-patinete">
 						<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete:</span>
 						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
