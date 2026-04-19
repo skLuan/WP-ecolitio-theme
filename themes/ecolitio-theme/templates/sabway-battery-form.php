@@ -99,10 +99,10 @@ $values = ['s', 'o', 'w'];
 							El precio se actualiza según voltaje y amperaje seleccionados
 						</p>
 					</div>
-					
+
 					<!-- NEW: Hidden variation ID field -->
 					<input type="hidden" id="variation-id" name="variation_id" value="">
-					
+
 					<div id="sab-form-energy-advanced">
 						<p>Cambiar estas propiedades cambia directamente la Autonomía <br>
 							Aprende a como funciona esta tabla leyendo <a href="#" style="color: var(--battery-color);">nuestra guía</a>
@@ -181,10 +181,8 @@ $values = ['s', 'o', 'w'];
 
 					</div>
 					<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
-						<p class="col-span-full battery-dimensions-text">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.
-						<br>
-						Para baterías externas, indica las medidas del bolso o funda donde llevarás la batería, no las de la batería en sí.</p>
-						
+						<p class="col-span-full battery-dimensions-text">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.</p>
+
 						<!-- Dimensions container - shown for internal batteries -->
 						<div id="dimensions-container" class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6">
 							<label for="alto-bateria">
@@ -200,7 +198,7 @@ $values = ['s', 'o', 'w'];
 								<input type="number" name="largo-bateria" id="largo-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 40">
 							</label>
 						</div>
-						
+
 					</div>
 					<div class="flex flex-col gap-2">
 						<span class="!font-semibold !text-white-eco pb-2">Cantidad de motores</span>
@@ -237,28 +235,30 @@ $values = ['s', 'o', 'w'];
 							<?php
 							$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
 							foreach ($connector_values as $option) :
-								?>
+							?>
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer connector-radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" data-connector-type="<?= esc_attr($option); ?>">
-									<?php if($option !== 'OTROS') : ?>
-									<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
-										<picture>
-											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
-										</picture>
-									</figure>
-									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+									<?php if ($option !== 'OTROS') : ?>
+										<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
+											<picture>
+												<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
+											</picture>
+										</figure>
+										<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+									<?php else : ?>
+										<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+										<label for="text-input-conector" class="block">
+											<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
+											<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
+										</label>
 									<?php endif; ?>
-									<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
 								</label>
 							<?php endforeach; ?>
 						</div>
 						<!-- Custom connector input field - always visible -->
-						<div id="custom-connector-container" class="inline mt-4">
-							<label for="text-input-conector" class="block">
-								<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
-								<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
-							</label>
-						</div>
+						<!-- <div id="custom-connector-container" class="inline mt-4">
+
+						</div> -->
 					</div>
 				</div>
 				<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
