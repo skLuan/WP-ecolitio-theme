@@ -907,11 +907,14 @@ function validate_sabway_form_data($data) {
          $errors[] = __('Rango de distancia debe estar entre 10 y 100 km', 'ecolitio-theme');
      }
      
-     // Validate physical dimensions
-     if (empty($data['height_cm']) || empty($data['width_cm']) || empty($data['length_cm'])) {
-         $errors[] = __('Se requieren las dimensiones (alto, ancho, largo)', 'ecolitio-theme');
-     } elseif ($data['height_cm'] <= 0 || $data['width_cm'] <= 0 || $data['length_cm'] <= 0) {
-         $errors[] = __('Las dimensiones deben ser valores positivos', 'ecolitio-theme');
+     // Validate physical dimensions only for internal batteries
+     $is_external_battery = isset($data['battery_location']) && $data['battery_location'] === 'Externa';
+     if (!$is_external_battery) {
+         if (empty($data['height_cm']) || empty($data['width_cm']) || empty($data['length_cm'])) {
+             $errors[] = __('Se requieren las dimensiones (alto, ancho, largo)', 'ecolitio-theme');
+         } elseif ($data['height_cm'] <= 0 || $data['width_cm'] <= 0 || $data['length_cm'] <= 0) {
+             $errors[] = __('Las dimensiones deben ser valores positivos', 'ecolitio-theme');
+         }
      }
 
      // Validate cantidad de motores
