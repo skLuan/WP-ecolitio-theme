@@ -45,10 +45,8 @@ const formValidator = {
     // Validate physical dimensions based on battery location
     const isExternalBattery = locationSelected && locationSelected.value === 'Externa';
 
-    if (false) {
-      // (liters validation removed)
-    } else {
-      // Validate dimensions for internal battery
+    if (!isExternalBattery) {
+      // Validate dimensions for internal battery only
       const height = document.getElementById("alto-bateria");
       const width = document.getElementById("ancho-bateria");
       const length = document.getElementById("largo-bateria");
