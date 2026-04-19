@@ -42,20 +42,11 @@ const formValidator = {
       errors.push("La ubicación de la batería es requerida");
     }
 
-    // Validate physical dimensions or liters based on battery location
+    // Validate physical dimensions based on battery location
     const isExternalBattery = locationSelected && locationSelected.value === 'Externa';
 
-    if (isExternalBattery) {
-      // Validate liters for external battery
-      const liters = document.getElementById("litros-bateria");
-      if (
-        !liters ||
-        !liters.value ||
-        isNaN(liters.value) ||
-        parseFloat(liters.value) <= 0
-      ) {
-        errors.push("Se requiere una capacidad válida en litros");
-      }
+    if (false) {
+      // (liters validation removed)
     } else {
       // Validate dimensions for internal battery
       const height = document.getElementById("alto-bateria");
@@ -94,6 +85,12 @@ const formValidator = {
     const scooterModel = document.getElementById("modelo-patinete");
     if (!scooterModel || !scooterModel.value.trim()) {
       errors.push("El modelo del patinete es requerido");
+    }
+
+    // Validate cantidad de motores
+    const cantidadMotores = document.querySelector('input[name="cantidad-motores"]:checked');
+    if (!cantidadMotores) {
+      errors.push("La cantidad de motores es requerida");
     }
 
     // Validate connector type
@@ -144,7 +141,7 @@ const dataCollector = {
     const height = document.getElementById("alto-bateria");
     const width = document.getElementById("ancho-bateria");
     const length = document.getElementById("largo-bateria");
-    const liters = document.getElementById("litros-bateria");
+    const cantidadMotoresSelected = document.querySelector('input[name="cantidad-motores"]:checked');
     const scooterModel = document.getElementById("modelo-patinete");
     const connectorSelected = document.querySelector(
       'input[name="tipo-de-conector"]:checked'
@@ -170,11 +167,11 @@ const dataCollector = {
         distance_range_km: distanceRange ? parseInt(distanceRange.value) : null,
       },
       physical_dimensions: {
-        height_cm: isExternalBattery ? null : (height ? parseFloat(height.value) : null),
-        width_cm: isExternalBattery ? null : (width ? parseFloat(width.value) : null),
-        length_cm: isExternalBattery ? null : (length ? parseFloat(length.value) : null),
-        liters: isExternalBattery ? (liters ? parseFloat(liters.value) : null) : null,
+        height_cm: height ? parseFloat(height.value) : null,
+        width_cm: width ? parseFloat(width.value) : null,
+        length_cm: length ? parseFloat(length.value) : null,
       },
+      cantidad_motores: cantidadMotoresSelected ? parseInt(cantidadMotoresSelected.value) : null,
       scooter_model: scooterModel ? scooterModel.value.trim() : null,
       battery_location: locationSelected ? locationSelected.value : null,
       connector_type: connectorType,
@@ -311,10 +308,10 @@ const uiManager = {
         "No seleccionado",
       distanceRange:
         document.getElementById("sab-distance-range")?.value || "0",
-      height: isExternalBattery ? null : (document.getElementById("alto-bateria")?.value || "0"),
-      width: isExternalBattery ? null : (document.getElementById("ancho-bateria")?.value || "0"),
-      length: isExternalBattery ? null : (document.getElementById("largo-bateria")?.value || "0"),
-      liters: isExternalBattery ? (document.getElementById("litros-bateria")?.value || "0") : null,
+      height: document.getElementById("alto-bateria")?.value || "0",
+      width: document.getElementById("ancho-bateria")?.value || "0",
+      length: document.getElementById("largo-bateria")?.value || "0",
+      cantidadMotores: document.querySelector('input[name="cantidad-motores"]:checked')?.value || null,
       scooterModel:
         document.getElementById("modelo-patinete")?.value || "No especificado",
       batteryLocation: batteryLocation,
@@ -326,33 +323,17 @@ const uiManager = {
     this.updateConfirmationField("amperios", formData.amperage);
     this.updateConfirmationField("autonomia", `${formData.distanceRange}km`);
     
-    // Update dimension fields based on battery type and hide/show confirmation rows
-    if (isExternalBattery) {
-      // For external batteries, show liters and hide dimension fields
-      this.updateConfirmationField("altocm", "");
-      this.updateConfirmationField("anchocm", "");
-      this.updateConfirmationField("largocm", "");
-      this.updateConfirmationField("litros", formData.liters ? `${formData.liters}L` : "No especificado");
-      
-      // Hide dimension rows in confirmation step
-      this.toggleConfirmationRow("altocm", false);
-      this.toggleConfirmationRow("anchocm", false);
-      this.toggleConfirmationRow("largocm", false);
-      this.toggleConfirmationRow("litros", true);
-    } else {
-      // For internal batteries, show dimensions and hide liters
-      this.updateConfirmationField("altocm", formData.height ? `${formData.height}cm` : "0cm");
-      this.updateConfirmationField("anchocm", formData.width ? `${formData.width}cm` : "0cm");
-      this.updateConfirmationField("largocm", formData.length ? `${formData.length}cm` : "0cm");
-      this.updateConfirmationField("litros", "");
-      
-      // Show dimension rows and hide liters row
-      this.toggleConfirmationRow("altocm", true);
-      this.toggleConfirmationRow("anchocm", true);
-      this.toggleConfirmationRow("largocm", true);
-      this.toggleConfirmationRow("litros", false);
-    }
-    
+    // Update dimension fields
+    this.updateConfirmationField("altocm", formData.height ? `${formData.height}cm` : "0cm");
+    this.updateConfirmationField("anchocm", formData.width ? `${formData.width}cm` : "0cm");
+    this.updateConfirmationField("largocm", formData.length ? `${formData.length}cm` : "0cm");
+    this.toggleConfirmationRow("altocm", true);
+    this.toggleConfirmationRow("anchocm", true);
+    this.toggleConfirmationRow("largocm", true);
+
+    // Update cantidad de motores
+    this.updateConfirmationField("cantidad-motores", formData.cantidadMotores || "No seleccionado");
+
     this.updateConfirmationField(
       "modelo-de-patinete-elctrico",
       formData.scooterModel
@@ -494,8 +475,8 @@ const ajaxSubmitter = {
         formData.physical_dimensions.length_cm || 0
       );
       formDataSubmit.append(
-        "liters",
-        formData.physical_dimensions.liters || 0
+        "cantidad_motores",
+        formData.cantidad_motores || 1
       );
       formDataSubmit.append("scooter_model", formData.scooter_model || "");
       formDataSubmit.append(
@@ -647,30 +628,13 @@ export const formController = () => {
   
   handleConnectorChange();
 
-  // Step 9.6: Handle battery location change to toggle dimensions vs liters
-  const handleBatteryLocationChange = () => {
-    const locationRadios = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
+  // Step 9.6: Handle battery location change to toggle dimensions
+    const handleBatteryLocationChange = () => {
     const dimensionsContainer = document.getElementById("dimensions-container");
-    const litersContainer = document.getElementById("liters-container");
     
-    if (dimensionsContainer && litersContainer) {
+    if (dimensionsContainer) {
       locationRadios.forEach((radio) => {
         radio.addEventListener("change", () => {
-          if (radio.value === 'Externa') {
-            // Show liters, hide dimensions
-            dimensionsContainer.classList.add("hidden");
-            litersContainer.classList.remove("hidden");
-            // Clear dimension inputs
-            document.getElementById("alto-bateria").value = '';
-            document.getElementById("ancho-bateria").value = '';
-            document.getElementById("largo-bateria").value = '';
-          } else {
-            // Show dimensions, hide liters
-            dimensionsContainer.classList.remove("hidden");
-            litersContainer.classList.add("hidden");
-            // Clear liters input
-            document.getElementById("litros-bateria").value = '';
-          }
           // Update summary when battery location changes
           uiManager.updatesumary();
         });
@@ -679,22 +643,6 @@ export const formController = () => {
   };
   
   handleBatteryLocationChange();
-
-  // Step 9.7: Initialize form with external battery selected by default
-  const initializeBatteryLocationState = () => {
-    const externalRadio = document.querySelector('input[name="ubicacion-de-bateria"][value="Externa"]');
-    if (externalRadio && externalRadio.checked) {
-      // External battery is already checked, apply the initial state
-      const dimensionsContainer = document.getElementById("dimensions-container");
-      const litersContainer = document.getElementById("liters-container");
-      if (dimensionsContainer && litersContainer) {
-        dimensionsContainer.classList.add("hidden");
-        litersContainer.classList.remove("hidden");
-      }
-    }
-  };
-  
-  initializeBatteryLocationState();
 
   // Step 10: Add real-time form summary updates
   const addSummaryListeners = () => {

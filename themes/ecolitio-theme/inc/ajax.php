@@ -297,6 +297,7 @@ function ecolitio_sabway_submit_form() {
         $form_data['battery_location'] = sanitize_text_field($_POST['battery_location'] ?? '');
         $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
         $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
+        $form_data['cantidad_motores'] = intval($_POST['cantidad_motores'] ?? 1);
         
         // Validate required fields
         $validation_errors = validate_sabway_form_data($form_data);
@@ -370,6 +371,7 @@ function ecolitio_sabway_submit_form() {
                 'scooter_model' => $form_data['scooter_model'],
                 'battery_location' => $form_data['battery_location'],
                 'connector_type' => $form_data['connector_type'],
+                'cantidad_motores' => $form_data['cantidad_motores'],
             ),
             '_sabway_order_type' => 'battery_customization',
             '_sabway_order_source' => 'taller_sabway_form',
@@ -535,7 +537,7 @@ function ecolitio_custom_batery_add_to_cart() {
          $form_data['height_cm'] = floatval($_POST['height_cm'] ?? 0);
          $form_data['width_cm'] = floatval($_POST['width_cm'] ?? 0);
          $form_data['length_cm'] = floatval($_POST['length_cm'] ?? 0);
-         $form_data['liters'] = floatval($_POST['liters'] ?? 0);
+         $form_data['cantidad_motores'] = intval($_POST['cantidad_motores'] ?? 1);
          
          // Other specifications
          $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
@@ -645,12 +647,12 @@ function ecolitio_custom_batery_add_to_cart() {
                 'height_cm' => $form_data['height_cm'],
                 'width_cm' => $form_data['width_cm'],
                 'length_cm' => $form_data['length_cm'],
-                'liters' => $form_data['liters'],
             ),
             '_sabway_specifications' => array(
                 'scooter_model' => $form_data['scooter_model'],
                 'battery_location' => $form_data['battery_location'],
                 'connector_type' => $form_data['connector_type'],
+                'cantidad_motores' => $form_data['cantidad_motores'],
             ),
             '_sabway_custom_order' => true
         );
@@ -905,23 +907,16 @@ function validate_sabway_form_data($data) {
          $errors[] = __('Rango de distancia debe estar entre 10 y 100 km', 'ecolitio-theme');
      }
      
-     // Validate dimensions or liters based on battery location
-     $is_external_battery = isset($data['battery_location']) && $data['battery_location'] === 'Externa';
-     
-     if ($is_external_battery) {
-         // For external batteries, validate liters
-         if (!isset($data['liters']) || empty($data['liters']) || floatval($data['liters']) <= 0) {
-             $errors[] = __('Se requiere una capacidad válida en litros', 'ecolitio-theme');
-         }
-     } else {
-         // For internal batteries, validate dimensions
-         if (empty($data['height_cm']) || empty($data['width_cm']) || empty($data['length_cm'])) {
-             $errors[] = __('Se requieren las dimensiones (alto, ancho, largo)', 'ecolitio-theme');
-         }
-         
-         if ($data['height_cm'] <= 0 || $data['width_cm'] <= 0 || $data['length_cm'] <= 0) {
-             $errors[] = __('Las dimensiones deben ser valores positivos', 'ecolitio-theme');
-         }
+     // Validate physical dimensions
+     if (empty($data['height_cm']) || empty($data['width_cm']) || empty($data['length_cm'])) {
+         $errors[] = __('Se requieren las dimensiones (alto, ancho, largo)', 'ecolitio-theme');
+     } elseif ($data['height_cm'] <= 0 || $data['width_cm'] <= 0 || $data['length_cm'] <= 0) {
+         $errors[] = __('Las dimensiones deben ser valores positivos', 'ecolitio-theme');
+     }
+
+     // Validate cantidad de motores
+     if (!isset($data['cantidad_motores']) || !in_array(intval($data['cantidad_motores']), array(1, 2))) {
+         $errors[] = __('La cantidad de motores debe ser 1 o 2', 'ecolitio-theme');
      }
      
      // Product validation
