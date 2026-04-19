@@ -323,13 +323,14 @@ const uiManager = {
     this.updateConfirmationField("amperios", formData.amperage);
     this.updateConfirmationField("autonomia", `${formData.distanceRange}km`);
     
-    // Update dimension fields
+    // Update dimension fields — only show rows for internal batteries
+    const showDimensions = !isExternalBattery;
     this.updateConfirmationField("altocm", formData.height ? `${formData.height}cm` : "0cm");
     this.updateConfirmationField("anchocm", formData.width ? `${formData.width}cm` : "0cm");
     this.updateConfirmationField("largocm", formData.length ? `${formData.length}cm` : "0cm");
-    this.toggleConfirmationRow("altocm", true);
-    this.toggleConfirmationRow("anchocm", true);
-    this.toggleConfirmationRow("largocm", true);
+    this.toggleConfirmationRow("altocm", showDimensions);
+    this.toggleConfirmationRow("anchocm", showDimensions);
+    this.toggleConfirmationRow("largocm", showDimensions);
 
     // Update cantidad de motores
     this.updateConfirmationField("cantidad-motores", formData.cantidadMotores || "No seleccionado");
@@ -628,20 +629,42 @@ export const formController = () => {
   
   handleConnectorChange();
 
-  // Step 9.6: Handle battery location change to toggle dimensions
-    const handleBatteryLocationChange = () => {
+  // Step 9.6: Handle battery location change to show/hide dimensions container
+  const handleBatteryLocationChange = () => {
+    const locationRadios = document.querySelectorAll('input[name="ubicacion-de-bateria"]');
     const dimensionsContainer = document.getElementById("dimensions-container");
-    
-    if (dimensionsContainer) {
-      locationRadios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-          // Update summary when battery location changes
-          uiManager.updatesumary();
-        });
-      });
-    }
+
+    const applyLocationState = (value) => {
+      if (!dimensionsContainer) return;
+      const isInternal = value === 'Interna';
+      if (isInternal) {
+        dimensionsContainer.classList.remove("hidden");
+      } else {
+        dimensionsContainer.classList.add("hidden");
+        // Clear dimension inputs when hiding
+        const alto = document.getElementById("alto-bateria");
+        const ancho = document.getElementById("ancho-bateria");
+        const largo = document.getElementById("largo-bateria");
+        if (alto) alto.value = '';
+        if (ancho) ancho.value = '';
+        if (largo) largo.value = '';
+      }
+      // Show/hide dimension rows in confirmation step
+      uiManager.toggleConfirmationRow("altocm", isInternal);
+      uiManager.toggleConfirmationRow("anchocm", isInternal);
+      uiManager.toggleConfirmationRow("largocm", isInternal);
+      uiManager.updatesumary();
+    };
+
+    locationRadios.forEach((radio) => {
+      radio.addEventListener("change", () => applyLocationState(radio.value));
+    });
+
+    // Apply initial state on load
+    const checkedRadio = document.querySelector('input[name="ubicacion-de-bateria"]:checked');
+    if (checkedRadio) applyLocationState(checkedRadio.value);
   };
-  
+
   handleBatteryLocationChange();
 
   // Step 10: Add real-time form summary updates
