@@ -288,7 +288,8 @@ function ecolitio_get_restricted_product_tags()
 {
     $restricted_tags = array(
         'sabway',
-        'taller-del-patinete'
+        'taller-del-patinete',
+        'taller-ecolife'
     );
     
     /**
@@ -325,7 +326,7 @@ function ecolitio_filter_restricted_products_for_normal_users($tax_query, $query
     $user = $user_id ? get_userdata($user_id) : null;
     
     // If user has a taller role, don't filter (let their role-specific filter handle it)
-    if ($user && (in_array('taller_sabway', $user->roles) || in_array('taller_del_patinete', $user->roles))) {
+    if ($user && (in_array('taller_sabway', $user->roles) || in_array('taller_del_patinete', $user->roles) || in_array('taller-ecolife', $user->roles))) {
         return $tax_query;
     }
     
@@ -429,7 +430,14 @@ function ecolitio_get_battery_types_config() {
             'color_hex' => '#93E12D',
             'title' => 'Batería a medida',
             'icon_color' => 'green-eco'
-        )
+        ),
+        'ecolife' => array(
+            'tag' => 'taller-ecolife',
+            'color_class' => 'green-eco-taller',
+            'color_hex' => '#93E12D',
+            'title' => 'Batería a medida',
+            'icon_color' => 'green-eco'
+        ),
     );
 }
 
