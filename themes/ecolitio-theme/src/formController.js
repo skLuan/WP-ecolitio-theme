@@ -107,6 +107,14 @@ const formValidator = {
       }
     }
 
+    // Validate charging connector
+    const chargingConnectorSelected = document.querySelector(
+      'input[name="conector-de-carga"]:checked'
+    );
+    if (!chargingConnectorSelected) {
+      errors.push("El conector de carga es requerido");
+    }
+
     return {
       isValid: errors.length === 0,
       errors,
@@ -153,6 +161,10 @@ const dataCollector = {
       connectorType = customValue || 'OTROS';
     }
 
+    const chargingConnectorSelected = document.querySelector(
+      'input[name="conector-de-carga"]:checked'
+    );
+
     // NEW: Get variation ID from hidden field
     const variationIdField = document.getElementById('variation-id');
     const variationId = variationIdField ? parseInt(variationIdField.value) : 0;
@@ -173,6 +185,7 @@ const dataCollector = {
       scooter_model: scooterModel ? scooterModel.value.trim() : null,
       battery_location: locationSelected ? locationSelected.value : null,
       connector_type: connectorType,
+      charging_connector_type: chargingConnectorSelected ? chargingConnectorSelected.value : null,
     };
   },
 };
@@ -296,7 +309,9 @@ const uiManager = {
     
     const batteryLocation = document.querySelector('input[name="ubicacion-de-bateria"]:checked')?.value || "No seleccionado";
     const isExternalBattery = batteryLocation === 'Externa';
-    
+    const chargingConnectorRadio = document.querySelector('input[name="conector-de-carga"]:checked');
+    const chargingConnectorType = chargingConnectorRadio?.value || "No seleccionado";
+
     const formData = {
       voltage:
         document.querySelector('input[name="voltage"]:checked')?.value ||
@@ -314,6 +329,7 @@ const uiManager = {
         document.getElementById("modelo-patinete")?.value || "No especificado",
       batteryLocation: batteryLocation,
       connectorType: connectorType,
+      chargingConnectorType: chargingConnectorType,
     };
 
     // Update confirmation fields with current values
@@ -342,6 +358,7 @@ const uiManager = {
       formData.batteryLocation
     );
     this.updateConfirmationField("tipo-de-conector", formData.connectorType);
+    this.updateConfirmationField("conector-de-carga", formData.chargingConnectorType);
   },
   /**
    * Updates a specific confirmation field
@@ -483,6 +500,7 @@ const ajaxSubmitter = {
         formData.battery_location || ""
       );
       formDataSubmit.append("connector_type", formData.connector_type || "");
+      formDataSubmit.append("charging_connector_type", formData.charging_connector_type || "");
       formDataSubmit.append("product_id", productId || 0);
       formDataSubmit.append("battery_type", batteryType);
 

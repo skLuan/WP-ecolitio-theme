@@ -296,9 +296,10 @@ function ecolitio_sabway_submit_form() {
         $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
         $form_data['battery_location'] = sanitize_text_field($_POST['battery_location'] ?? '');
         $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
+        $form_data['charging_connector_type'] = sanitize_text_field($_POST['charging_connector_type'] ?? '');
         $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
         $form_data['cantidad_motores'] = intval($_POST['cantidad_motores'] ?? 1);
-        
+
         // Validate required fields
         $validation_errors = validate_sabway_form_data($form_data);
         if (!empty($validation_errors)) {
@@ -371,6 +372,7 @@ function ecolitio_sabway_submit_form() {
                 'scooter_model' => $form_data['scooter_model'],
                 'battery_location' => $form_data['battery_location'],
                 'connector_type' => $form_data['connector_type'],
+                'charging_connector_type' => $form_data['charging_connector_type'],
                 'cantidad_motores' => $form_data['cantidad_motores'],
             ),
             '_sabway_order_type' => 'battery_customization',
@@ -453,7 +455,8 @@ function ecolitio_sabway_submit_form() {
             "ESPECIFICACIONES DEL PATINETE:\n" .
             "- Modelo: %s\n" .
             "- Ubicación de batería: %s\n" .
-            "- Tipo de conector: %s\n\n" .
+            "- Tipo de conector: %s\n" .
+            "- Conector de carga: %s\n\n" .
             "Origen de la orden: Sabway Space (sabway-space)",
             $form_data['voltage'],
             $form_data['amperage'],
@@ -463,7 +466,8 @@ function ecolitio_sabway_submit_form() {
             $form_data['length_cm'],
             $form_data['scooter_model'],
             $form_data['battery_location'],
-            $form_data['connector_type']
+            $form_data['connector_type'],
+            $form_data['charging_connector_type']
         );
         
         // Add order note (internal note for staff)
@@ -543,6 +547,7 @@ function ecolitio_custom_batery_add_to_cart() {
          $form_data['scooter_model'] = sanitize_text_field($_POST['scooter_model'] ?? '');
          $form_data['battery_location'] = sanitize_text_field($_POST['battery_location'] ?? '');
          $form_data['connector_type'] = sanitize_text_field($_POST['connector_type'] ?? '');
+         $form_data['charging_connector_type'] = sanitize_text_field($_POST['charging_connector_type'] ?? '');
          $form_data['product_id'] = intval($_POST['product_id'] ?? 0);
          $form_data['battery_type'] = sanitize_text_field($_POST['battery_type'] ?? 'sabway');
          
@@ -652,6 +657,7 @@ function ecolitio_custom_batery_add_to_cart() {
                 'scooter_model' => $form_data['scooter_model'],
                 'battery_location' => $form_data['battery_location'],
                 'connector_type' => $form_data['connector_type'],
+                'charging_connector_type' => $form_data['charging_connector_type'],
                 'cantidad_motores' => $form_data['cantidad_motores'],
             ),
             '_sabway_custom_order' => true

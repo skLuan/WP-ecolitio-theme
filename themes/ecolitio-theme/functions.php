@@ -853,6 +853,13 @@ function ecolitio_display_custom_battery_data_cart($item_data, $cart_item)
                     'display' => $other['connector_type'],
                 );
             }
+            if (!empty($other['charging_connector_type'])) {
+                $item_data[] = array(
+                    'key'     => __('Conector de carga', 'ecolitio-theme'),
+                    'value'   => $other['charging_connector_type'],
+                    'display' => $other['charging_connector_type'],
+                );
+            }
             if (!empty($other['cantidad_motores'])) {
                 $item_data[] = array(
                     'key'     => __('Cantidad de Motores', 'ecolitio-theme'),
@@ -903,6 +910,9 @@ function ecolitio_save_custom_battery_data_order($item, $cart_item_key, $values,
             $item->add_meta_data(__('Modelo Patinete', 'ecolitio-theme'), $other['scooter_model']);
             $item->add_meta_data(__('Ubicación', 'ecolitio-theme'), $other['battery_location']);
             $item->add_meta_data(__('Conector', 'ecolitio-theme'), $other['connector_type']);
+            if (!empty($other['charging_connector_type'])) {
+                $item->add_meta_data(__('Conector de carga', 'ecolitio-theme'), $other['charging_connector_type']);
+            }
             if (!empty($other['cantidad_motores'])) {
                 $item->add_meta_data(__('Cantidad de Motores', 'ecolitio-theme'), $other['cantidad_motores']);
             }

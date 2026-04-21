@@ -260,6 +260,26 @@ $values = ['s', 'o', 'w'];
 
 						</div> -->
 					</div>
+					<div class="conector-de-carga pb-2">
+						<h4 class="!text-white-eco !font-bold">Conector de carga:</h4>
+						<div class="label-container grid grid-cols-2 gap-2 grid-rows-2 justify-evenly">
+							<?php
+							$connector_values = isset($getAttributes['conector-de-carga']['options']) ? $getAttributes['conector-de-carga']['options'] : $values;
+							foreach ($connector_values as $option) :
+							?>
+								<label for="input-connector-<?= esc_attr($option); ?>" class="">
+									<input type="radio" class="peer connector-radio" name="conector-de-carga" id="input-connector-carga<?= esc_attr($option); ?>" value="conector-carga-<?= esc_attr($option); ?>" data-connector-type="conector-carga-<?= esc_attr($option); ?>">
+									<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
+										<picture>
+											<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores-de-carga/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
+										</picture>
+									</figure>
+									<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+									<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+								</label>
+							<?php endforeach; ?>
+						</div>
+					</div>
 				</div>
 				<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
 				?>
