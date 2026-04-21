@@ -213,10 +213,10 @@ $values = ['s', 'o', 'w'];
 							</label>
 						</div>
 					</div>
-					<label for="modelo-patinete">
-						<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete:</span>
-						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
-					</label>
+				<label for="modelo-patinete">
+					<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete: <span class="text-gray-400 !font-normal">(Opcional)</span></span>
+					<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
+				</label>
 				</div>
 				<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
 				?>

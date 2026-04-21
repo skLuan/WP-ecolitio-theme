@@ -891,16 +891,15 @@ function validate_user_session() {
 function validate_sabway_form_data($data) {
      $errors = array();
      
-     // Required field validations (common to all battery types)
-     $required_fields = array(
-         'voltage' => __('Voltaje', 'ecolitio-theme'),
-         'amperage' => __('Amperaje', 'ecolitio-theme'),
-         'distance_range_km' => __('Rango de distancia', 'ecolitio-theme'),
-         'scooter_model' => __('Modelo de patinete', 'ecolitio-theme'),
-         'battery_location' => __('Ubicación de batería', 'ecolitio-theme'),
-         'connector_type' => __('Tipo de conector', 'ecolitio-theme'),
-         'product_id' => __('ID de producto', 'ecolitio-theme'),
-     );
+      // Required field validations (common to all battery types)
+      $required_fields = array(
+          'voltage' => __('Voltaje', 'ecolitio-theme'),
+          'amperage' => __('Amperaje', 'ecolitio-theme'),
+          'distance_range_km' => __('Rango de distancia', 'ecolitio-theme'),
+          'battery_location' => __('Ubicación de batería', 'ecolitio-theme'),
+          'connector_type' => __('Tipo de conector', 'ecolitio-theme'),
+          'product_id' => __('ID de producto', 'ecolitio-theme'),
+      );
      
      foreach ($required_fields as $field => $label) {
          if (empty($data[$field])) {
