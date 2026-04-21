@@ -262,7 +262,7 @@ $values = ['s', 'o', 'w'];
 					</div>
 					<div class="conector-de-carga pb-2">
 						<h4 class="!text-white-eco !font-bold">Conector de carga:</h4>
-						<div class="label-container grid grid-cols-3 gap-2 grid-rows-2 justify-evenly">
+						<div class="label-container grid grid-cols-3 gap-2 justify-evenly">
 							<?php
 							$conector_carga_values = isset($getAttributes['conector-de-carga']['options']) ? $getAttributes['conector-de-carga']['options'] : $values;
 							foreach ($conector_carga_values as $option) :

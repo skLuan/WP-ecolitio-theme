@@ -41,6 +41,11 @@ require_once get_stylesheet_directory() . '/inc/class-taller-sabway-role.php';
  */
 require_once get_stylesheet_directory() . '/inc/class-taller-del-patinete-role.php';
 
+/**
+ * Include Taller Ecolife user role functionality
+ */
+require_once get_stylesheet_directory() . '/inc/class-taller-ecolife-role.php';
+
 // =============================================================================
 // DEPENDENCIES & AUTOLOADING
 // =============================================================================
