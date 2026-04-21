@@ -268,7 +268,7 @@ $values = ['s', 'o', 'w'];
 							foreach ($connector_values as $option) :
 							?>
 								<label for="input-connector-carga-<?= esc_attr($option); ?>" class="">
-									<input type="radio" class="peer connector-de-carga-radio" name="conector-de-carga" id="input-connector-carga<?= esc_attr($option); ?>" value="conector-carga-<?= esc_attr($option); ?>" data-connector-type="conector-carga-<?= esc_attr($option); ?>">
+									<input type="radio" class="peer connector-de-carga-radio" name="conector-de-carga" id="input-conector-carga-<?= esc_attr($option); ?>" value="conector-carga-<?= esc_attr($option); ?>" data-connector-type="conector-carga-<?= esc_attr($option); ?>">
 									<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
 										<picture>
 											<img class="" width="160px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores-de-carga/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
