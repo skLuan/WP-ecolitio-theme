@@ -296,91 +296,87 @@ const uiManager = {
     }
   },
   updatesumary() {
-    // Collect current form data
-    const connectorRadio = document.querySelector('input[name="tipo-de-conector"]:checked');
-    let connectorType = connectorRadio?.value || "No seleccionado";
-    
-    // If OTROS is selected, get the custom connector text value
-    if (connectorType === 'OTROS') {
-      const customConnectorInput = document.getElementById("text-input-conector");
-      const customValue = customConnectorInput?.value.trim() || '';
-      connectorType = customValue || 'OTROS';
-    }
-    
-    const batteryLocation = document.querySelector('input[name="ubicacion-de-bateria"]:checked')?.value || "No seleccionado";
-    const isExternalBattery = batteryLocation === 'Externa';
-    const chargingConnectorRadio = document.querySelector('input[name="conector-de-carga"]:checked');
-    const chargingConnectorType = chargingConnectorRadio?.value || "No seleccionado";
+     // Collect current form data
+     const connectorRadio = document.querySelector('input[name="tipo-de-conector"]:checked');
+     let connectorType = connectorRadio?.value || "No seleccionado";
+     
+     // If OTROS is selected, get the custom connector text value
+     if (connectorType === 'OTROS') {
+       const customConnectorInput = document.getElementById("text-input-conector");
+       const customValue = customConnectorInput?.value.trim() || '';
+       connectorType = customValue || 'OTROS';
+     }
+     
+     const batteryLocation = document.querySelector('input[name="ubicacion-de-bateria"]:checked')?.value || "No seleccionado";
+     const isExternalBattery = batteryLocation === 'Externa';
+     const chargingConnectorRadio = document.querySelector('input[name="conector-de-carga"]:checked');
+     const chargingConnectorType = chargingConnectorRadio?.value || "No seleccionado";
 
-    const formData = {
-      voltage:
-        document.querySelector('input[name="voltage"]:checked')?.value ||
-        "No seleccionado",
-      amperage:
-        document.querySelector('input[name="amperage"]:checked')?.value ||
-        "No seleccionado",
-      distanceRange:
-        document.getElementById("sab-distance-range")?.value || "0",
-      height: document.getElementById("alto-bateria")?.value || "0",
-      width: document.getElementById("ancho-bateria")?.value || "0",
-      length: document.getElementById("largo-bateria")?.value || "0",
-      cantidadMotores: document.querySelector('input[name="cantidad-motores"]:checked')?.value || null,
-      scooterModel:
-        document.getElementById("modelo-patinete")?.value || "No especificado",
-      batteryLocation: batteryLocation,
-      connectorType: connectorType,
-      chargingConnectorType: chargingConnectorType,
-    };
+     const formData = {
+       voltage:
+         document.querySelector('input[name="voltage"]:checked')?.value ||
+         "No seleccionado",
+       amperage:
+         document.querySelector('input[name="amperage"]:checked')?.value ||
+         "No seleccionado",
+       distanceRange:
+         document.getElementById("sab-distance-range")?.value || "0",
+       height: document.getElementById("alto-bateria")?.value || "0",
+       width: document.getElementById("ancho-bateria")?.value || "0",
+       length: document.getElementById("largo-bateria")?.value || "0",
+       cantidadMotores: document.querySelector('input[name="cantidad-motores"]:checked')?.value || null,
+       scooterModel:
+         document.getElementById("modelo-patinete")?.value || "No especificado",
+       batteryLocation: batteryLocation,
+       connectorType: connectorType,
+       chargingConnectorType: chargingConnectorType,
+     };
 
-    // Update confirmation fields with current values
-    this.updateConfirmationField("voltios", formData.voltage);
-    this.updateConfirmationField("amperios", formData.amperage);
-    this.updateConfirmationField("autonomia", `${formData.distanceRange}km`);
-    
-    // Update dimension fields — only show rows for internal batteries
-    const showDimensions = !isExternalBattery;
-    this.updateConfirmationField("altocm", formData.height ? `${formData.height}cm` : "0cm");
-    this.updateConfirmationField("anchocm", formData.width ? `${formData.width}cm` : "0cm");
-    this.updateConfirmationField("largocm", formData.length ? `${formData.length}cm` : "0cm");
-    this.toggleConfirmationRow("altocm", showDimensions);
-    this.toggleConfirmationRow("anchocm", showDimensions);
-    this.toggleConfirmationRow("largocm", showDimensions);
+     // Update confirmation fields with current values
+     // Map field names to their sanitized IDs (matching PHP template sanitization)
+     this.updateConfirmationField("voltios", formData.voltage);
+     this.updateConfirmationField("amperios", formData.amperage);
+     this.updateConfirmationField("autonomia", `${formData.distanceRange}km`);
+     
+     // Update dimension fields — only show rows for internal batteries
+     const showDimensions = !isExternalBattery;
+     this.updateConfirmationField("altocm", formData.height ? `${formData.height}cm` : "0cm");
+     this.updateConfirmationField("anchocm", formData.width ? `${formData.width}cm` : "0cm");
+     this.updateConfirmationField("largocm", formData.length ? `${formData.length}cm` : "0cm");
+     this.toggleConfirmationRow("altocm", showDimensions);
+     this.toggleConfirmationRow("anchocm", showDimensions);
+     this.toggleConfirmationRow("largocm", showDimensions);
 
-    // Update cantidad de motores
-    this.updateConfirmationField("cantidad-motores", formData.cantidadMotores || "No seleccionado");
+     // Update cantidad de motores (use WooCommerce attribute slug: pa_cantidad-motores)
+     this.updateConfirmationField("pa_cantidad-motores", formData.cantidadMotores || "No seleccionado");
 
-    this.updateConfirmationField(
-      "modelo-de-patinete-elctrico",
-      formData.scooterModel
-    );
-    this.updateConfirmationField(
-      "ubicacin-de-bateria",
-      formData.batteryLocation
-    );
-    this.updateConfirmationField("tipo-de-conector", formData.connectorType);
-    this.updateConfirmationField("conector-de-carga", formData.chargingConnectorType);
-  },
+     this.updateConfirmationField(
+       "modelo-de-patinete-elctrico",
+       formData.scooterModel
+     );
+     this.updateConfirmationField(
+       "ubicacion-de-bateria",
+       formData.batteryLocation
+     );
+     this.updateConfirmationField("tipo-de-conector", formData.connectorType);
+     this.updateConfirmationField("conector-de-carga", formData.chargingConnectorType);
+   },
   /**
-   * Updates a specific confirmation field
-   * @param {string} fieldName - The field name to update
-   * @param {string} value - The value to display
-   */
+    * Updates a specific confirmation field
+    * @param {string} fieldName - The field name to update
+    * @param {string} value - The value to display
+    */
   updateConfirmationField(fieldName, value) {
     const confirmationElement = document.querySelectorAll(
       `.final-check-${fieldName}`
     );
-    if (confirmationElement.length > 1) {
+    if (confirmationElement.length > 0) {
       confirmationElement.forEach((element) => {
         const valueElement = element.querySelector("p");
         if (valueElement) {
           valueElement.textContent = value;
         }
       });
-    } else if (confirmationElement.length === 1) {
-      const valueElement = confirmationElement.querySelector("p");
-      if (valueElement) {
-        valueElement.textContent = value;
-      }
     }
   },
   
