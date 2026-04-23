@@ -355,7 +355,7 @@ const uiManager = {
        formData.scooterModel
      );
      this.updateConfirmationField(
-       "ubicacion-de-bateria",
+       "ubicacin-de-bateria",
        formData.batteryLocation
      );
      this.updateConfirmationField("tipo-de-conector", formData.connectorType);
@@ -650,9 +650,9 @@ export const formController = () => {
       if (!dimensionsContainer) return;
       const isInternal = value === 'Interna';
       if (isInternal) {
-        dimensionsContainer.classList.remove("hidden");
+        dimensionsContainer.classList.remove("collapsed");
       } else {
-        dimensionsContainer.classList.add("hidden");
+        dimensionsContainer.classList.add("collapsed");
         // Clear dimension inputs when hiding
         const alto = document.getElementById("alto-bateria");
         const ancho = document.getElementById("ancho-bateria");
@@ -666,6 +666,8 @@ export const formController = () => {
       uiManager.toggleConfirmationRow("anchocm", isInternal);
       uiManager.toggleConfirmationRow("largocm", isInternal);
       uiManager.updatesumary();
+      // Notify Swiper to recalculate slide height after DOM change
+      swiperSab()?.update();
     };
 
     locationRadios.forEach((radio) => {

@@ -52,6 +52,14 @@
   .swiper-button-prev::after {
     @apply !hidden;
   }
+  /* Space-preserving visibility toggle for Swiper compatibility */
+  .collapsed {
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
   /* -------------------------------------------------- */
   .eco-main-info-header .variations_form {
     .value {
@@ -526,11 +534,11 @@
     --battery-color-rgb: 147, 225, 45;
     --battery-text-color: black;
   }
-  /* Ecolife battery type - Green */
+  /* Ecolife battery type - Blue */
   [data-battery-type="ecolife"] {
-    --battery-color: #93e12d;
-    --battery-color-rgb: 147, 225, 45;
-    --battery-text-color: black;
+    --battery-color: #0066cc;
+    --battery-color-rgb: 0, 102, 204;
+    --battery-text-color: white;
   }
 
   /* Apply battery color to text elements */

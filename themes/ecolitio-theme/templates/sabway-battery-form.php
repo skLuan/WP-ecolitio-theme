@@ -184,7 +184,7 @@ $values = ['s', 'o', 'w'];
 						<p class="col-span-full battery-dimensions-text">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.</p>
 
 						<!-- Dimensions container - shown for internal batteries -->
-						<div id="dimensions-container" class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6 hidden">
+						<div id="dimensions-container" class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6 collapsed">
 							<label for="alto-bateria">
 								<span class="!font-semibold !text-white-eco pb-2">Alto(cm):</span>
 								<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 10">
