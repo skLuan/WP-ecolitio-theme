@@ -181,10 +181,10 @@ $values = ['s', 'o', 'w'];
 
 					</div>
 					<div class="dimensiones-sab-batery !grid !grid-cols-1 md:!grid-cols-3 !gap-6">
-						<p class="col-span-full battery-dimensions-text">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.</p>
 
 						<!-- Dimensions container - shown for internal batteries -->
 						<div id="dimensions-container" class="col-span-full grid grid-cols-1 md:grid-cols-3 gap-6 collapsed">
+							<p class="col-span-full battery-dimensions-text">Para baterías internas, mide el cajón donde va instalada la batería y escribe aquí el alto, ancho y largo del espacio interno.</p>
 							<label for="alto-bateria">
 								<span class="!font-semibold !text-white-eco pb-2">Alto(cm):</span>
 								<input type="number" name="alto-bateria" id="alto-bateria" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: 10">
@@ -204,19 +204,19 @@ $values = ['s', 'o', 'w'];
 						<span class="!font-semibold !text-white-eco pb-2">¿Cuantos motores lleva tu patinete eléctrico?</span>
 						<div class="flex flex-row gap-4">
 							<label for="input-cantidad-motores-1" class="">
-								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-1" value="1">
+								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-1" value="Single motor">
 								<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }">1</span>
 							</label>
 							<label for="input-cantidad-motores-2" class="">
-								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-2" value="2">
+								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-2" value="Dual motor">
 								<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }">2</span>
 							</label>
 						</div>
 					</div>
-				<label for="modelo-patinete">
-					<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete: <span class="text-gray-400 !font-normal">(Opcional)</span></span>
-					<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
-				</label>
+					<label for="modelo-patinete">
+						<span class="!font-semibold !text-white-eco pb-2">Modelo de patinete: <span class="text-gray-400 !font-normal">(Opcional)</span></span>
+						<input type="text" name="modelo-patinete" id="modelo-patinete" class="w-full !p-2 !rounded-md !bg-black-eco !border !text-white-eco" style="border-color: var(--battery-color);" placeholder="Ej: Ninebot KickScooter Serie E E20">
+					</label>
 				</div>
 				<?php get_template_part('templates/sab-batery-controls', null); // -------- Progress bar 
 				?>
@@ -230,7 +230,7 @@ $values = ['s', 'o', 'w'];
 					get_template_part('templates/progress-bar'); // -------- Progress bar 
 					?>
 					<div class="tipo-de-conector pb-2">
-						<h4 class="!text-white-eco !font-bold">Tipo de Conector:</h4>
+						<h4 class="!text-white-eco !font-bold">Tipo de Conector de Descarga:</h4>
 						<div class="label-container grid grid-cols-2 gap-2 grid-rows-2 justify-evenly">
 							<?php
 							$connector_values = isset($getAttributes['tipo-de-conector']['options']) ? $getAttributes['tipo-de-conector']['options'] : $values;
@@ -276,6 +276,12 @@ $values = ['s', 'o', 'w'];
 									</figure>
 									<!-- <span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span> -->
 								</label>
+								<?php if ($option !== 'Sin conector') : ?>
+									<label for="input-ubication-<?= esc_attr($option); ?>" class="">
+										<input type="radio" class="peer conector-de-carga-radio" name="conector-de-carga" id="input-conector-de-carga-<?= esc_attr($option); ?>" value="conector-de-carga-<?= esc_attr($option); ?>" data-connector-type="conector-de-carga-<?= esc_attr($option); ?>">
+										<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }"><?= esc_attr($option); ?></span>
+									</label>
+								<?php endif ?>
 							<?php endforeach; ?>
 						</div>
 					</div>
