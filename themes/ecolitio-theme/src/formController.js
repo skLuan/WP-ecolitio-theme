@@ -295,17 +295,20 @@ const uiManager = {
       submitButton.innerHTML = "Finalizar Pedido";
     }
   },
-  updatesumary() {
-     // Collect current form data
-     const connectorRadio = document.querySelector('input[name="tipo-de-conector"]:checked');
-     let connectorType = connectorRadio?.value || "No seleccionado";
-     
-     // If OTROS is selected, get the custom connector text value
-     if (connectorType === 'OTROS') {
-       const customConnectorInput = document.getElementById("text-input-conector");
-       const customValue = customConnectorInput?.value.trim() || '';
-       connectorType = customValue || 'OTROS';
-     }
+   updatesumary() {
+      // Collect current form data
+      const connectorRadio = document.querySelector('input[name="tipo-de-conector"]:checked');
+      let connectorType = connectorRadio?.value || "No seleccionado";
+      console.log('📋 updatesumary: Initial connector type:', connectorType);
+      
+      // If OTROS is selected, get the custom connector text value
+      if (connectorType === 'OTROS') {
+        const customConnectorInput = document.getElementById("text-input-conector");
+        const customValue = customConnectorInput?.value.trim() || '';
+        console.log('🔍 OTROS selected. Custom input exists:', !!customConnectorInput, 'Value:', customValue);
+        connectorType = customValue || 'OTROS';
+        console.log('✨ Final connector type for summary:', connectorType);
+      }
      
      const batteryLocation = document.querySelector('input[name="ubicacion-de-bateria"]:checked')?.value || "No seleccionado";
      const isExternalBattery = batteryLocation === 'Externa';
@@ -358,27 +361,44 @@ const uiManager = {
        "ubicacin-de-bateria",
        formData.batteryLocation
      );
-     this.updateConfirmationField("tipo-de-conector", formData.connectorType);
-     this.updateConfirmationField("conector-de-carga", formData.chargingConnectorType);
+      this.updateConfirmationField("tipo-de-conector", formData.connectorType);
+      console.log('📝 Updated connector type in summary to:', formData.connectorType);
+      this.updateConfirmationField("conector-de-carga", formData.chargingConnectorType);
+      
+      console.log('📊 Complete form data summary:', formData);
+    },
+   /**
+     * Updates a specific confirmation field
+     * @param {string} fieldName - The field name to update
+     * @param {string} value - The value to display
+     */
+   updateConfirmationField(fieldName, value) {
+     const confirmationElement = document.querySelectorAll(
+       `.final-check-${fieldName}`
+     );
+     console.log(`🎬 updateConfirmationField("${fieldName}", "${value}"): Found ${confirmationElement.length} elements`);
+     
+     // Debug: List all available confirmation fields if not found
+     if (confirmationElement.length === 0) {
+       const allConfirmationElements = document.querySelectorAll('[class*="final-check-"]');
+       console.warn(`⚠️ No elements found for .final-check-${fieldName}`);
+       console.log(`Available confirmation fields (${allConfirmationElements.length} total):`);
+       allConfirmationElements.forEach((el, idx) => {
+         const classMatch = el.className.match(/final-check-\S+/);
+         if (classMatch) console.log(`  ${idx + 1}. ${classMatch[0]}`);
+       });
+     }
+     
+     if (confirmationElement.length > 0) {
+       confirmationElement.forEach((element) => {
+         const valueElement = element.querySelector("p");
+         if (valueElement) {
+           console.log(`  ✏️ Updating element with class final-check-${fieldName} to: ${value}`);
+           valueElement.textContent = value;
+         }
+       });
+     }
    },
-  /**
-    * Updates a specific confirmation field
-    * @param {string} fieldName - The field name to update
-    * @param {string} value - The value to display
-    */
-  updateConfirmationField(fieldName, value) {
-    const confirmationElement = document.querySelectorAll(
-      `.final-check-${fieldName}`
-    );
-    if (confirmationElement.length > 0) {
-      confirmationElement.forEach((element) => {
-        const valueElement = element.querySelector("p");
-        if (valueElement) {
-          valueElement.textContent = value;
-        }
-      });
-    }
-  },
   
   /**
    * Toggles visibility of a confirmation row
@@ -612,10 +632,20 @@ export const formController = () => {
   // Step 9.5: Handle custom connector field visibility and input updates
   const handleConnectorChange = () => {
     const connectorRadios = document.querySelectorAll('input[name="tipo-de-conector"]');
+    const customConnectorContainer = document.getElementById("custom-connector-container");
+    console.log('📍 handleConnectorChange: Found', connectorRadios.length, 'connector radios');
+    console.log('  - Custom container found:', !!customConnectorContainer);
     
     connectorRadios.forEach((radio) => {
       radio.addEventListener("change", () => {
+        console.log('🔄 Connector changed to:', radio.value);
         if (radio.value === 'OTROS') {
+          console.log('✅ OTROS selected');
+          // Show the custom connector input field
+          if (customConnectorContainer) {
+            customConnectorContainer.style.display = 'block';
+            console.log('✅ Custom connector container shown');
+          }
           // Focus on the input field for better UX
           const customInput = document.getElementById("text-input-conector");
           if (customInput) {
@@ -624,9 +654,16 @@ export const formController = () => {
             attachCustomConnectorInputListener();
           }
         } else {
+          console.log('❌ OTROS not selected');
+          // Hide the custom connector input field
+          if (customConnectorContainer) {
+            customConnectorContainer.style.display = 'none';
+            console.log('❌ Custom connector container hidden');
+          }
           // Clear the custom input when switching away from OTROS
           const customInput = document.getElementById("text-input-conector");
           if (customInput) {
+            console.log('🗑️ Clearing custom input, was:', customInput.value);
             customInput.value = '';
           }
         }
@@ -639,11 +676,22 @@ export const formController = () => {
   // Attach input listener to custom connector text field
   const attachCustomConnectorInputListener = () => {
     const customInput = document.getElementById("text-input-conector");
-    if (customInput && !customInput.dataset.listenerAttached) {
-      customInput.addEventListener("input", () => {
+    console.log('🎯 attachCustomConnectorInputListener called');
+    console.log('  - Input element exists:', !!customInput);
+    if (customInput) {
+      console.log('  - Input value:', customInput.value);
+      console.log('  - Input visible:', customInput.offsetHeight > 0);
+      console.log('  - Listener already attached:', customInput.dataset.listenerAttached === "true");
+    }
+    
+    if (customInput && customInput.dataset.listenerAttached !== "true") {
+      customInput.addEventListener("input", (e) => {
+        console.log('⌨️ Custom input changed to:', e.target.value);
+        console.log('  - Event triggered by:', e.target.id);
         uiManager.updatesumary();
       });
       customInput.dataset.listenerAttached = "true";
+      console.log('✔️ Input listener attached to custom connector field');
     }
   };
   

@@ -247,18 +247,17 @@ $values = ['s', 'o', 'w'];
 										<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;"><?= esc_attr($option); ?></span>
 									<?php else : ?>
 										<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;"><?= esc_attr($option); ?></span>
-										<label for="text-input-conector" class="block">
-											<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
-											<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
-										</label>
 									<?php endif; ?>
 								</label>
 							<?php endforeach; ?>
 						</div>
-						<!-- Custom connector input field - always visible -->
-						<!-- <div id="custom-connector-container" class="inline mt-4">
-
-						</div> -->
+						<!-- Custom connector input field - always visible in DOM but hidden with CSS -->
+						<div id="custom-connector-container" class="block mt-4 hidden" style="display: none;">
+							<label for="text-input-conector" class="block">
+								<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
+								<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
+							</label>
+						</div>
 					</div>
 					<div class="conector-de-carga pb-2">
 						<h4 class="!text-white-eco !font-bold">Conector de carga:</h4>
