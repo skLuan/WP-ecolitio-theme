@@ -681,6 +681,71 @@ export const formController = () => {
 
   handleBatteryLocationChange();
 
+  // Step 9.7: Handle connector styling - update styles immediately on selection
+  const handleConnectorStyling = () => {
+    const connectorRadios = document.querySelectorAll('.connector-radio, .conector-de-carga-radio');
+    
+    const updateConnectorStyles = (changedRadio) => {
+      const radioName = changedRadio.name;
+      const groupRadios = document.querySelectorAll(`input[name="${radioName}"]`);
+      
+      groupRadios.forEach((radio) => {
+        const label = radio.closest('label');
+        if (!label) return;
+        
+        const figure = label.querySelector('figure');
+        const span = label.querySelector('span:not([class*="font-semibold"])');
+        
+        if (radio.checked) {
+          // Active state - apply battery color
+          if (figure) {
+            figure.style.borderColor = 'var(--battery-color)';
+            figure.style.backgroundColor = 'var(--battery-color)';
+          }
+          if (span) {
+            span.style.backgroundColor = 'var(--battery-color)';
+            span.style.color = 'white';
+            span.style.fontWeight = 'bold';
+          }
+        } else {
+          // Inactive state - reset to default
+          if (figure) {
+            figure.style.borderColor = 'var(--battery-text-color)';
+            figure.style.backgroundColor = 'transparent';
+          }
+          if (span) {
+            span.style.backgroundColor = 'transparent';
+            span.style.color = 'white';
+            span.style.fontWeight = 'normal';
+          }
+        }
+      });
+    };
+    
+    connectorRadios.forEach((radio) => {
+      radio.addEventListener('change', () => updateConnectorStyles(radio));
+      // Also handle hover for non-checked items
+      const label = radio.closest('label');
+      if (label) {
+        const figure = label.querySelector('figure');
+        if (figure) {
+          figure.addEventListener('mouseover', () => {
+            if (!radio.checked) {
+              figure.style.borderColor = 'var(--battery-color)';
+            }
+          });
+          figure.addEventListener('mouseout', () => {
+            if (!radio.checked) {
+              figure.style.borderColor = 'var(--battery-text-color)';
+            }
+          });
+        }
+      }
+    });
+  };
+  
+  handleConnectorStyling();
+
   // Step 10: Add real-time form summary updates
   const addSummaryListeners = () => {
     // Listen for changes on all form elements

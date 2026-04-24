@@ -239,14 +239,14 @@ $values = ['s', 'o', 'w'];
 								<label for="input-connector-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer connector-radio" name="tipo-de-conector" id="input-connector-<?= esc_attr($option); ?>" value="<?= esc_attr($option); ?>" data-connector-type="<?= esc_attr($option); ?>">
 									<?php if ($option !== 'OTROS') : ?>
-										<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
+										<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;">
 											<picture>
 												<img class="" width="250px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 											</picture>
 										</figure>
-										<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+										<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;"><?= esc_attr($option); ?></span>
 									<?php else : ?>
-										<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span>
+										<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;"><?= esc_attr($option); ?></span>
 										<label for="text-input-conector" class="block">
 											<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
 											<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
@@ -269,17 +269,16 @@ $values = ['s', 'o', 'w'];
 							?>
 								<label for="input-conector-de-carga-<?= esc_attr($option); ?>" class="">
 									<input type="radio" class="peer conector-de-carga-radio" name="conector-de-carga" id="input-conector-de-carga-<?= esc_attr($option); ?>" value="conector-de-carga-<?= esc_attr($option); ?>" data-connector-type="conector-de-carga-<?= esc_attr($option); ?>">
-									<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.borderColor='var(--battery-text-color)'; } else { this.style.borderColor='var(--battery-color)'; this.parentElement.parentElement.parentElement.querySelectorAll('figure').forEach(s => { if(s !== this) {  s.style.borderColor='--battery-text-color'; } }); }">
+									<figure class="cursor-pointe w-10/12 mx-auto border-white-eco rounded-lg overflow-hidden peer-checked:border-[var(--battery-color)]" style="border-width: 1px;">
 										<picture>
 											<img class="" width="160px" src="<?= get_stylesheet_directory_uri() . "/assets/conectores-de-carga/" . esc_attr($option) . ".png" ?>" alt="<?= esc_attr($option) ?>">
 										</picture>
 									</figure>
-									<!-- <span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;" onmouseover="this.style.color='white';" onmouseout="this.style.color='white';" data-checked-color="var(--battery-color)"><?= esc_attr($option); ?></span> -->
 								</label>
-								<?php if ($option !== 'Sin conector') : ?>
+								<?php if ($option === 'Sin conector') : ?>
 									<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer conector-de-carga-radio" name="conector-de-carga" id="input-conector-de-carga-<?= esc_attr($option); ?>" value="conector-de-carga-<?= esc_attr($option); ?>" data-connector-type="conector-de-carga-<?= esc_attr($option); ?>">
-										<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }"><?= esc_attr($option); ?></span>
+										<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);"><?= esc_attr($option); ?></span>
 									</label>
 								<?php endif ?>
 							<?php endforeach; ?>
