@@ -275,7 +275,7 @@ $values = ['s', 'o', 'w'];
 										</picture>
 									</figure>
 								</label>
-								<?php if ($option === 'Sin conector') : ?>
+								<?php if ($option === 'Sin conector de carga') : ?>
 									<label for="input-ubication-<?= esc_attr($option); ?>" class="">
 										<input type="radio" class="peer conector-de-carga-radio" name="conector-de-carga" id="input-conector-de-carga-<?= esc_attr($option); ?>" value="conector-de-carga-<?= esc_attr($option); ?>" data-connector-type="conector-de-carga-<?= esc_attr($option); ?>">
 										<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);"><?= esc_attr($option); ?></span>

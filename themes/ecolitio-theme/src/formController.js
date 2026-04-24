@@ -609,37 +609,47 @@ export const formController = () => {
   submitButton.addEventListener("click", handleSubmit);
   form.addEventListener("submit", handleSubmit);
 
-  // Step 9.5: Handle custom connector field visibility
+  // Step 9.5: Handle custom connector field visibility and input updates
   const handleConnectorChange = () => {
     const connectorRadios = document.querySelectorAll('input[name="tipo-de-conector"]');
-    const customConnectorContainer = document.getElementById("custom-connector-container");
     
-    if (customConnectorContainer) {
-      connectorRadios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-          if (radio.value === 'OTROS') {
-            customConnectorContainer.classList.remove("invisible");
-            // Focus on the input field for better UX
-            const customInput = document.getElementById("text-input-conector");
-            if (customInput) {
-              setTimeout(() => customInput.focus(), 100);
-            }
-          } else {
-            customConnectorContainer.classList.add("invisible");
-            // Clear the custom input when switching away from OTROS
-            const customInput = document.getElementById("text-input-conector");
-            if (customInput) {
-              customInput.value = '';
-            }
+    connectorRadios.forEach((radio) => {
+      radio.addEventListener("change", () => {
+        if (radio.value === 'OTROS') {
+          // Focus on the input field for better UX
+          const customInput = document.getElementById("text-input-conector");
+          if (customInput) {
+            setTimeout(() => customInput.focus(), 100);
+            // Ensure input event listener is attached to custom input
+            attachCustomConnectorInputListener();
           }
-          // Update summary when connector changes
-          uiManager.updatesumary();
-        });
+        } else {
+          // Clear the custom input when switching away from OTROS
+          const customInput = document.getElementById("text-input-conector");
+          if (customInput) {
+            customInput.value = '';
+          }
+        }
+        // Update summary when connector changes
+        uiManager.updatesumary();
       });
+    });
+  };
+  
+  // Attach input listener to custom connector text field
+  const attachCustomConnectorInputListener = () => {
+    const customInput = document.getElementById("text-input-conector");
+    if (customInput && !customInput.dataset.listenerAttached) {
+      customInput.addEventListener("input", () => {
+        uiManager.updatesumary();
+      });
+      customInput.dataset.listenerAttached = "true";
     }
   };
   
   handleConnectorChange();
+  // Ensure listener is attached even if field exists on load
+  attachCustomConnectorInputListener();
 
   // Step 9.6: Handle battery location change to show/hide dimensions container
   const handleBatteryLocationChange = () => {
@@ -703,7 +713,6 @@ export const formController = () => {
             figure.style.backgroundColor = 'var(--battery-color)';
           }
           if (span) {
-            span.style.backgroundColor = 'var(--battery-color)';
             span.style.color = 'white';
             span.style.fontWeight = 'bold';
           }
