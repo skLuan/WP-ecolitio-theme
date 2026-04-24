@@ -205,11 +205,11 @@ $values = ['s', 'o', 'w'];
 						<div class="flex flex-row gap-4">
 							<label for="input-cantidad-motores-1" class="">
 								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-1" value="Single motor">
-								<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }">1</span>
+								<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }">Single Motor</span>
 							</label>
 							<label for="input-cantidad-motores-2" class="">
 								<input type="radio" class="peer" name="cantidad-motores" id="input-cantidad-motores-2" value="Dual motor">
-								<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }">2</span>
+								<span class="!px-9 !py-2 border bg-black border-white-eco !rounded-full peer-checked:!text-white-eco peer-checked:!font-bold peer-checked:!bg-[var(--battery-color)]" style="color: var(--battery-color); border-color: var(--battery-color);" onmouseover="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='white'; this.style.fontWeight='bold'; this.style.color='var(--battery-color)'; }" onmouseout="if(!this.parentElement.querySelector('input').checked) { this.style.backgroundColor='black'; this.style.fontWeight='normal'; this.style.color='var(--battery-color)'; } else { this.style.backgroundColor=''; this.style.fontWeight=''; this.style.color=''; this.parentElement.parentElement.parentElement.querySelectorAll('span').forEach(s => { if(s !== this) { s.style.backgroundColor='black'; s.style.fontWeight='normal'; s.style.color='var(--battery-color)'; } }); }">Dual Motor</span>
 							</label>
 						</div>
 					</div>
@@ -247,17 +247,18 @@ $values = ['s', 'o', 'w'];
 										<span class="!text-white-eco !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;"><?= esc_attr($option); ?></span>
 									<?php else : ?>
 										<span class="!text-white-eco font-bold text-xl !px-9 !py-2 !rounded-full peer-checked:!font-bold" style="color: white;"><?= esc_attr($option); ?></span>
+										<!-- Custom connector input field - always visible in DOM but hidden with CSS -->
+										<div id="custom-connector-container" class="block mt-4 hidden" style="display: none;">
+											<label for="text-input-conector" class="block">
+												<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
+												<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
+											</label>
+										</div>
 									<?php endif; ?>
 								</label>
 							<?php endforeach; ?>
 						</div>
-						<!-- Custom connector input field - always visible in DOM but hidden with CSS -->
-						<div id="custom-connector-container" class="block mt-4 hidden" style="display: none;">
-							<label for="text-input-conector" class="block">
-								<span class="!text-white-eco !font-semibold !pb-2 block">Nombre del conector personalizado:</span>
-								<input placeholder="Ej: Conector tipo especial, Anderson, etc." type="text" name="text-input-conector" id="text-input-conector" class="w-full !p-2 !rounded-md !bg-black-eco !border !border-red-sabway !text-white-eco" />
-							</label>
-						</div>
+
 					</div>
 					<div class="conector-de-carga pb-2">
 						<h4 class="!text-white-eco !font-bold">Conector de carga:</h4>
