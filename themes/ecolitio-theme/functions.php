@@ -1030,22 +1030,32 @@ function ecolitio_variation_short_description_swap() {
 	?>
 	<script>
 	jQuery(function($){
-		const shortDesc = $('.eco-variation-description');
+		const shortDesc = $('#eco-col-description');
 
 		if (!shortDesc.length) return;
 
 		const originalHtml = shortDesc.html();
 
+		function setContent(html) {
+			let p = shortDesc.find('p').first();
+			if (p.length) {
+				p.html(html);
+			} else {
+				shortDesc.html('<p>' + html + '</p>');
+			}
+			shortDesc.show();
+		}
+
 		$('form.variations_form')
 			.on('found_variation', function(event, variation){
 				if (variation && variation.variation_description && variation.variation_description.trim() !== '') {
-					shortDesc.html(variation.variation_description).show();
+					setContent(variation.variation_description);
 				} else {
-					shortDesc.html(originalHtml).show();
+					setContent(originalHtml);
 				}
 			})
 			.on('reset_data hide_variation', function(){
-				shortDesc.html(originalHtml).show();
+				setContent(originalHtml);
 			});
 	});
 	</script>
