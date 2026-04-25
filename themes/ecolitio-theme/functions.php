@@ -1022,3 +1022,33 @@ add_action('wp_head', function () {
         }
     }
 });
+
+
+add_action( 'wp_footer', 'ecolitio_variation_short_description_swap', 99 );
+function ecolitio_variation_short_description_swap() {
+	if ( ! is_product() ) return;
+	?>
+	<script>
+	jQuery(function($){
+		const shortDesc = $('.eco-variation-description');
+
+		if (!shortDesc.length) return;
+
+		const originalHtml = shortDesc.html();
+
+		$('form.variations_form')
+			.on('found_variation', function(event, variation){
+				if (variation && variation.variation_description && variation.variation_description.trim() !== '') {
+					shortDesc.html(variation.variation_description).show();
+				} else {
+					shortDesc.html(originalHtml).show();
+				}
+			})
+			.on('reset_data hide_variation', function(){
+				shortDesc.html(originalHtml).show();
+			});
+	});
+	</script>
+	<?php
+}
+
