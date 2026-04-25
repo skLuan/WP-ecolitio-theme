@@ -941,7 +941,7 @@ export const formController = () => {
   const sabSwiper = swiperSab();
   if (sabSwiper) {
     sabSwiper.on("slideChangeTransitionStart", () => {
-      form.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 
