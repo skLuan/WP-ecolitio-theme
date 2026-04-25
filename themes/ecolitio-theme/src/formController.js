@@ -685,13 +685,39 @@ export const formController = () => {
     }
     
     if (customInput && customInput.dataset.listenerAttached !== "true") {
+      // Helper function to ensure OTROS is checked
+      const ensureOtrosChecked = () => {
+        const otrosRadio = document.getElementById('input-connector-OTROS');
+        if (otrosRadio && !otrosRadio.checked) {
+          console.log('🔘 Auto-checking OTROS radio button');
+          otrosRadio.checked = true;
+          // Trigger change event to update styles and container visibility
+          const changeEvent = new Event('change', { bubbles: true });
+          otrosRadio.dispatchEvent(changeEvent);
+        }
+      };
+      
+      // Add click listener - trigger when user clicks in the field
+      customInput.addEventListener("click", () => {
+        console.log('🖱️ Custom input clicked');
+        ensureOtrosChecked();
+      });
+      
+      // Add focus listener - trigger when user focuses the field
+      customInput.addEventListener("focus", () => {
+        console.log('👁️ Custom input focused');
+        ensureOtrosChecked();
+      });
+      
+      // Add input listener - trigger as user types
       customInput.addEventListener("input", (e) => {
         console.log('⌨️ Custom input changed to:', e.target.value);
-        console.log('  - Event triggered by:', e.target.id);
+        ensureOtrosChecked();
         uiManager.updatesumary();
       });
+      
       customInput.dataset.listenerAttached = "true";
-      console.log('✔️ Input listener attached to custom connector field');
+      console.log('✔️ All listeners attached to custom connector field (click, focus, input)');
     }
   };
   
@@ -909,6 +935,14 @@ export const formController = () => {
       });
     });
     observer.observe(step4, { attributes: true });
+  }
+
+  // Scroll to top of form on every slide change
+  const sabSwiper = swiperSab();
+  if (sabSwiper) {
+    sabSwiper.on("slideChangeTransitionStart", () => {
+      form.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   console.log("Sabway form controller initialized");
