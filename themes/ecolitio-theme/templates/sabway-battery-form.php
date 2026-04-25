@@ -297,6 +297,7 @@ $values = ['s', 'o', 'w'];
 							$value = $attr['name'];
 							// Sanitize value for HTML ID by removing spaces and special characters
 							$sanitized_id = strtolower(preg_replace('/[^a-zA-Z0-9\-_]/', '', str_replace(' ', '-', $value)));
+							if($value === "pa_cantidad-motores") { $value = "Cantidad de motores";};
 						?>
 							<li id="" class="final-check-<?= esc_attr($sanitized_id) ?> grid grid-cols-2 gap-2 !border-b last:!border-b-0 justify-center p-4" style="border-color: var(--battery-color);">
 								<strong><?= esc_html($value); ?></strong>
