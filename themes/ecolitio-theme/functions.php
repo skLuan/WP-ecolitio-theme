@@ -326,7 +326,7 @@ function ecolitio_filter_restricted_products_for_normal_users($tax_query, $query
     $user = $user_id ? get_userdata($user_id) : null;
     
     // If user has a taller role, don't filter (let their role-specific filter handle it)
-    if ($user && (in_array('taller_sabway', $user->roles) || in_array('taller_del_patinete', $user->roles) || in_array('taller-ecolife', $user->roles))) {
+    if ($user && (in_array('taller_sabway', $user->roles) || in_array('taller_del_patinete', $user->roles) || in_array('taller_ecolife', $user->roles))) {
         return $tax_query;
     }
     

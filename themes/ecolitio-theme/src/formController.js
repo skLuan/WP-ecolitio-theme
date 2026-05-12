@@ -79,12 +79,6 @@ const formValidator = {
       }
     }
 
-    // Validate scooter model
-    const scooterModel = document.getElementById("modelo-patinete");
-    if (!scooterModel || !scooterModel.value.trim()) {
-      errors.push("El modelo del patinete es requerido");
-    }
-
     // Validate cantidad de motores
     const cantidadMotores = document.querySelector('input[name="cantidad-motores"]:checked');
     if (!cantidadMotores) {
@@ -547,7 +541,7 @@ const ajaxSubmitter = {
 
       if (!result.success) {
         console.error("AJAX Error response data:", result.data);
-        throw new Error(result.data?.message || "Error al añadir al carrito");
+        throw new Error(result.data?.message || "Error al añadir al carrito FRONT");
       }
 
       return result.data;
