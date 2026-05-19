@@ -1,5 +1,4 @@
 .env
-plugins/
 logs/
 uploads/
 node_modules/
@@ -8,6 +7,9 @@ node_modules/
 .DS_Store
 *.sql
 
+plugins/
+!plugins/ecos-stores-plugin/
+!plugins/ecos-stores-plugin/**
 languages/
 litespeed/
 mu-plugins/
